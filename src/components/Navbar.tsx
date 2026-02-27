@@ -12,38 +12,42 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="bg-white border-b border-gray-200 dark:bg-slate-900 dark:border-slate-800 sticky top-0 z-50">
+    <nav className="bg-white/80 backdrop-blur-md border-b border-slate-200 dark:bg-slate-900/80 dark:border-slate-800 sticky top-0 z-50 transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">
-            <Link href="/" className="flex-shrink-0 flex items-center">
-              <GraduationCap className="h-8 w-8 text-blue-700" />
-              <span className="ml-2 text-xl font-bold text-gray-900 dark:text-white">NEB Science</span>
+            <Link href="/" className="flex-shrink-0 flex items-center group">
+              <div className="bg-indigo-600 p-1.5 rounded-lg group-hover:bg-indigo-700 transition-colors">
+                <GraduationCap className="h-6 w-6 text-white" />
+              </div>
+              <span className="ml-3 text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400">
+                NEB Science
+              </span>
             </Link>
-            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-              <Link href="/subjects" className="border-transparent text-gray-500 hover:border-blue-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium dark:text-gray-300 dark:hover:text-white">
+            <div className="hidden sm:ml-8 sm:flex sm:space-x-8">
+              <Link href="/subjects" className="text-slate-600 hover:text-indigo-600 inline-flex items-center px-1 pt-1 text-sm font-medium transition-colors dark:text-slate-300 dark:hover:text-indigo-400">
                 Subjects
               </Link>
-              <Link href="/past-papers" className="border-transparent text-gray-500 hover:border-blue-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium dark:text-gray-300 dark:hover:text-white">
+              <Link href="/past-papers" className="text-slate-600 hover:text-indigo-600 inline-flex items-center px-1 pt-1 text-sm font-medium transition-colors dark:text-slate-300 dark:hover:text-indigo-400">
                 Past Papers
               </Link>
-              <Link href="/mock-test" className="border-transparent text-gray-500 hover:border-blue-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium dark:text-gray-300 dark:hover:text-white">
+              <Link href="/mock-test" className="text-slate-600 hover:text-indigo-600 inline-flex items-center px-1 pt-1 text-sm font-medium transition-colors dark:text-slate-300 dark:hover:text-indigo-400">
                 Mock Test
               </Link>
-              <Link href="/resources" className="border-transparent text-gray-500 hover:border-blue-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium dark:text-gray-300 dark:hover:text-white">
+              <Link href="/resources" className="text-slate-600 hover:text-indigo-600 inline-flex items-center px-1 pt-1 text-sm font-medium transition-colors dark:text-slate-300 dark:hover:text-indigo-400">
                 Resources
               </Link>
             </div>
           </div>
           <div className="hidden sm:ml-6 sm:flex sm:items-center">
-            <button className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            <button className="bg-slate-900 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 transition-all shadow-lg shadow-slate-900/20 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100">
               Sign In
             </button>
           </div>
           <div className="-mr-2 flex items-center sm:hidden">
             <button
               onClick={toggleMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 dark:hover:bg-slate-800"
+              className="inline-flex items-center justify-center p-2 rounded-md text-slate-400 hover:text-slate-500 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 dark:hover:bg-slate-800"
             >
               <span className="sr-only">Open main menu</span>
               {isOpen ? (
@@ -57,24 +61,24 @@ export default function Navbar() {
       </div>
 
       {/* Mobile menu */}
-      <div className={`${isOpen ? 'block' : 'hidden'} sm:hidden`}>
-        <div className="pt-2 pb-3 space-y-1">
-          <Link href="/subjects" className="bg-blue-50 border-blue-500 text-blue-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium dark:bg-slate-800 dark:text-white dark:border-blue-400">
+      <div className={`${isOpen ? 'block' : 'hidden'} sm:hidden bg-white/95 backdrop-blur-md dark:bg-slate-900/95`}>
+        <div className="pt-2 pb-3 space-y-1 px-2">
+          <Link href="/subjects" className="text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 block px-3 py-2 rounded-md text-base font-medium transition-colors dark:text-slate-200 dark:hover:bg-slate-800">
             Subjects
           </Link>
-          <Link href="/past-papers" className="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium dark:text-gray-300 dark:hover:bg-slate-800">
+          <Link href="/past-papers" className="text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 block px-3 py-2 rounded-md text-base font-medium transition-colors dark:text-slate-200 dark:hover:bg-slate-800">
             Past Papers
           </Link>
-          <Link href="/mock-test" className="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium dark:text-gray-300 dark:hover:bg-slate-800">
+          <Link href="/mock-test" className="text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 block px-3 py-2 rounded-md text-base font-medium transition-colors dark:text-slate-200 dark:hover:bg-slate-800">
             Mock Test
           </Link>
-          <Link href="/resources" className="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium dark:text-gray-300 dark:hover:bg-slate-800">
+          <Link href="/resources" className="text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 block px-3 py-2 rounded-md text-base font-medium transition-colors dark:text-slate-200 dark:hover:bg-slate-800">
             Resources
           </Link>
         </div>
-        <div className="pt-4 pb-4 border-t border-gray-200 dark:border-slate-800">
+        <div className="pt-4 pb-6 border-t border-slate-200 dark:border-slate-800">
           <div className="flex items-center px-4">
-            <button className="w-full bg-blue-600 text-white px-4 py-2 rounded-md text-base font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            <button className="w-full bg-indigo-600 text-white px-4 py-2 rounded-full text-base font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 shadow-md">
               Sign In
             </button>
           </div>

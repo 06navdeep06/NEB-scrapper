@@ -45,49 +45,68 @@ export const subjects: Subject[] = [
 ];
 
 export const chapters: Chapter[] = [
-  // Physics
-  { id: 'phy-1', subjectId: 'phy', number: 1, title: 'Units and Measurement', description: 'Fundamental and derived units, dimensions, and error analysis.', estimatedHours: 4 },
-  { id: 'phy-2', subjectId: 'phy', number: 2, title: 'Vectors and Scalars', description: 'Vector addition, subtraction, dot and cross products.', estimatedHours: 6 },
-  { id: 'phy-3', subjectId: 'phy', number: 3, title: 'Kinematics', description: 'Motion in one and two dimensions, projectile motion.', estimatedHours: 8 },
-  { id: 'phy-4', subjectId: 'phy', number: 4, title: 'Laws of Motion', description: 'Newtons laws, friction, and circular motion.', estimatedHours: 8 },
-  { id: 'phy-5', subjectId: 'phy', number: 5, title: 'Work, Energy and Power', description: 'Work done by constant and variable forces, kinetic and potential energy.', estimatedHours: 7 },
+  // Physics - Grade 11
+  { id: 'phy-11-1', subjectId: 'phy', number: 1, title: 'Units and Measurement', description: 'Fundamental and derived units, dimensions, and error analysis.', estimatedHours: 4, grade: 11 },
+  { id: 'phy-11-2', subjectId: 'phy', number: 2, title: 'Vectors and Scalars', description: 'Vector addition, subtraction, dot and cross products.', estimatedHours: 6, grade: 11 },
+  { id: 'phy-11-3', subjectId: 'phy', number: 3, title: 'Kinematics', description: 'Motion in one and two dimensions, projectile motion.', estimatedHours: 8, grade: 11 },
+  { id: 'phy-11-4', subjectId: 'phy', number: 4, title: 'Laws of Motion', description: 'Newtons laws, friction, and circular motion.', estimatedHours: 8, grade: 11 },
+  { id: 'phy-11-5', subjectId: 'phy', number: 5, title: 'Work, Energy and Power', description: 'Work done by constant and variable forces, kinetic and potential energy.', estimatedHours: 7, grade: 11 },
   
-  // Chemistry
-  { id: 'chem-1', subjectId: 'chem', number: 1, title: 'Stoichiometry', description: 'Mole concept, chemical equations, and calculations.', estimatedHours: 6 },
-  { id: 'chem-2', subjectId: 'chem', number: 2, title: 'Atomic Structure', description: 'Bohr model, quantum numbers, and electronic configuration.', estimatedHours: 8 },
-  { id: 'chem-3', subjectId: 'chem', number: 3, title: 'Chemical Bonding', description: 'Ionic, covalent, and coordinate bonds, VSEPR theory.', estimatedHours: 10 },
-  { id: 'chem-4', subjectId: 'chem', number: 4, title: 'States of Matter', description: 'Gaseous state, liquid state, and solid state properties.', estimatedHours: 8 },
+  // Physics - Grade 12
+  { id: 'phy-12-1', subjectId: 'phy', number: 6, title: 'Wave Optics', description: 'Interference, Diffraction, Polarization of light.', estimatedHours: 10, grade: 12 },
+  { id: 'phy-12-2', subjectId: 'phy', number: 7, title: 'Current Electricity', description: 'Ohm’s law, Kirchhoff’s laws, Potentiometer.', estimatedHours: 12, grade: 12 },
+  { id: 'phy-12-3', subjectId: 'phy', number: 8, title: 'Modern Physics', description: 'Photoelectric effect, Bohr’s model, X-rays.', estimatedHours: 10, grade: 12 },
 
-  // Biology
-  { id: 'bio-1', subjectId: 'bio', number: 1, title: 'Cell Biology', description: 'Structure and function of cell organelles, cell division.', estimatedHours: 8 },
-  { id: 'bio-2', subjectId: 'bio', number: 2, title: 'Genetics', description: 'Mendelian genetics, DNA structure, and replication.', estimatedHours: 10 },
-  { id: 'bio-3', subjectId: 'bio', number: 3, title: 'Human Physiology', description: 'Digestion, respiration, circulation, and excretion systems.', estimatedHours: 15 },
+  // Chemistry - Grade 11
+  { id: 'chem-11-1', subjectId: 'chem', number: 1, title: 'Stoichiometry', description: 'Mole concept, chemical equations, and calculations.', estimatedHours: 6, grade: 11 },
+  { id: 'chem-11-2', subjectId: 'chem', number: 2, title: 'Atomic Structure', description: 'Bohr model, quantum numbers, and electronic configuration.', estimatedHours: 8, grade: 11 },
+  { id: 'chem-11-3', subjectId: 'chem', number: 3, title: 'Chemical Bonding', description: 'Ionic, covalent, and coordinate bonds, VSEPR theory.', estimatedHours: 10, grade: 11 },
+  { id: 'chem-11-4', subjectId: 'chem', number: 4, title: 'States of Matter', description: 'Gaseous state, liquid state, and solid state properties.', estimatedHours: 8, grade: 11 },
 
-  // Math
-  { id: 'math-1', subjectId: 'math', number: 1, title: 'Sequence and Series', description: 'AP, GP, HP, and special series.', estimatedHours: 6 },
-  { id: 'math-2', subjectId: 'math', number: 2, title: 'Matrices and Determinants', description: 'Properties, inverse, and system of linear equations.', estimatedHours: 8 },
-  { id: 'math-3', subjectId: 'math', number: 3, title: 'Calculus: Limits and Continuity', description: 'Concept of limits, continuity, and derivatives.', estimatedHours: 12 },
+  // Chemistry - Grade 12
+  { id: 'chem-12-1', subjectId: 'chem', number: 5, title: 'Volumetric Analysis', description: 'Titration, acid-base reactions, redox titration.', estimatedHours: 8, grade: 12 },
+  { id: 'chem-12-2', subjectId: 'chem', number: 6, title: 'Organic Chemistry II', description: 'Haloalkanes, Alcohols, Phenols, Ethers.', estimatedHours: 15, grade: 12 },
 
-  // CS - Expanded based on Readers Nepal
-  { id: 'cs-1', subjectId: 'cs', number: 1, title: 'Computer System Architecture', description: 'Logic gates, boolean algebra, and CPU architecture.', estimatedHours: 6 },
-  { id: 'cs-2', subjectId: 'cs', number: 2, title: 'Programming in C', description: 'Syntax, control structures, functions, pointers and arrays.', estimatedHours: 15 },
-  { id: 'cs-3', subjectId: 'cs', number: 3, title: 'Web Technology (HTML/CSS)', description: 'HTML5 structure, tags, forms, and CSS styling.', estimatedHours: 10 },
-  { id: 'cs-4', subjectId: 'cs', number: 4, title: 'Database Management System (SQL)', description: 'DBMS concepts, normalization, and SQL queries.', estimatedHours: 10 },
-  { id: 'cs-5', subjectId: 'cs', number: 5, title: 'Python Programming', description: 'Introduction to Python, data types, loops, and functions.', estimatedHours: 12 },
+  // Biology - Grade 11
+  { id: 'bio-11-1', subjectId: 'bio', number: 1, title: 'Cell Biology', description: 'Structure and function of cell organelles, cell division.', estimatedHours: 8, grade: 11 },
+  { id: 'bio-11-2', subjectId: 'bio', number: 2, title: 'Genetics', description: 'Mendelian genetics, DNA structure, and replication.', estimatedHours: 10, grade: 11 },
+  
+  // Biology - Grade 12
+  { id: 'bio-12-1', subjectId: 'bio', number: 3, title: 'Human Physiology', description: 'Digestion, respiration, circulation, and excretion systems.', estimatedHours: 15, grade: 12 },
+  { id: 'bio-12-2', subjectId: 'bio', number: 4, title: 'Genetics and Evolution', description: 'Molecular basis of inheritance, Evolution theories.', estimatedHours: 12, grade: 12 },
+
+  // Math - Grade 11
+  { id: 'math-11-1', subjectId: 'math', number: 1, title: 'Sequence and Series', description: 'AP, GP, HP, and special series.', estimatedHours: 6, grade: 11 },
+  { id: 'math-11-2', subjectId: 'math', number: 2, title: 'Matrices and Determinants', description: 'Properties, inverse, and system of linear equations.', estimatedHours: 8, grade: 11 },
+  { id: 'math-11-3', subjectId: 'math', number: 3, title: 'Calculus: Limits and Continuity', description: 'Concept of limits, continuity, and derivatives.', estimatedHours: 12, grade: 11 },
+
+  // Math - Grade 12
+  { id: 'math-12-1', subjectId: 'math', number: 4, title: 'Permutation and Combination', description: 'Counting principles, binomial theorem.', estimatedHours: 8, grade: 12 },
+  { id: 'math-12-2', subjectId: 'math', number: 5, title: 'Integrals', description: 'Definite and indefinite integrals, applications.', estimatedHours: 15, grade: 12 },
+
+  // CS - Grade 11
+  { id: 'cs-11-1', subjectId: 'cs', number: 1, title: 'Computer System Architecture', description: 'Logic gates, boolean algebra, and CPU architecture.', estimatedHours: 6, grade: 11 },
+  { id: 'cs-11-2', subjectId: 'cs', number: 2, title: 'Web Technology I', description: 'Introduction to HTML, CSS basics.', estimatedHours: 8, grade: 11 },
+  { id: 'cs-11-3', subjectId: 'cs', number: 3, title: 'Programming in C', description: 'Flowcharts, Algorithms, C syntax, Control structures.', estimatedHours: 12, grade: 11 },
+
+  // CS - Grade 12
+  { id: 'cs-12-1', subjectId: 'cs', number: 4, title: 'Database Management System (SQL)', description: 'DBMS concepts, normalization, and SQL queries.', estimatedHours: 10, grade: 12 },
+  { id: 'cs-12-2', subjectId: 'cs', number: 5, title: 'Web Technology II', description: 'PHP, JavaScript basics.', estimatedHours: 10, grade: 12 },
+  { id: 'cs-12-3', subjectId: 'cs', number: 6, title: 'Programming in C (Advanced)', description: 'Pointers, Structures, File Handling.', estimatedHours: 12, grade: 12 },
 ];
 
 export const notes: Note[] = [
   // Physics Notes
   {
-    id: 'note-phy-1-1',
-    chapterId: 'phy-1',
+    id: 'note-phy-11-1',
+    chapterId: 'phy-11-1',
     type: 'theory',
     title: 'Introduction to Units',
     content: 'Physical quantities are classified into fundamental and derived quantities. The SI system is the standard used globally. Fundamental units include Meter (m), Kilogram (kg), Second (s), Ampere (A), Kelvin (K), Mole (mol), and Candela (cd).',
   },
   {
-    id: 'note-phy-1-2',
-    chapterId: 'phy-1',
+    id: 'note-phy-11-2',
+    chapterId: 'phy-11-1',
     type: 'formula',
     title: 'Dimensional Analysis Formulas',
     content: '<ul><li>Dimension of Force = [MLT^-2]</li><li>Dimension of Energy = [ML^2T^-2]</li><li>Dimension of Power = [ML^2T^-3]</li><li>Dimension of Pressure = [ML^-1T^-2]</li></ul>',
@@ -95,8 +114,8 @@ export const notes: Note[] = [
   
   // Chemistry Notes
   {
-    id: 'note-chem-1-1',
-    chapterId: 'chem-1',
+    id: 'note-chem-11-1',
+    chapterId: 'chem-11-1',
     type: 'theory',
     title: 'The Mole Concept',
     content: 'One mole contains 6.022 x 10^23 particles. This number is known as Avogadros constant. Molar mass is the mass of one mole of a substance in grams.',
@@ -104,15 +123,15 @@ export const notes: Note[] = [
 
   // CS Notes - C Programming
   {
-    id: 'note-cs-2-1',
-    chapterId: 'cs-2',
+    id: 'note-cs-11-3-1',
+    chapterId: 'cs-11-3',
     type: 'theory',
     title: 'Introduction to C',
     content: 'C is a general-purpose, procedural computer programming language supporting structured programming, lexical variable scope, and recursion, with a static type system. It was developed by Dennis Ritchie at Bell Labs.',
   },
   {
-    id: 'note-cs-2-2',
-    chapterId: 'cs-2',
+    id: 'note-cs-11-3-2',
+    chapterId: 'cs-11-3',
     type: 'theory',
     title: 'Control Structures',
     content: 'Control structures in C include: <ul><li><strong>if-else</strong>: Conditional execution</li><li><strong>switch</strong>: Multi-way branching</li><li><strong>loops</strong>: for, while, do-while</li></ul>',
@@ -120,8 +139,8 @@ export const notes: Note[] = [
   
   // CS Notes - Web Tech
   {
-    id: 'note-cs-3-1',
-    chapterId: 'cs-3',
+    id: 'note-cs-11-2-1',
+    chapterId: 'cs-11-2',
     type: 'theory',
     title: 'HTML Structure',
     content: 'HTML (HyperText Markup Language) is the standard markup language for documents designed to be displayed in a web browser. Key tags include &lt;html&gt;, &lt;head&gt;, &lt;body&gt;, &lt;div&gt;, &lt;span&gt;.',
@@ -129,8 +148,8 @@ export const notes: Note[] = [
 
   // CS Notes - SQL
   {
-    id: 'note-cs-4-1',
-    chapterId: 'cs-4',
+    id: 'note-cs-12-1-1',
+    chapterId: 'cs-12-1',
     type: 'theory',
     title: 'SQL Commands',
     content: 'SQL commands are grouped into: <ul><li><strong>DDL</strong>: CREATE, ALTER, DROP</li><li><strong>DML</strong>: SELECT, INSERT, UPDATE, DELETE</li><li><strong>DCL</strong>: GRANT, REVOKE</li></ul>',
@@ -141,7 +160,7 @@ export const pastPapers: PastPaper[] = [
   {
     id: 'pp-phy-2080',
     subjectId: 'phy',
-    chapterId: 'phy-1', 
+    chapterId: 'phy-11-1', 
     year: 2080,
     title: 'NEB Grade 11 Physics 2080',
     pdfUrl: '#',
@@ -150,7 +169,7 @@ export const pastPapers: PastPaper[] = [
   {
     id: 'pp-chem-2079',
     subjectId: 'chem',
-    chapterId: 'chem-1',
+    chapterId: 'chem-11-1',
     year: 2079,
     title: 'NEB Grade 11 Chemistry 2079',
     pdfUrl: '#',
@@ -159,7 +178,7 @@ export const pastPapers: PastPaper[] = [
   {
     id: 'pp-cs-2080',
     subjectId: 'cs',
-    chapterId: 'cs-2',
+    chapterId: 'cs-11-3',
     year: 2080,
     title: 'NEB Grade 11 Computer Science 2080',
     pdfUrl: '#',
@@ -168,7 +187,7 @@ export const pastPapers: PastPaper[] = [
   {
     id: 'pp-math-2078',
     subjectId: 'math',
-    chapterId: 'math-1',
+    chapterId: 'math-11-1',
     year: 2078,
     title: 'NEB Grade 11 Mathematics 2078',
     pdfUrl: '#',
@@ -179,7 +198,7 @@ export const pastPapers: PastPaper[] = [
 export const mockTests: MockTest[] = [
   {
     id: 'test-phy-1',
-    chapterId: 'phy-1',
+    chapterId: 'phy-11-1',
     title: 'Units and Measurement - Practice Set 1',
     durationMinutes: 30,
     totalMarks: 20,
@@ -187,7 +206,7 @@ export const mockTests: MockTest[] = [
   },
   {
     id: 'test-chem-1',
-    chapterId: 'chem-1',
+    chapterId: 'chem-11-1',
     title: 'Stoichiometry Challenge',
     durationMinutes: 45,
     totalMarks: 30,
@@ -195,7 +214,7 @@ export const mockTests: MockTest[] = [
   },
   {
     id: 'test-cs-2',
-    chapterId: 'cs-2',
+    chapterId: 'cs-11-3',
     title: 'C Programming Mastery',
     durationMinutes: 40,
     totalMarks: 40,
@@ -203,7 +222,7 @@ export const mockTests: MockTest[] = [
   },
   {
     id: 'test-cs-3',
-    chapterId: 'cs-3',
+    chapterId: 'cs-11-2',
     title: 'HTML & CSS Basics',
     durationMinutes: 20,
     totalMarks: 20,

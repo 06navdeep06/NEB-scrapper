@@ -15,6 +15,7 @@ export interface Chapter {
   title: string;
   description: string;
   estimatedHours: number;
+  grade?: 11 | 12;
 }
 
 export interface PastPaper {
