@@ -56,10 +56,10 @@ export default function PastPapersTab({ papers }: { papers: any[] }) {
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-4">
-                      <a href={paper.pdf_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 inline-flex items-center">
+                      <a href={paper.pdfUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 inline-flex items-center">
                         <Eye className="h-4 w-4 mr-1" /> View
                       </a>
-                      <a href={paper.pdf_url} download className="text-emerald-600 hover:text-emerald-900 dark:text-emerald-400 dark:hover:text-emerald-300 inline-flex items-center">
+                      <a href={paper.pdfUrl} download className="text-emerald-600 hover:text-emerald-900 dark:text-emerald-400 dark:hover:text-emerald-300 inline-flex items-center">
                         <Download className="h-4 w-4 mr-1" /> Download
                       </a>
                     </td>

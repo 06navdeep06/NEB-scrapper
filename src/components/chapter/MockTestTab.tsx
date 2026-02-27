@@ -42,11 +42,11 @@ export default function MockTestTab({ tests }: { tests: any[] }) {
               <div className="flex space-x-4 text-gray-500 dark:text-gray-400">
                 <span className="flex items-center">
                   <Clock className="h-4 w-4 mr-1" />
-                  {test.duration_minutes} mins
+                  {test.durationMinutes} mins
                 </span>
                 <span className="flex items-center">
                   <AlertCircle className="h-4 w-4 mr-1" />
-                  {test.total_marks} marks
+                  {test.totalMarks} marks
                 </span>
               </div>
               <Link

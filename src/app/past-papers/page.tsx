@@ -1,32 +1,29 @@
-import { createClient } from '@/utils/supabase/server'
+import { subjects, chapters, pastPapers } from '@/lib/data'
 import PastPaperFilters from '@/components/PastPaperFilters'
 import { FileText, Download, Eye, Filter } from 'lucide-react'
 
-export default async function PastPapersPage({ searchParams }: { searchParams: { subject?: string; year?: string } }) {
-  const supabase = await createClient()
-  const { subject, year } = await searchParams
+export default async function PastPapersPage({ searchParams }: { searchParams: Promise<{ subject?: string; year?: string }> }) {
+  const { subject: subjectFilter, year: yearFilter } = await searchParams
 
-  // Fetch subjects for filter
-  const { data: subjects } = await supabase.from('subjects').select('id, name').order('name')
+  // Filter and enrich papers
+  let papers = pastPapers.map(p => {
+    const s = subjects.find(sub => sub.id === p.subjectId)
+    const c = chapters.find(chap => chap.id === p.chapterId)
+    return {
+      ...p,
+      subjectName: s?.name,
+      chapterTitle: c?.title,
+    }
+  })
 
-  // Build query
-  let query = supabase
-    .from('past_papers')
-    .select(`
-      *,
-      subjects (name),
-      chapters (title)
-    `)
-    .order('year', { ascending: false })
-
-  if (subject) {
-    query = query.eq('subject_id', subject)
+  if (subjectFilter) {
+    papers = papers.filter(p => p.subjectId === subjectFilter)
   }
-  if (year) {
-    query = query.eq('year', parseInt(year))
+  if (yearFilter) {
+    papers = papers.filter(p => p.year === parseInt(yearFilter))
   }
 
-  const { data: papers } = await query
+  papers.sort((a, b) => b.year - a.year)
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -48,7 +45,7 @@ export default async function PastPapersPage({ searchParams }: { searchParams: {
                   <div className="flex items-center justify-between">
                     <div className="flex flex-col">
                       <p className="text-sm font-medium text-blue-600 dark:text-blue-400 truncate">
-                        {paper.subjects?.name} - {paper.year}
+                        {paper.subjectName} - {paper.year}
                       </p>
                       <p className="mt-1 text-lg font-semibold text-gray-900 dark:text-white">
                         {paper.title}
@@ -65,7 +62,7 @@ export default async function PastPapersPage({ searchParams }: { searchParams: {
                       )}
                       <div className="flex space-x-2">
                         <a 
-                          href={paper.pdf_url} 
+                          href={paper.pdfUrl} 
                           target="_blank" 
                           rel="noopener noreferrer"
                           className="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-slate-600 shadow-sm text-xs font-medium rounded text-gray-700 dark:text-gray-300 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -73,7 +70,7 @@ export default async function PastPapersPage({ searchParams }: { searchParams: {
                           <Eye className="h-4 w-4 mr-1" /> View
                         </a>
                         <a 
-                          href={paper.pdf_url} 
+                          href={paper.pdfUrl} 
                           download
                           className="inline-flex items-center px-3 py-1.5 border border-transparent shadow-sm text-xs font-medium rounded text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                         >

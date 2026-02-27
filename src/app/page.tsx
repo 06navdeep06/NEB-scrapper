@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { createClient } from '@/utils/supabase/server'
+import { subjects } from '@/lib/data'
 import { ArrowRight, Book, Clock, FileText, Atom, FlaskConical, Calculator, Monitor, GraduationCap, Award, Users } from 'lucide-react'
 
 // Helper to get icon based on subject slug or name
@@ -13,9 +13,7 @@ const getIcon = (iconName: string) => {
   }
 }
 
-export default async function Home() {
-  const supabase = await createClient()
-  const { data: subjects } = await supabase.from('subjects').select('*').order('name')
+export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -90,7 +88,7 @@ export default async function Home() {
                     {subject.description}
                   </p>
                   <div className="w-full pt-6 border-t border-gray-100 dark:border-slate-700 flex items-center justify-between text-blue-600 dark:text-blue-400 font-semibold text-sm">
-                    <span>{subject.total_chapters} Chapters</span>
+                    <span>{subject.totalChapters} Chapters</span>
                     <span className="flex items-center group-hover:translate-x-1 transition-transform">
                       Explore <ArrowRight className="ml-1 h-4 w-4" />
                     </span>

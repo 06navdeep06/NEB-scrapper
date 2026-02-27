@@ -1,4 +1,4 @@
-import { FileText, Download, Beaker, HelpCircle, Image } from 'lucide-react'
+import { FileText, Download, Beaker, HelpCircle, Image, Code } from 'lucide-react'
 import Link from 'next/link'
 
 export default function ResourcesPage() {
@@ -39,6 +39,17 @@ export default function ResourcesPage() {
       items: [
         { title: 'Biology Diagram Collection', size: '8.5 MB' },
         { title: 'Physics Circuit Diagrams', size: '2.3 MB' },
+      ]
+    },
+    {
+      title: 'Programming & Computer Science',
+      description: 'C, HTML, SQL, and QBASIC resources',
+      icon: <Code className="h-8 w-8 text-indigo-600" />,
+      items: [
+        { title: '50+ C Programs Solved', size: '2.1 MB' },
+        { title: 'HTML5 & CSS3 Cheat Sheet', size: '1.4 MB' },
+        { title: 'SQL Queries for Beginners', size: '1.2 MB' },
+        { title: 'QBASIC Practical Manual', size: '1.8 MB' },
       ]
     }
   ]

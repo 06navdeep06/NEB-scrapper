@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { createClient } from '@/utils/supabase/server'
+import { subjects } from '@/lib/data'
 import { ArrowRight, Book, Atom, FlaskConical, Calculator, Monitor } from 'lucide-react'
 
 const getIcon = (iconName: string) => {
@@ -12,9 +12,8 @@ const getIcon = (iconName: string) => {
   }
 }
 
-export default async function SubjectsPage() {
-  const supabase = await createClient()
-  const { data: subjects } = await supabase.from('subjects').select('*').order('name')
+export default function SubjectsPage() {
+  // Data is imported directly
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -31,7 +30,7 @@ export default async function SubjectsPage() {
                 {subject.description}
               </p>
               <div className="flex items-center text-blue-600 dark:text-blue-400 font-medium text-sm mt-auto">
-                <span>{subject.total_chapters} Chapters</span>
+                <span>{subject.totalChapters} Chapters</span>
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </div>
             </div>

@@ -1,21 +1,19 @@
-import { createClient } from '@/utils/supabase/server'
+import { mockTests, chapters, subjects } from '@/lib/data'
 import Link from 'next/link'
 import { Book, Clock, AlertCircle, ChevronRight } from 'lucide-react'
 
-export default async function MockTestPage() {
-  const supabase = await createClient()
+export default function MockTestPage() {
   
   // Fetch tests with chapter and subject info
-  const { data: tests } = await supabase
-    .from('mock_tests')
-    .select(`
-      *,
-      chapters (
-        title,
-        subjects (name, slug)
-      )
-    `)
-    .order('created_at', { ascending: false })
+  const tests = mockTests.map(t => {
+    const c = chapters.find(chap => chap.id === t.chapterId)
+    const s = subjects.find(sub => sub.id === c?.subjectId)
+    return {
+      ...t,
+      chapterTitle: c?.title,
+      subjectName: s?.name,
+    }
+  })
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -38,10 +36,10 @@ export default async function MockTestPage() {
                     </div>
                     <div className="ml-3">
                       <p className="text-sm font-medium text-blue-600 dark:text-blue-400 truncate">
-                        {test.chapters?.subjects?.name}
+                        {test.subjectName}
                       </p>
                       <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                        {test.chapters?.title}
+                        {test.chapterTitle}
                       </p>
                     </div>
                   </div>
@@ -63,11 +61,11 @@ export default async function MockTestPage() {
                   <div className="flex space-x-4 text-gray-500 dark:text-gray-400">
                     <span className="flex items-center">
                       <Clock className="h-4 w-4 mr-1" />
-                      {test.duration_minutes}m
+                      {test.durationMinutes}m
                     </span>
                     <span className="flex items-center">
                       <AlertCircle className="h-4 w-4 mr-1" />
-                      {test.total_marks} marks
+                      {test.totalMarks} marks
                     </span>
                   </div>
                   <Link

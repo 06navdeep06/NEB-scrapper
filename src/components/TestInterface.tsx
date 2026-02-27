@@ -8,7 +8,7 @@ export default function TestInterface({ test, questions }: { test: any, question
   const router = useRouter()
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [answers, setAnswers] = useState<Record<string, string>>({})
-  const [timeLeft, setTimeLeft] = useState(test.duration_minutes * 60)
+  const [timeLeft, setTimeLeft] = useState(test.durationMinutes * 60)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [score, setScore] = useState(0)
 
@@ -35,13 +35,29 @@ export default function TestInterface({ test, questions }: { test: any, question
   const handleSubmit = () => {
     let calculatedScore = 0
     questions.forEach((q) => {
-      if (answers[q.id] === q.correct_answer) {
+      const userAnswer = (answers[q.id] || '').trim().toLowerCase()
+      const correctAnswer = String(q.correctAnswer).trim().toLowerCase()
+      
+      if (userAnswer === correctAnswer) {
         calculatedScore += q.marks
       }
     })
     setScore(calculatedScore)
     setIsSubmitted(true)
-    // Here you would typically save the result to the database
+    
+    // Save to local storage
+    try {
+      const results = JSON.parse(localStorage.getItem('testResults') || '[]')
+      results.push({
+        testId: test.id,
+        score: calculatedScore,
+        totalMarks: test.totalMarks,
+        date: new Date().toISOString()
+      })
+      localStorage.setItem('testResults', JSON.stringify(results))
+    } catch (e) {
+      console.error('Failed to save result', e)
+    }
   }
 
   const currentQuestion = questions[currentQuestionIndex]
@@ -56,7 +72,7 @@ export default function TestInterface({ test, questions }: { test: any, question
           </div>
           <h2 className="mt-4 text-3xl font-extrabold text-gray-900 dark:text-white">Test Completed!</h2>
           <p className="mt-2 text-lg text-gray-500 dark:text-gray-400">
-            You scored <span className="font-bold text-blue-600 dark:text-blue-400">{score}</span> out of <span className="font-bold">{test.total_marks}</span>
+            You scored <span className="font-bold text-blue-600 dark:text-blue-400">{score}</span> out of <span className="font-bold">{test.totalMarks}</span>
           </p>
           <div className="mt-8 flex justify-center space-x-4">
             <button
@@ -83,14 +99,14 @@ export default function TestInterface({ test, questions }: { test: any, question
                     {idx + 1}
                   </span>
                   <div className="flex-1">
-                    <p className="text-gray-900 dark:text-white font-medium">{q.question_text}</p>
+                    <p className="text-gray-900 dark:text-white font-medium">{q.question}</p>
                     <div className="mt-2 space-y-1">
-                      <p className={`text-sm ${answers[q.id] === q.correct_answer ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                      <p className={`text-sm ${answers[q.id] === q.correctAnswer ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
                         Your answer: {answers[q.id] || 'Skipped'}
                       </p>
-                      {answers[q.id] !== q.correct_answer && (
+                      {answers[q.id] !== q.correctAnswer && (
                         <p className="text-sm text-green-600 dark:text-green-400">
-                          Correct answer: {q.correct_answer}
+                          Correct answer: {q.correctAnswer}
                         </p>
                       )}
                       {q.explanation && (
@@ -132,7 +148,7 @@ export default function TestInterface({ test, questions }: { test: any, question
         <div className="p-6 flex-grow">
           <div className="flex justify-between items-start mb-6">
             <h3 className="text-xl font-medium text-gray-900 dark:text-white leading-relaxed">
-              {currentQuestion.question_text}
+              {currentQuestion.question}
             </h3>
             <span className="ml-4 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-slate-700 dark:text-gray-300">
               {currentQuestion.marks} Marks

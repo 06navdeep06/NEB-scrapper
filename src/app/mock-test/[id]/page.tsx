@@ -1,25 +1,17 @@
-import { createClient } from '@/utils/supabase/server'
+import { mockTests, questions as allQuestions } from '@/lib/data'
 import TestInterface from '@/components/TestInterface'
 import { notFound } from 'next/navigation'
 
-export default async function MockTestDetailPage({ params }: { params: { id: string } }) {
-  const supabase = await createClient()
+export default async function MockTestDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-
+  
   // Fetch test details
-  const { data: test } = await supabase
-    .from('mock_tests')
-    .select('*')
-    .eq('id', id)
-    .single()
+  const test = mockTests.find(t => t.id === id)
 
   if (!test) notFound()
 
   // Fetch questions
-  const { data: questions } = await supabase
-    .from('questions')
-    .select('*')
-    .eq('test_id', id)
+  const questions = allQuestions.filter(q => q.testId === id)
 
   if (!questions || questions.length === 0) {
     return (

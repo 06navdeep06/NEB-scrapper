@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { createClient } from '@/utils/supabase/server'
+import { getSubjectBySlug, chapters, notes as allNotes, pastPapers as allPapers, mockTests as allTests } from '@/lib/data'
 import { ArrowLeft, BookOpen, FileText, Book, Sigma } from 'lucide-react'
 import { notFound } from 'next/navigation'
 import NotesTab from '@/components/chapter/NotesTab'
@@ -10,64 +10,35 @@ export default async function ChapterDetailPage({
   params, 
   searchParams 
 }: { 
-  params: { slug: string; chapter: string };
-  searchParams: { tab?: string }
+  params: Promise<{ slug: string; chapter: string }>;
+  searchParams: Promise<{ tab?: string }>;
 }) {
-  const supabase = await createClient()
   const { slug, chapter: chapterId } = await params
   const { tab } = await searchParams
   const activeTab = tab || 'notes'
 
   // Fetch subject and chapter details
-  const { data: subject } = await supabase
-    .from('subjects')
-    .select('id, name, slug')
-    .eq('slug', slug)
-    .single()
+  const subject = await getSubjectBySlug(slug)
 
   if (!subject) notFound()
 
-  const { data: chapter } = await supabase
-    .from('chapters')
-    .select('*')
-    .eq('id', chapterId)
-    .single()
+  const chapter = chapters.find(c => c.id === chapterId)
 
   if (!chapter) notFound()
 
   // Fetch content based on tab
-  let content = null
-  let notes = []
-  let papers = []
-  let tests = []
+  let notes: any[] = []
+  let papers: any[] = []
+  let tests: any[] = []
 
   if (activeTab === 'notes') {
-    const { data } = await supabase
-      .from('notes')
-      .select('*')
-      .eq('chapter_id', chapterId)
-      .in('type', ['theory', 'derivation', 'diagram'])
-    notes = data || []
+    notes = allNotes.filter(n => n.chapterId === chapterId && ['theory', 'derivation', 'diagram'].includes(n.type))
   } else if (activeTab === 'formulas') {
-    const { data } = await supabase
-      .from('notes')
-      .select('*')
-      .eq('chapter_id', chapterId)
-      .eq('type', 'formula')
-    notes = data || []
+    notes = allNotes.filter(n => n.chapterId === chapterId && n.type === 'formula')
   } else if (activeTab === 'past-papers') {
-    const { data } = await supabase
-      .from('past_papers')
-      .select('*')
-      .eq('chapter_id', chapterId)
-      .order('year', { ascending: false })
-    papers = data || []
+    papers = allPapers.filter(p => p.chapterId === chapterId).sort((a, b) => b.year - a.year)
   } else if (activeTab === 'mock-test') {
-    const { data } = await supabase
-      .from('mock_tests')
-      .select('*')
-      .eq('chapter_id', chapterId)
-    tests = data || []
+    tests = allTests.filter(t => t.chapterId === chapterId)
   }
 
   return (
@@ -78,7 +49,7 @@ export default async function ChapterDetailPage({
         </Link>
         <div className="flex items-center">
           <div className="flex-shrink-0 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 h-12 w-12 rounded-full flex items-center justify-center font-bold text-xl mr-4">
-            {chapter.chapter_number}
+            {chapter.number}
           </div>
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
