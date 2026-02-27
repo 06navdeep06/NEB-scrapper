@@ -51,11 +51,11 @@ export default async function PastPapersPage({ searchParams }: { searchParams: P
                         {paper.title}
                       </p>
                       <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                        {paper.chapters?.title ? `Chapter: ${paper.chapters.title}` : 'Full Syllabus'}
+                        {paper.chapterTitle ? `Chapter: ${paper.chapterTitle}` : 'Full Syllabus'}
                       </p>
                     </div>
                     <div className="flex items-center space-x-4">
-                      {paper.has_solutions && (
+                      {paper.hasSolutions && (
                         <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
                           Solved
                         </span>
