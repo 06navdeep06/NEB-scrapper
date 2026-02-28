@@ -1,4 +1,5 @@
 import { FileText, Download, Eye } from 'lucide-react'
+import Link from 'next/link'
 import type { PastPaper } from '@/types'
 
 export default function PastPapersTab({ papers }: { papers: PastPaper[] }) {
@@ -57,9 +58,9 @@ export default function PastPapersTab({ papers }: { papers: PastPaper[] }) {
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-4">
-                      <a href={paper.pdfUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 inline-flex items-center">
+                      <Link href={`/past-papers/view/${paper.id}`} className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 inline-flex items-center">
                         <Eye className="h-4 w-4 mr-1" /> View
-                      </a>
+                      </Link>
                       <a href={paper.pdfUrl} download className="text-emerald-600 hover:text-emerald-900 dark:text-emerald-400 dark:hover:text-emerald-300 inline-flex items-center">
                         <Download className="h-4 w-4 mr-1" /> Download
                       </a>
