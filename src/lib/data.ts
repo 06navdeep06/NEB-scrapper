@@ -1845,56 +1845,7 @@ export const pastPapers: PastPaper[] = [
   },
 ];
 
-export const mockTests: MockTest[] = [
-  {
-    id: 'test-phy-2080-model',
-    chapterId: 'phy-12-1',
-    title: 'NEB Grade 12 Physics Model Exam 2080 (Full Syllabus)',
-    durationMinutes: 60,
-    totalMarks: 75,
-    difficulty: 'hard',
-  },
-  {
-    id: 'test-chem-2080-model',
-    chapterId: 'chem-12-1',
-    title: 'NEB Grade 12 Chemistry Model Exam 2080 (Full Syllabus)',
-    durationMinutes: 60,
-    totalMarks: 75,
-    difficulty: 'hard',
-  },
-  {
-    id: 'test-phy-1',
-    chapterId: 'phy-11-1',
-    title: 'Units and Measurement - Practice Set 1',
-    durationMinutes: 30,
-    totalMarks: 20,
-    difficulty: 'easy',
-  },
-  {
-    id: 'test-chem-1',
-    chapterId: 'chem-11-1',
-    title: 'Stoichiometry Challenge',
-    durationMinutes: 45,
-    totalMarks: 30,
-    difficulty: 'medium',
-  },
-  {
-    id: 'test-cs-2',
-    chapterId: 'cs-11-3',
-    title: 'C Programming Mastery',
-    durationMinutes: 40,
-    totalMarks: 40,
-    difficulty: 'hard',
-  },
-  {
-    id: 'test-cs-3',
-    chapterId: 'cs-11-2',
-    title: 'HTML & CSS Basics',
-    durationMinutes: 20,
-    totalMarks: 20,
-    difficulty: 'easy',
-  },
-];
+// Duplicate mockTests definition removed - original is at line 63
 
 export const questions: Question[] = [
   // Physics Questions
