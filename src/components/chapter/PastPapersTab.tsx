@@ -1,6 +1,7 @@
 import { FileText, Download, Eye } from 'lucide-react'
+import type { PastPaper } from '@/types'
 
-export default function PastPapersTab({ papers }: { papers: any[] }) {
+export default function PastPapersTab({ papers }: { papers: PastPaper[] }) {
   if (!papers || papers.length === 0) {
     return (
       <div className="text-center py-12">

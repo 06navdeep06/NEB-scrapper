@@ -35,8 +35,8 @@ export interface Note {
   type: 'theory' | 'formula' | 'derivation' | 'diagram';
   title: string;
   content: string;
-  formulas?: any;
-  diagrams?: any;
+  formulas?: unknown;
+  diagrams?: unknown;
 }
 
 export interface MockTest {

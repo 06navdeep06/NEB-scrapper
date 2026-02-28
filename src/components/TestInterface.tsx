@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Clock, CheckCircle, AlertCircle, ArrowRight, ArrowLeft } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import type { MockTest, Question } from '@/types'
 
-export default function TestInterface({ test, questions }: { test: any, questions: any[] }) {
+export default function TestInterface({ test, questions }: { test: MockTest, questions: Question[] }) {
   const router = useRouter()
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [answers, setAnswers] = useState<Record<string, string>>({})
@@ -12,27 +13,7 @@ export default function TestInterface({ test, questions }: { test: any, question
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [score, setScore] = useState(0)
 
-  useEffect(() => {
-    if (timeLeft > 0 && !isSubmitted) {
-      const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000)
-      return () => clearInterval(timer)
-    } else if (timeLeft === 0 && !isSubmitted) {
-      handleSubmit()
-    }
-  }, [timeLeft, isSubmitted])
-
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60)
-    const secs = seconds % 60
-    return `${mins}:${secs.toString().padStart(2, '0')}`
-  }
-
-  const handleOptionSelect = (questionId: string, option: string) => {
-    if (isSubmitted) return
-    setAnswers((prev) => ({ ...prev, [questionId]: option }))
-  }
-
-  const handleSubmit = () => {
+  const handleSubmit = useCallback(() => {
     let calculatedScore = 0
     questions.forEach((q) => {
       const userAnswer = (answers[q.id] || '').trim().toLowerCase()
@@ -45,7 +26,6 @@ export default function TestInterface({ test, questions }: { test: any, question
     setScore(calculatedScore)
     setIsSubmitted(true)
     
-    // Save to local storage
     try {
       const results = JSON.parse(localStorage.getItem('testResults') || '[]')
       results.push({
@@ -58,7 +38,38 @@ export default function TestInterface({ test, questions }: { test: any, question
     } catch (e) {
       console.error('Failed to save result', e)
     }
+  }, [answers, questions, test.id, test.totalMarks])
+
+  useEffect(() => {
+    if (isSubmitted) return
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        const next = prev - 1
+        if (next <= 0) {
+          clearInterval(timer)
+          if (!isSubmitted) {
+            handleSubmit()
+          }
+          return 0
+        }
+        return next
+      })
+    }, 1000)
+    return () => clearInterval(timer)
+  }, [isSubmitted, handleSubmit])
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+    return `${mins}:${secs.toString().padStart(2, '0')}`
   }
+
+  const handleOptionSelect = (questionId: string, option: string) => {
+    if (isSubmitted) return
+    setAnswers((prev) => ({ ...prev, [questionId]: option }))
+  }
+
+ 
 
   const currentQuestion = questions[currentQuestionIndex]
   const isLastQuestion = currentQuestionIndex === questions.length - 1

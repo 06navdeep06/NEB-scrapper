@@ -26,63 +26,53 @@ export default async function PastPapersPage({ searchParams }: { searchParams: P
   papers.sort((a, b) => b.year - a.year)
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="absolute inset-0 -z-10 [mask-image:radial-gradient(ellipse_at_top,black,transparent)] pointer-events-none">
+        <div className="h-40 bg-gradient-to-r from-indigo-500/20 via-fuchsia-500/20 to-emerald-500/20 blur-3xl" />
+      </div>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Past Papers Repository</h1>
-        <p className="mt-2 text-gray-600 dark:text-gray-400">
-          Access a comprehensive collection of past NEB board exam papers.
-        </p>
+        <h1 className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-violet-600 to-emerald-600 dark:from-indigo-400 dark:via-violet-400 dark:to-emerald-400">Past Papers Repository</h1>
+        <p className="mt-2 text-gray-600 dark:text-gray-400">Access a comprehensive collection of past NEB board exam papers.</p>
       </div>
 
       <PastPaperFilters subjects={subjects || []} />
 
       {papers && papers.length > 0 ? (
-        <div className="bg-white dark:bg-slate-800 shadow overflow-hidden sm:rounded-md border border-gray-100 dark:border-slate-700">
-          <ul className="divide-y divide-gray-200 dark:divide-slate-700">
-            {papers.map((paper) => (
-              <li key={paper.id}>
-                <div className="px-4 py-4 sm:px-6 hover:bg-gray-50 dark:hover:bg-slate-700 transition duration-150 ease-in-out">
-                  <div className="flex items-center justify-between">
-                    <div className="flex flex-col">
-                      <p className="text-sm font-medium text-blue-600 dark:text-blue-400 truncate">
-                        {paper.subjectName} - {paper.year}
-                      </p>
-                      <p className="mt-1 text-lg font-semibold text-gray-900 dark:text-white">
-                        {paper.title}
-                      </p>
-                      <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                        {paper.chapterTitle ? `Chapter: ${paper.chapterTitle}` : 'Full Syllabus'}
-                      </p>
-                    </div>
-                    <div className="flex items-center space-x-4">
-                      {paper.hasSolutions && (
-                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                          Solved
-                        </span>
-                      )}
-                      <div className="flex space-x-2">
-                        <a 
-                          href={paper.pdfUrl} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-slate-600 shadow-sm text-xs font-medium rounded text-gray-700 dark:text-gray-300 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                        >
-                          <Eye className="h-4 w-4 mr-1" /> View
-                        </a>
-                        <a 
-                          href={paper.pdfUrl} 
-                          download
-                          className="inline-flex items-center px-3 py-1.5 border border-transparent shadow-sm text-xs font-medium rounded text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                        >
-                          <Download className="h-4 w-4 mr-1" /> PDF
-                        </a>
-                      </div>
-                    </div>
-                  </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {papers.map((paper) => (
+            <div key={paper.id} className="relative bg-white/80 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm backdrop-blur-sm hover:-translate-y-1 transition-transform">
+              <div className="absolute -top-16 -right-20 h-44 w-44 bg-gradient-to-tr from-indigo-500 via-violet-500 to-emerald-500 opacity-10 blur-2xl" />
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="text-sm font-medium text-indigo-600 dark:text-indigo-400">{paper.subjectName} • {paper.year}</p>
+                  <p className="mt-1 text-lg font-semibold text-gray-900 dark:text-white">{paper.title}</p>
+                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{paper.chapterTitle ? `Chapter: ${paper.chapterTitle}` : 'Full Syllabus'}</p>
                 </div>
-              </li>
-            ))}
-          </ul>
+                {paper.hasSolutions && (
+                  <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                    Solved
+                  </span>
+                )}
+              </div>
+              <div className="mt-6 flex items-center justify-end space-x-2">
+                <a 
+                  href={paper.pdfUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center px-3 py-1.5 border border-slate-300 dark:border-slate-600 shadow-sm text-xs font-medium rounded text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700"
+                >
+                  <Eye className="h-4 w-4 mr-1" /> View
+                </a>
+                <a 
+                  href={paper.pdfUrl} 
+                  download
+                  className="inline-flex items-center px-3 py-1.5 border border-transparent shadow-sm text-xs font-medium rounded text-white bg-indigo-600 hover:bg-indigo-700"
+                >
+                  <Download className="h-4 w-4 mr-1" /> PDF
+                </a>
+              </div>
+            </div>
+          ))}
         </div>
       ) : (
         <div className="text-center py-12 bg-white dark:bg-slate-800 rounded-lg shadow border border-gray-100 dark:border-slate-700">

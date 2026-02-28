@@ -1,7 +1,8 @@
 import { Book, Clock, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
+import type { MockTest } from '@/types'
 
-export default function MockTestTab({ tests }: { tests: any[] }) {
+export default function MockTestTab({ tests }: { tests: MockTest[] }) {
   if (!tests || tests.length === 0) {
     return (
       <div className="text-center py-12">

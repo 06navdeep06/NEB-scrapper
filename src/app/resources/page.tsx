@@ -55,16 +55,17 @@ export default function ResourcesPage() {
   ]
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="absolute inset-0 -z-10 [mask-image:radial-gradient(ellipse_at_top,black,transparent)] pointer-events-none">
+        <div className="h-40 bg-gradient-to-r from-indigo-500/20 via-fuchsia-500/20 to-emerald-500/20 blur-3xl" />
+      </div>
       <div className="mb-12 text-center">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Student Resources</h1>
-        <p className="mt-4 text-xl text-gray-600 dark:text-gray-400">
-          Download syllabus, practical manuals, and other essential materials.
-        </p>
+        <h1 className="text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-violet-600 to-emerald-600 dark:from-indigo-400 dark:via-violet-400 dark:to-emerald-400">Student Resources</h1>
+        <p className="mt-4 text-lg text-gray-600 dark:text-gray-400">Download syllabus, practical manuals, and other essential materials.</p>
         <div className="mt-6">
           <Link 
             href="/quick-revision"
-            className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 md:text-lg transition-colors"
+            className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 md:text-lg transition-colors"
           >
             Go to Quick Revision Section
           </Link>
@@ -73,9 +74,10 @@ export default function ResourcesPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {resources.map((section, idx) => (
-          <div key={idx} className="bg-white dark:bg-slate-800 rounded-lg shadow-md border border-gray-100 dark:border-slate-700 overflow-hidden">
+          <div key={idx} className="relative bg-white/80 dark:bg-slate-800/80 rounded-2xl shadow-md border border-slate-200 dark:border-slate-700 overflow-hidden backdrop-blur-sm">
+            <div className="absolute -top-16 -right-20 h-48 w-48 bg-gradient-to-tr from-indigo-500 via-violet-500 to-emerald-500 opacity-10 blur-2xl" />
             <div className="p-6 bg-gray-50 dark:bg-slate-700/50 border-b border-gray-100 dark:border-slate-700 flex items-center">
-              <div className="bg-white dark:bg-slate-800 p-3 rounded-full shadow-sm mr-4">
+              <div className="bg-white dark:bg-slate-800 p-3 rounded-xl shadow-sm mr-4 ring-1 ring-slate-100 dark:ring-slate-700">
                 {section.icon}
               </div>
               <div>
@@ -88,14 +90,14 @@ export default function ResourcesPage() {
                 {section.items.map((item, itemIdx) => (
                   <li key={itemIdx} className="flex items-center justify-between group">
                     <div className="flex items-center">
-                      <FileText className="h-5 w-5 text-gray-400 mr-3 group-hover:text-blue-500 transition-colors" />
+                      <FileText className="h-5 w-5 text-gray-400 mr-3 group-hover:text-indigo-600 transition-colors" />
                       <span className="text-gray-700 dark:text-gray-300 font-medium group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                         {item.title}
                       </span>
                     </div>
                     <div className="flex items-center">
                       <span className="text-xs text-gray-400 mr-3">{item.size}</span>
-                      <button className="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                      <button className="text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                         <Download className="h-5 w-5" />
                       </button>
                     </div>

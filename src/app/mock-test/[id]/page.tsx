@@ -4,13 +4,11 @@ import { notFound } from 'next/navigation'
 
 export default async function MockTestDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  
-  // Fetch test details
+
   const test = mockTests.find(t => t.id === id)
 
   if (!test) notFound()
 
-  // Fetch questions
   const questions = allQuestions.filter(q => q.testId === id)
 
   if (!questions || questions.length === 0) {

@@ -1,6 +1,7 @@
-import { FileText, ChevronRight } from 'lucide-react'
+import { FileText } from 'lucide-react'
+import type { Note } from '@/types'
 
-export default function NotesTab({ notes }: { notes: any[] }) {
+export default function NotesTab({ notes }: { notes: Note[] }) {
   if (!notes || notes.length === 0) {
     return (
       <div className="text-center py-12">

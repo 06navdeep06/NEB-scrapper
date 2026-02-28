@@ -42,6 +42,22 @@ export const subjects: Subject[] = [
     description: 'C Programming, Web Technology (HTML/CSS), Database (SQL), and Python.',
     totalChapters: 12,
   },
+  {
+    id: 'eng',
+    name: 'English',
+    slug: 'english',
+    icon: 'book',
+    description: 'Language Development and Literature (Grade 11 & 12).',
+    totalChapters: 2,
+  },
+  {
+    id: 'nep',
+    name: 'Nepali',
+    slug: 'nepali',
+    icon: 'book',
+    description: 'Compulsory Nepali chapters and exercises (Grade 11 & 12).',
+    totalChapters: 2,
+  },
 ];
 
 export const chapters: Chapter[] = [
@@ -93,10 +109,14 @@ export const chapters: Chapter[] = [
   { id: 'cs-12-1', subjectId: 'cs', number: 4, title: 'Database Management System (SQL)', description: 'DBMS concepts, normalization, and SQL queries.', estimatedHours: 10, grade: 12 },
   { id: 'cs-12-2', subjectId: 'cs', number: 5, title: 'Web Technology II', description: 'PHP, JavaScript basics.', estimatedHours: 10, grade: 12 },
   { id: 'cs-12-3', subjectId: 'cs', number: 6, title: 'Programming in C (Advanced)', description: 'Pointers, Structures, File Handling.', estimatedHours: 12, grade: 12 },
+  
+  // English - Grade 11
+  { id: 'eng-11-20', subjectId: 'eng', number: 20, title: 'Science and Technology (Language Development)', description: 'Vocabulary, grammar, and comprehension exercises.', estimatedHours: 6, grade: 11 },
+  // Nepali - Grade 11
+  { id: 'nep-11-7', subjectId: 'nep', number: 7, title: 'पर्यापर्यटनका सम्भावना र आयाम', description: 'वस्तुपरक निबन्ध — अभ्यास र बोध/अभिव्यक्ति', estimatedHours: 6, grade: 11 },
 ];
 
 export const notes: Note[] = [
-  // Physics Notes
   {
     id: 'note-phy-11-1',
     chapterId: 'phy-11-1',
@@ -111,8 +131,6 @@ export const notes: Note[] = [
     title: 'Dimensional Analysis Formulas',
     content: '<ul><li>Dimension of Force = [MLT^-2]</li><li>Dimension of Energy = [ML^2T^-2]</li><li>Dimension of Power = [ML^2T^-3]</li><li>Dimension of Pressure = [ML^-1T^-2]</li></ul>',
   },
-  
-  // Chemistry Notes
   {
     id: 'note-chem-11-1',
     chapterId: 'chem-11-1',
@@ -120,8 +138,6 @@ export const notes: Note[] = [
     title: 'The Mole Concept',
     content: 'One mole contains 6.022 x 10^23 particles. This number is known as Avogadros constant. Molar mass is the mass of one mole of a substance in grams.',
   },
-
-  // CS Notes - C Programming
   {
     id: 'note-cs-11-3-1',
     chapterId: 'cs-11-3',
@@ -136,8 +152,6 @@ export const notes: Note[] = [
     title: 'Control Structures',
     content: 'Control structures in C include: <ul><li><strong>if-else</strong>: Conditional execution</li><li><strong>switch</strong>: Multi-way branching</li><li><strong>loops</strong>: for, while, do-while</li></ul>',
   },
-  
-  // CS Notes - Web Tech
   {
     id: 'note-cs-11-2-1',
     chapterId: 'cs-11-2',
@@ -145,14 +159,110 @@ export const notes: Note[] = [
     title: 'HTML Structure',
     content: 'HTML (HyperText Markup Language) is the standard markup language for documents designed to be displayed in a web browser. Key tags include &lt;html&gt;, &lt;head&gt;, &lt;body&gt;, &lt;div&gt;, &lt;span&gt;.',
   },
-
-  // CS Notes - SQL
   {
     id: 'note-cs-12-1-1',
     chapterId: 'cs-12-1',
     type: 'theory',
     title: 'SQL Commands',
     content: 'SQL commands are grouped into: <ul><li><strong>DDL</strong>: CREATE, ALTER, DROP</li><li><strong>DML</strong>: SELECT, INSERT, UPDATE, DELETE</li><li><strong>DCL</strong>: GRANT, REVOKE</li></ul>',
+  },
+  {
+    id: 'note-phy-11-2-1',
+    chapterId: 'phy-11-2',
+    type: 'theory',
+    title: 'Scalars and Vectors',
+    content: '<p>Scalars have magnitude only (e.g., mass, temperature). Vectors have magnitude and direction (e.g., displacement, velocity, force). A vector is represented graphically by an arrow; its length denotes magnitude and its orientation denotes direction.</p><p>Vector addition follows the parallelogram or triangle law. Resultant R of A and B: <em>R = A + B</em>. Subtraction uses <em>A − B = A + (−B)</em>.</p><p>Dot product: <em>A · B = |A||B|cosθ</em>. Cross product: <em>A × B = |A||B|sinθ n̂</em>.</p>',
+  },
+  {
+    id: 'note-phy-11-2-2',
+    chapterId: 'phy-11-2',
+    type: 'formula',
+    title: 'Vector Identities',
+    content: '<ul><li>Unit vector: <em>â = A/|A|</em></li><li>Magnitude of cross product: <em>|A × B| = |A||B|sinθ</em></li><li>Scalar projection: <em>comp<sub>B</sub>(A) = (A · B)/|B|</em></li><li>Vector projection: <em>proj<sub>B</sub>(A) = ((A · B)/|B|^2) B</em></li></ul>',
+  },
+  {
+    id: 'note-phy-11-3-1',
+    chapterId: 'phy-11-3',
+    type: 'theory',
+    title: 'Kinematics Basics',
+    content: '<p>Kinematics describes motion without considering causes. Key quantities: displacement, velocity, and acceleration.</p><p>For uniform acceleration in one dimension, motion is described by the equations of motion. Projectile motion decomposes into independent horizontal and vertical components.</p>',
+  },
+  {
+    id: 'note-phy-11-3-2',
+    chapterId: 'phy-11-3',
+    type: 'formula',
+    title: 'Equations of Motion',
+    content: '<ul><li><em>v = u + at</em></li><li><em>s = ut + ½at^2</em></li><li><em>v^2 = u^2 + 2as</em></li><li>Projectile time of flight: <em>T = (2u sinθ)/g</em></li><li>Range: <em>R = (u^2 sin2θ)/g</em></li></ul>',
+  },
+  {
+    id: 'note-chem-11-2-1',
+    chapterId: 'chem-11-2',
+    type: 'theory',
+    title: 'Quantum Numbers',
+    content: '<p>Each electron in an atom is described by four quantum numbers: n (principal), l (azimuthal), m<sub>l</sub> (magnetic), and m<sub>s</sub> (spin). They define energy level, subshell shape, orientation, and spin.</p><p>Pauli exclusion states no two electrons can have the same set of four quantum numbers. Hund’s rule favors maximum multiplicity in degenerate orbitals.</p>',
+  },
+  {
+    id: 'note-math-11-1-1',
+    chapterId: 'math-11-1',
+    type: 'theory',
+    title: 'Arithmetic Progression',
+    content: '<p>An AP has a constant difference d between consecutive terms. If a is the first term, the n-th term is <em>T<sub>n</sub> = a + (n−1)d</em>.</p><p>Sum of first n terms: <em>S<sub>n</sub> = n/2[2a + (n−1)d]</em>.</p>',
+  },
+  {
+    id: 'note-cs-11-1-1',
+    chapterId: 'cs-11-1',
+    type: 'theory',
+    title: 'Logic Gates Overview',
+    content: '<p>Basic gates: AND, OR, NOT; derived gates: NAND, NOR, XOR, XNOR. Truth tables define gate behavior. Boolean algebra simplifies logical expressions for digital circuit design.</p>',
+  },
+  {
+    id: 'note-bio-11-1-1',
+    chapterId: 'bio-11-1',
+    type: 'theory',
+    title: 'Cell Organelles',
+    content: '<p>Key organelles: nucleus (genetic control), mitochondria (ATP production), ribosomes (protein synthesis), ER and Golgi (processing and transport), lysosomes (digestion), chloroplasts in plants (photosynthesis).</p>',
+  },
+  {
+    id: 'note-phy-11-1-wiki-1',
+    chapterId: 'phy-11-1',
+    type: 'theory',
+    title: 'SI Base Units Overview',
+    content: '<p>The International System of Units (SI) defines seven base units: second (time), metre (length), kilogram (mass), ampere (electric current), kelvin (thermodynamic temperature), mole (amount of substance), and candela (luminous intensity). All other units are derived from these.</p><p>Source: <a href="https://en.wikipedia.org/wiki/SI_base_unit" target="_blank" rel="noopener noreferrer">Wikipedia — SI base unit</a></p>',
+  },
+  {
+    id: 'note-chem-11-1-wiki-1',
+    chapterId: 'chem-11-1',
+    type: 'theory',
+    title: 'Stoichiometry Basics',
+    content: '<p>Stoichiometry studies quantitative relationships between reactants and products using balanced chemical equations and the conservation of mass. It relates moles, molar ratios, and masses to predict product amounts and required reactant quantities.</p><p>Source: <a href="https://en.wikipedia.org/wiki/Stoichiometry" target="_blank" rel="noopener noreferrer">Wikipedia — Stoichiometry</a></p>',
+  },
+  {
+    id: 'note-eng-11-20-1',
+    chapterId: 'eng-11-20',
+    type: 'theory',
+    title: 'Science and Technology — Key Vocabulary',
+    content: '<p>Freshman: first-year student; Naive: lacking experience; Dorm: student residence; Suitemate: someone sharing suite facilities; Incalculable: cannot be measured; Brag: boast; Disposal: throwing away.</p><p>Exercises and comprehension adapted from NEB Plus 2 Notes.</p><p>Source: <a href="https://nebplus2notes.com/class-11/english/ld/science-and-technology/" target="_blank" rel="noopener noreferrer">NEB Plus 2 Notes — Science and Technology</a></p>',
+  },
+  {
+    id: 'note-eng-11-20-2',
+    chapterId: 'eng-11-20',
+    type: 'theory',
+    title: 'Science and Technology — Comprehension Summary',
+    content: '<p>The piece contrasts a parent\'s college experience with modern tech-driven student life, noting increased connectivity but fragmented real-world interactions.</p><ul><li>Tools: mobile apps, social media, YouTube</li><li>Impacts: reliance on shortcuts, reduced exploration</li></ul><p>Source: <a href="https://nebplus2notes.com/class-11/english/ld/science-and-technology/" target="_blank" rel="noopener noreferrer">NEB Plus 2 Notes</a></p>',
+  },
+  {
+    id: 'note-nep-11-7-1',
+    chapterId: 'nep-11-7',
+    type: 'theory',
+    title: 'पर्यापर्यटन — शब्दभण्डार',
+    content: '<p>विहङ्गम दृष्टि: चराले जस्तै माथिबाट हेर्ने दृष्टि; तृणहारी: घाँसपात खाने; पर्यापर्यटन: विविधताका कारण हुने पर्यटन; जलक्रीडा: पानीमा खेलिने खेलहरू; पर्यावरणमैत्री: वातावरण सुहाउँदो।</p><p>Source: <a href="https://nebplus2notes.com/class-11/nepali/paryatan-samvawana-ra-aayam/" target="_blank" rel="noopener noreferrer">NEB Plus 2 Notes — पर्यापर्यटनका सम्भावना र आयाम</a></p>',
+  },
+  {
+    id: 'note-nep-11-7-2',
+    chapterId: 'nep-11-7',
+    type: 'theory',
+    title: 'पर्यापर्यटन — बोध/अभिव्यक्ति सार',
+    content: '<p>पाठ दस अनुच्छेदमा संरचित छ। पर्यापर्यटनले स्थानीय विविधता, पर्यावरणमैत्री गतिविधि, जलक्रीडा, र पहाडी/तराई क्षेत्रका विशेषताको उपयोग गर्छ।</p><p>Source: <a href="https://nebplus2notes.com/class-11/nepali/paryatan-samvawana-ra-aayam/" target="_blank" rel="noopener noreferrer">NEB Plus 2 Notes</a></p>',
   },
 ];
 
@@ -162,8 +272,8 @@ export const pastPapers: PastPaper[] = [
     subjectId: 'phy',
     chapterId: 'phy-11-1', 
     year: 2080,
-    title: 'NEB Grade 11 Physics 2080',
-    pdfUrl: '#',
+    title: 'NEB Grade 11 Physics Model Question 2080',
+    pdfUrl: 'http://www.neb.gov.np/uploads/photos/LzFCDNVuGe160603084426.pdf',
     hasSolutions: true,
   },
   {
@@ -294,6 +404,55 @@ export const questions: Question[] = [
     correctAnswer: 'Hyper Text Markup Language',
     marks: 1,
     explanation: 'HTML stands for Hyper Text Markup Language.',
+  },
+  {
+    id: 'q-chem-1-1',
+    testId: 'test-chem-1',
+    type: 'multiple-choice',
+    question: 'Stoichiometry is primarily based on which law?',
+    options: ['Law of conservation of mass', 'Boyle’s law', 'Raoult’s law', 'Henry’s law'],
+    correctAnswer: 'Law of conservation of mass',
+    marks: 1,
+    explanation: 'Balanced equations reflect conservation of mass between reactants and products.',
+  },
+  {
+    id: 'q-chem-1-2',
+    testId: 'test-chem-1',
+    type: 'multiple-choice',
+    question: 'In the reaction: CH4 + 2O2 → CO2 + 2H2O, how many moles of water form per mole of methane?',
+    options: ['1', '2', '3', '4'],
+    correctAnswer: '2',
+    marks: 1,
+    explanation: 'Coefficients indicate 1 mol CH4 produces 2 mol H2O.',
+  },
+  {
+    id: 'q-chem-1-3',
+    testId: 'test-chem-1',
+    type: 'short-answer',
+    question: 'Define limiting reagent.',
+    correctAnswer: 'The reactant that is completely consumed first and limits product formation',
+    marks: 2,
+    explanation: 'It determines the maximum amount of product that can be formed.',
+  },
+  {
+    id: 'q-chem-1-4',
+    testId: 'test-chem-1',
+    type: 'multiple-choice',
+    question: 'What is the molar ratio of O2 to CH4 in complete combustion of methane?',
+    options: ['1:1', '2:1', '1:2', '3:1'],
+    correctAnswer: '2:1',
+    marks: 1,
+    explanation: 'CH4 + 2O2 → CO2 + 2H2O requires 2 moles of O2 per mole of CH4.',
+  },
+  {
+    id: 'q-chem-1-5',
+    testId: 'test-chem-1',
+    type: 'multiple-choice',
+    question: 'One mole of CO2 contains how many molecules?',
+    options: ['6.022×10^22', '6.022×10^23', '3.00×10^23', '1.00×10^23'],
+    correctAnswer: '6.022×10^23',
+    marks: 1,
+    explanation: 'One mole equals Avogadro’s number of molecules.',
   },
 ];
 
