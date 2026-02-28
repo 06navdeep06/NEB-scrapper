@@ -60,6 +60,41 @@ export const subjects: Subject[] = [
   },
 ];
 
+export const mockTests: MockTest[] = [
+  {
+    id: 'test-phy-2080-model',
+    chapterId: 'phy-12-1',
+    title: 'NEB Grade 12 Physics Model Exam 2080 (Full Syllabus)',
+    durationMinutes: 60,
+    totalMarks: 75,
+    difficulty: 'hard',
+  },
+  {
+    id: 'test-chem-2080-model',
+    chapterId: 'chem-12-1',
+    title: 'NEB Grade 12 Chemistry Model Exam 2080 (Full Syllabus)',
+    durationMinutes: 60,
+    totalMarks: 75,
+    difficulty: 'hard',
+  },
+  {
+    id: 'test-bio-1',
+    chapterId: 'bio-12-2',
+    title: 'Genetics & Molecular Biology Quiz',
+    durationMinutes: 20,
+    totalMarks: 20,
+    difficulty: 'medium',
+  },
+  {
+    id: 'test-math-1',
+    chapterId: 'math-12-2',
+    title: 'Calculus: Derivatives & Integrals',
+    durationMinutes: 30,
+    totalMarks: 30,
+    difficulty: 'hard',
+  },
+];
+
 export const chapters: Chapter[] = [
   // Physics - Grade 11
   { id: 'phy-11-1', subjectId: 'phy', number: 1, title: 'Units and Measurement', description: 'Fundamental and derived units, dimensions, and error analysis.', estimatedHours: 4, grade: 11 },
@@ -707,7 +742,94 @@ export const notes: Note[] = [
       </ul>
     `
   },
-  // Detailed Math Grade 11 Notes
+  // --- ENRICHED CONTENT: ENGLISH GRADE 11 ---
+  {
+    id: 'note-eng-11-lit-overview',
+    chapterId: 'eng-11-lit-ss',
+    type: 'theory',
+    title: 'Short Stories: The Selfish Giant',
+    content: `
+      <h3>Plot Summary</h3>
+      <p>A giant forbids children from playing in his garden, causing it to fall into eternal winter. One day, children sneak in, bringing spring back. The giant realizes his selfishness and befriends them, especially a small boy who turns out to be Christ figure.</p>
+      <h3>Themes</h3>
+      <p>Redemption, love, selfishness vs. generosity, and the nature of paradise.</p>
+    `
+  },
+  {
+    id: 'note-eng-11-grammar-tense',
+    chapterId: 'eng-11-1',
+    type: 'theory',
+    title: 'Grammar: Tense & Aspect',
+    content: `
+      <h3>Present Tense</h3>
+      <p><strong>Simple:</strong> General truths (Water boils at 100°C).</p>
+      <p><strong>Continuous:</strong> Happening now (I am writing).</p>
+      <p><strong>Perfect:</strong> Completed recently (I have eaten).</p>
+      <h3>Past Tense</h3>
+      <p><strong>Simple:</strong> Completed action (He left yesterday).</p>
+      <p><strong>Continuous:</strong> Ongoing in past (He was sleeping).</p>
+    `
+  },
+  // --- ADDITIONAL CONTENT: NEPALI GRADE 11 ---
+  {
+    id: 'note-nep-11-bir-purkha',
+    chapterId: 'nep-11-1',
+    type: 'theory',
+    title: 'वीर पुर्खा (कविता) - सारांश',
+    content: `
+      <h3>मूल भाव</h3>
+      <p>यस कवितामा कविले नेपाली वीर पुर्खाहरूको वीरता, साहस र बलिदानको गाथा गाएका छन्। नेपालको सिमाना पूर्वमा टिस्टा र पश्चिममा काँगडासम्म पुर्याउने पुर्खाहरूको योगदानलाई सम्मान गरिएको छ।</p>
+      <h3>मुख्य बुँदाहरू</h3>
+      <ul>
+        <li>नेपालीहरूको वीरता र स्वाभिमान।</li>
+        <li>प्राकृतिक कठिनाइहरू (पहाड, नदी) छिचोल्दै अघि बढ्ने साहस।</li>
+        <li>इतिहासको गौरवमय क्षणहरूको स्मरण।</li>
+      </ul>
+    `
+  },
+  {
+    id: 'note-nep-11-gauko-maya',
+    chapterId: 'nep-11-2',
+    type: 'theory',
+    title: 'गाउँको माया (कथा) - समीक्षा',
+    content: `
+      <h3>कथाको सार</h3>
+      <p>यो एक सामाजिक कथा हो जसले वैदेशिक रोजगारी र शहर पस्ने प्रवृत्तिका कारण गाउँहरू रित्तिँदै गएको यथार्थ चित्रण गर्छ। गाउँको अर्गानिक जीवनशैली, आत्मीयता र प्रकृतिप्रेमलाई मुख्य विषय बनाइएको छ।</p>
+      <h3>सन्देश</h3>
+      <p>गाउँको विकास र संरक्षण गर्नुपर्ने आवश्यकता। आफ्नो माटो र संस्कृतिप्रतिको प्रेम।</p>
+    `
+  },
+  // --- ADDITIONAL CONTENT: ENGLISH GRADE 12 ---
+  {
+    id: 'note-eng-12-lit-neighbours',
+    chapterId: 'eng-12-full',
+    type: 'theory',
+    title: 'Story: Neighbours (Tim Winton)',
+    content: `
+      <h3>Summary</h3>
+      <p>A young couple moves into a multicultural suburb. Initially prejudiced against their European neighbors, they gradually learn to appreciate the community's warmth and support, especially after the birth of their child.</p>
+      <h3>Themes</h3>
+      <p>Multiculturalism, transition, prejudice vs. acceptance, and community bonding.</p>
+    `
+  },
+  // --- ADDITIONAL CONTENT: NEPALI GRADE 12 ---
+  {
+    id: 'note-nep-12-aama-sapana',
+    chapterId: 'nep-12-1',
+    type: 'theory',
+    title: 'आमाको सपना (कविता) - विश्लेषण',
+    content: `
+      <h3>कवि: गोपालप्रसाद रिमाल</h3>
+      <p>यस कवितामा आमा (नेपाल आमा) ले आफ्नो छोरा (नेपाली जनता) सँग क्रान्ति र परिवर्तनको सपना देखेको कुरा व्यक्त गरिएको छ। अन्धकार हटेर सुनौलो बिहानी आउने विश्वास प्रकट गरिएको छ।</p>
+      <h3>प्रतीकहरू</h3>
+      <ul>
+        <li><strong>आमा:</strong> नेपाल राष्ट्र।</li>
+        <li><strong>छोरा:</strong> परिवर्तनकारी युवा/जनता।</li>
+        <li><strong>सपना:</strong> प्रजातन्त्र र स्वतन्त्रताको प्राप्ति।</li>
+      </ul>
+    `
+  },
+  // --- ENRICHED CONTENT: MATHEMATICS ---
   {
     id: 'note-math-11-1-detailed',
     chapterId: 'math-11-1',
@@ -1112,6 +1234,93 @@ export const notes: Note[] = [
       <p>Form Handling: <code>$_GET</code> (visible URL), <code>$_POST</code> (secure).</p>
     `
   },
+  // --- ADDITIONAL CONTENT: ENGLISH GRADE 11 ---
+  {
+    id: 'note-eng-11-lit-overview',
+    chapterId: 'eng-11-lit-ss',
+    type: 'theory',
+    title: 'Short Stories: The Selfish Giant',
+    content: `
+      <h3>Plot Summary</h3>
+      <p>A giant forbids children from playing in his garden, causing it to fall into eternal winter. One day, children sneak in, bringing spring back. The giant realizes his selfishness and befriends them, especially a small boy who turns out to be Christ figure.</p>
+      <h3>Themes</h3>
+      <p>Redemption, love, selfishness vs. generosity, and the nature of paradise.</p>
+    `
+  },
+  {
+    id: 'note-eng-11-grammar-tense',
+    chapterId: 'eng-11-1',
+    type: 'theory',
+    title: 'Grammar: Tense & Aspect',
+    content: `
+      <h3>Present Tense</h3>
+      <p><strong>Simple:</strong> General truths (Water boils at 100°C).</p>
+      <p><strong>Continuous:</strong> Happening now (I am writing).</p>
+      <p><strong>Perfect:</strong> Completed recently (I have eaten).</p>
+      <h3>Past Tense</h3>
+      <p><strong>Simple:</strong> Completed action (He left yesterday).</p>
+      <p><strong>Continuous:</strong> Ongoing in past (He was sleeping).</p>
+    `
+  },
+  // --- ADDITIONAL CONTENT: NEPALI GRADE 11 ---
+  {
+    id: 'note-nep-11-bir-purkha',
+    chapterId: 'nep-11-1',
+    type: 'theory',
+    title: 'वीर पुर्खा (कविता) - सारांश',
+    content: `
+      <h3>मूल भाव</h3>
+      <p>यस कवितामा कविले नेपाली वीर पुर्खाहरूको वीरता, साहस र बलिदानको गाथा गाएका छन्। नेपालको सिमाना पूर्वमा टिस्टा र पश्चिममा काँगडासम्म पुर्याउने पुर्खाहरूको योगदानलाई सम्मान गरिएको छ।</p>
+      <h3>मुख्य बुँदाहरू</h3>
+      <ul>
+        <li>नेपालीहरूको वीरता र स्वाभिमान।</li>
+        <li>प्राकृतिक कठिनाइहरू (पहाड, नदी) छिचोल्दै अघि बढ्ने साहस।</li>
+        <li>इतिहासको गौरवमय क्षणहरूको स्मरण।</li>
+      </ul>
+    `
+  },
+  {
+    id: 'note-nep-11-gauko-maya',
+    chapterId: 'nep-11-2',
+    type: 'theory',
+    title: 'गाउँको माया (कथा) - समीक्षा',
+    content: `
+      <h3>कथाको सार</h3>
+      <p>यो एक सामाजिक कथा हो जसले वैदेशिक रोजगारी र शहर पस्ने प्रवृत्तिका कारण गाउँहरू रित्तिँदै गएको यथार्थ चित्रण गर्छ। गाउँको अर्गानिक जीवनशैली, आत्मीयता र प्रकृतिप्रेमलाई मुख्य विषय बनाइएको छ।</p>
+      <h3>सन्देश</h3>
+      <p>गाउँको विकास र संरक्षण गर्नुपर्ने आवश्यकता। आफ्नो माटो र संस्कृतिप्रतिको प्रेम।</p>
+    `
+  },
+  // --- ADDITIONAL CONTENT: ENGLISH GRADE 12 ---
+  {
+    id: 'note-eng-12-lit-neighbours',
+    chapterId: 'eng-12-full',
+    type: 'theory',
+    title: 'Story: Neighbours (Tim Winton)',
+    content: `
+      <h3>Summary</h3>
+      <p>A young couple moves into a multicultural suburb. Initially prejudiced against their European neighbors, they gradually learn to appreciate the community's warmth and support, especially after the birth of their child.</p>
+      <h3>Themes</h3>
+      <p>Multiculturalism, transition, prejudice vs. acceptance, and community bonding.</p>
+    `
+  },
+  // --- ADDITIONAL CONTENT: NEPALI GRADE 12 ---
+  {
+    id: 'note-nep-12-aama-sapana',
+    chapterId: 'nep-12-1',
+    type: 'theory',
+    title: 'आमाको सपना (कविता) - विश्लेषण',
+    content: `
+      <h3>कवि: गोपालप्रसाद रिमाल</h3>
+      <p>यस कवितामा आमा (नेपाल आमा) ले आफ्नो छोरा (नेपाली जनता) सँग क्रान्ति र परिवर्तनको सपना देखेको कुरा व्यक्त गरिएको छ। अन्धकार हटेर सुनौलो बिहानी आउने विश्वास प्रकट गरिएको छ।</p>
+      <h3>प्रतीकहरू</h3>
+      <ul>
+        <li><strong>आमा:</strong> नेपाल राष्ट्र।</li>
+        <li><strong>छोरा:</strong> परिवर्तनकारी युवा/जनता।</li>
+        <li><strong>सपना:</strong> प्रजातन्त्र र स्वतन्त्रताको प्राप्ति।</li>
+      </ul>
+    `
+  },
   // --- ENRICHED CONTENT: MATHEMATICS ---
   {
     id: 'note-math-11-calc-detailed',
@@ -1487,8 +1696,8 @@ export const pastPapers: PastPaper[] = [
     chapterId: 'phy-12-1',
     year: 2078,
     title: 'NEB Grade 12 Physics Board Exam 2078',
-    pdfUrl: 'https://readersnepal.com/neb-class-12-all-subjects-board-exam-questions-2078',
-    hasSolutions: false,
+    pdfUrl: 'https://sajhanotes.com/neb-grade-12-paper/neb-grade-12-physics-model-question-paper/',
+    hasSolutions: true,
   },
   {
     id: 'pp-chem-2078-12',
@@ -1496,8 +1705,8 @@ export const pastPapers: PastPaper[] = [
     chapterId: 'chem-12-1',
     year: 2078,
     title: 'NEB Grade 12 Chemistry Board Exam 2078',
-    pdfUrl: 'https://readersnepal.com/neb-class-12-all-subjects-board-exam-questions-2078',
-    hasSolutions: false,
+    pdfUrl: 'https://sajhanotes.com/neb-grade-12-paper/neb-grade-12-chemistry-model-question-paper/',
+    hasSolutions: true,
   },
   {
     id: 'pp-cs-2078-12',
@@ -1505,7 +1714,7 @@ export const pastPapers: PastPaper[] = [
     chapterId: 'cs-12-1',
     year: 2078,
     title: 'NEB Grade 12 Computer Science Board Exam 2078',
-    pdfUrl: 'https://readersnepal.com/neb-class-12-all-subjects-board-exam-questions-2078',
+    pdfUrl: 'https://www.educatenepal.com/news/detail/neb-class-12-exam-questions-2080-2081-2024-all-subjects',
     hasSolutions: false,
   },
   {
@@ -1514,8 +1723,8 @@ export const pastPapers: PastPaper[] = [
     chapterId: 'math-12-2',
     year: 2078,
     title: 'NEB Grade 12 Mathematics Board Exam 2078',
-    pdfUrl: 'https://readersnepal.com/neb-class-12-all-subjects-board-exam-questions-2078',
-    hasSolutions: false,
+    pdfUrl: 'https://sajhanotes.com/neb-grade-12-paper/neb-grade-12-math-model-paper-solution/',
+    hasSolutions: true,
   },
   {
     id: 'pp-bio-2078-12',
@@ -1523,8 +1732,8 @@ export const pastPapers: PastPaper[] = [
     chapterId: 'bio-12-1',
     year: 2078,
     title: 'NEB Grade 12 Biology Board Exam 2078',
-    pdfUrl: 'https://readersnepal.com/neb-class-12-all-subjects-board-exam-questions-2078',
-    hasSolutions: false,
+    pdfUrl: 'https://sajhanotes.com/neb-grade-12-paper/neb-grade-12-biology-model-question-paper/',
+    hasSolutions: true,
   },
   {
     id: 'pp-nep-2078-12',
@@ -1589,6 +1798,51 @@ export const pastPapers: PastPaper[] = [
     pdfUrl: 'https://www.educatenepal.com/news/detail/neb-class-12-exam-questions-2080-2081-2024-all-subjects',
     hasSolutions: false,
   },
+  {
+    id: 'pp-phy-2081-12',
+    subjectId: 'phy',
+    chapterId: 'phy-12-1',
+    year: 2081,
+    title: 'NEB Grade 12 Physics Board Exam 2081',
+    pdfUrl: 'https://www.educatenepal.com/news/detail/neb-class-12-exam-questions-2080-2081-2024-all-subjects',
+    hasSolutions: false,
+  },
+  {
+    id: 'pp-chem-2081-12',
+    subjectId: 'chem',
+    chapterId: 'chem-12-1',
+    year: 2081,
+    title: 'NEB Grade 12 Chemistry Board Exam 2081',
+    pdfUrl: 'https://www.educatenepal.com/news/detail/neb-class-12-exam-questions-2080-2081-2024-all-subjects',
+    hasSolutions: false,
+  },
+  {
+    id: 'pp-math-2081-12',
+    subjectId: 'math',
+    chapterId: 'math-12-2',
+    year: 2081,
+    title: 'NEB Grade 12 Mathematics Board Exam 2081',
+    pdfUrl: 'https://www.educatenepal.com/news/detail/neb-class-12-exam-questions-2080-2081-2024-all-subjects',
+    hasSolutions: false,
+  },
+  {
+    id: 'pp-bio-2081-12',
+    subjectId: 'bio',
+    chapterId: 'bio-12-1',
+    year: 2081,
+    title: 'NEB Grade 12 Biology Board Exam 2081',
+    pdfUrl: 'https://www.educatenepal.com/news/detail/neb-class-12-exam-questions-2080-2081-2024-all-subjects',
+    hasSolutions: false,
+  },
+  {
+    id: 'pp-cs-2081-12',
+    subjectId: 'cs',
+    chapterId: 'cs-12-1',
+    year: 2081,
+    title: 'NEB Grade 12 Computer Science Board Exam 2081',
+    pdfUrl: 'https://www.educatenepal.com/news/detail/neb-class-12-exam-questions-2080-2081-2024-all-subjects',
+    hasSolutions: false,
+  },
 ];
 
 export const mockTests: MockTest[] = [
@@ -1644,6 +1898,66 @@ export const mockTests: MockTest[] = [
 
 export const questions: Question[] = [
   // Physics Questions
+  {
+    id: 'q-bio-12-1',
+    testId: 'test-bio-1',
+    type: 'multiple-choice',
+    question: 'Which enzyme is responsible for DNA replication?',
+    options: ['DNA Polymerase', 'RNA Polymerase', 'Ligase', 'Helicase'],
+    correctAnswer: 'DNA Polymerase',
+    marks: 1,
+    explanation: 'DNA Polymerase adds nucleotides to the growing DNA chain.',
+  },
+  {
+    id: 'q-bio-12-2',
+    testId: 'test-bio-1',
+    type: 'multiple-choice',
+    question: 'In a DNA molecule, Adenine (A) always pairs with:',
+    options: ['Guanine', 'Cytosine', 'Thymine', 'Uracil'],
+    correctAnswer: 'Thymine',
+    marks: 1,
+    explanation: 'A pairs with T via 2 hydrogen bonds.',
+  },
+  {
+    id: 'q-bio-12-3',
+    testId: 'test-bio-1',
+    type: 'multiple-choice',
+    question: 'The process of mRNA synthesis from DNA is called:',
+    options: ['Translation', 'Transcription', 'Replication', 'Transduction'],
+    correctAnswer: 'Transcription',
+    marks: 1,
+    explanation: 'Transcription creates mRNA from DNA template.',
+  },
+  {
+    id: 'q-math-12-1',
+    testId: 'test-math-1',
+    type: 'multiple-choice',
+    question: 'The derivative of sin(x) is:',
+    options: ['cos(x)', '-cos(x)', 'tan(x)', 'sec²(x)'],
+    correctAnswer: 'cos(x)',
+    marks: 1,
+    explanation: 'd/dx(sin x) = cos x.',
+  },
+  {
+    id: 'q-math-12-2',
+    testId: 'test-math-1',
+    type: 'multiple-choice',
+    question: 'Evaluate ∫ x dx:',
+    options: ['x + C', 'x²/2 + C', '2x + C', 'ln(x) + C'],
+    correctAnswer: 'x²/2 + C',
+    marks: 1,
+    explanation: 'Power rule: ∫ x^n dx = x^(n+1)/(n+1). Here n=1.',
+  },
+  {
+    id: 'q-math-12-3',
+    testId: 'test-math-1',
+    type: 'multiple-choice',
+    question: 'If y = e^(2x), find dy/dx.',
+    options: ['e^(2x)', '2e^(2x)', 'e^x', '2x'],
+    correctAnswer: '2e^(2x)',
+    marks: 1,
+    explanation: 'Chain rule: d/dx(e^(u)) = e^u * du/dx.',
+  },
   {
     id: 'q-phy-1-1',
     testId: 'test-phy-1',
