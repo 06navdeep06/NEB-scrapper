@@ -67,6 +67,9 @@ export const chapters: Chapter[] = [
   { id: 'phy-11-3', subjectId: 'phy', number: 3, title: 'Kinematics', description: 'Motion in one and two dimensions, projectile motion.', estimatedHours: 8, grade: 11 },
   { id: 'phy-11-4', subjectId: 'phy', number: 4, title: 'Laws of Motion', description: 'Newtons laws, friction, and circular motion.', estimatedHours: 8, grade: 11 },
   { id: 'phy-11-5', subjectId: 'phy', number: 5, title: 'Work, Energy and Power', description: 'Work done by constant and variable forces, kinetic and potential energy.', estimatedHours: 7, grade: 11 },
+  { id: 'phy-11-6', subjectId: 'phy', number: 6, title: 'Heat and Thermodynamics', description: 'Heat transfer, thermal expansion, ideal gas laws, and calorimetry.', estimatedHours: 10, grade: 11 },
+  { id: 'phy-11-7', subjectId: 'phy', number: 7, title: 'Optics', description: 'Reflection, refraction, lenses, and optical instruments.', estimatedHours: 10, grade: 11 },
+  { id: 'phy-11-8', subjectId: 'phy', number: 8, title: 'Electricity and Magnetism', description: 'Electrostatics, capacitors, and DC circuits.', estimatedHours: 12, grade: 11 },
   
   // Physics - Grade 12
   { id: 'phy-12-1', subjectId: 'phy', number: 6, title: 'Wave Optics', description: 'Interference, Diffraction, Polarization of light.', estimatedHours: 10, grade: 12 },
@@ -78,7 +81,10 @@ export const chapters: Chapter[] = [
   { id: 'chem-11-2', subjectId: 'chem', number: 2, title: 'Atomic Structure', description: 'Bohr model, quantum numbers, and electronic configuration.', estimatedHours: 8, grade: 11 },
   { id: 'chem-11-3', subjectId: 'chem', number: 3, title: 'Chemical Bonding', description: 'Ionic, covalent, and coordinate bonds, VSEPR theory.', estimatedHours: 10, grade: 11 },
   { id: 'chem-11-4', subjectId: 'chem', number: 4, title: 'States of Matter', description: 'Gaseous state, liquid state, and solid state properties.', estimatedHours: 8, grade: 11 },
-
+  { id: 'chem-11-5', subjectId: 'chem', number: 5, title: 'Chemical Equilibrium', description: 'Reversible reactions, Le Chateliers principle, and equilibrium constant.', estimatedHours: 8, grade: 11 },
+  { id: 'chem-11-6', subjectId: 'chem', number: 6, title: 'Organic Chemistry I', description: 'IUPAC naming, Isomerism, Hydrocarbons (Alkanes, Alkenes, Alkynes).', estimatedHours: 12, grade: 11 },
+  { id: 'chem-11-7', subjectId: 'chem', number: 7, title: 'Applied Chemistry', description: 'Modern chemical industries and environmental chemistry.', estimatedHours: 6, grade: 11 },
+  
   // Chemistry - Grade 12
   { id: 'chem-12-1', subjectId: 'chem', number: 5, title: 'Volumetric Analysis', description: 'Titration, acid-base reactions, redox titration.', estimatedHours: 8, grade: 12 },
   { id: 'chem-12-2', subjectId: 'chem', number: 6, title: 'Organic Chemistry II', description: 'Haloalkanes, Alcohols, Phenols, Ethers.', estimatedHours: 15, grade: 12 },
@@ -86,7 +92,9 @@ export const chapters: Chapter[] = [
   // Biology - Grade 11
   { id: 'bio-11-1', subjectId: 'bio', number: 1, title: 'Cell Biology', description: 'Structure and function of cell organelles, cell division.', estimatedHours: 8, grade: 11 },
   { id: 'bio-11-2', subjectId: 'bio', number: 2, title: 'Genetics', description: 'Mendelian genetics, DNA structure, and replication.', estimatedHours: 10, grade: 11 },
-  
+  { id: 'bio-11-3', subjectId: 'bio', number: 3, title: 'Biodiversity', description: 'Five kingdom classification, Monera, Protista, Fungi, Plantae, Animalia.', estimatedHours: 12, grade: 11 },
+  { id: 'bio-11-4', subjectId: 'bio', number: 4, title: 'Biota and Environment', description: 'Ecology, ecosystem dynamics, and conservation.', estimatedHours: 8, grade: 11 },
+
   // Biology - Grade 12
   { id: 'bio-12-1', subjectId: 'bio', number: 3, title: 'Human Physiology', description: 'Digestion, respiration, circulation, and excretion systems.', estimatedHours: 15, grade: 12 },
   { id: 'bio-12-2', subjectId: 'bio', number: 4, title: 'Genetics and Evolution', description: 'Molecular basis of inheritance, Evolution theories.', estimatedHours: 12, grade: 12 },
@@ -740,6 +748,129 @@ export const notes: Note[] = [
         <li><strong>NAND</strong>: NOT of AND. Universal gate.</li>
         <li><strong>XOR</strong>: Output 1 if inputs are different.</li>
       </ul>
+    `
+  },
+  // Detailed Notes for New Physics 11 Chapters
+  {
+    id: 'note-phy-11-6-detailed',
+    chapterId: 'phy-11-6',
+    type: 'theory',
+    title: 'Heat & Thermodynamics — Detailed Notes',
+    content: `
+      <h3>Thermal Expansion</h3>
+      <p>Expansion of solids/liquids with temperature.</p>
+      <ul>
+        <li><strong>Linear</strong>: L = L<sub>0</sub>(1 + αΔT)</li>
+        <li><strong>Cubical</strong>: V = V<sub>0</sub>(1 + γΔT), where γ ≈ 3α</li>
+      </ul>
+      <h3>Ideal Gas Laws</h3>
+      <ul>
+        <li><strong>Boyle’s Law</strong>: PV = constant (at constant T)</li>
+        <li><strong>Charles’s Law</strong>: V/T = constant (at constant P)</li>
+        <li><strong>Equation</strong>: PV = nRT (R = 8.314 J/mol·K)</li>
+      </ul>
+    `
+  },
+  {
+    id: 'note-phy-11-7-detailed',
+    chapterId: 'phy-11-7',
+    type: 'theory',
+    title: 'Optics — Reflection & Refraction',
+    content: `
+      <h3>Reflection</h3>
+      <p>Mirror Formula: 1/f = 1/u + 1/v. f is focal length, u is object distance, v is image distance.</p>
+      <h3>Refraction</h3>
+      <ul>
+        <li><strong>Snell’s Law</strong>: n = sin i / sin r</li>
+        <li><strong>Lens Maker’s Formula</strong>: 1/f = (n-1)(1/R<sub>1</sub> - 1/R<sub>2</sub>)</li>
+        <li><strong>Power</strong>: P = 1/f (Diopters)</li>
+      </ul>
+    `
+  },
+  {
+    id: 'note-phy-11-8-detailed',
+    chapterId: 'phy-11-8',
+    type: 'theory',
+    title: 'Electrostatics — Detailed Notes',
+    content: `
+      <h3>Electric Field & Potential</h3>
+      <ul>
+        <li><strong>Coulomb’s Law</strong>: F = k q<sub>1</sub>q<sub>2</sub> / r²</li>
+        <li><strong>Field (E)</strong>: F/q. <strong>Potential (V)</strong>: W/q.</li>
+      </ul>
+      <h3>Capacitors</h3>
+      <p>Device to store charge. C = Q/V.</p>
+      <ul>
+        <li><strong>Parallel Plate</strong>: C = ε<sub>0</sub>A/d</li>
+        <li><strong>Energy</strong>: U = ½CV²</li>
+      </ul>
+    `
+  },
+  // Detailed Notes for New Chemistry 11 Chapters
+  {
+    id: 'note-chem-11-5-detailed',
+    chapterId: 'chem-11-5',
+    type: 'theory',
+    title: 'Chemical Equilibrium — Detailed Notes',
+    content: `
+      <h3>Equilibrium Constant</h3>
+      <p>Ratio of product concentrations to reactant concentrations.</p>
+      <ul>
+        <li><strong>Kc</strong>: [Products] / [Reactants]</li>
+        <li><strong>Kp</strong>: Partial pressures relation. Kp = Kc(RT)<sup>Δn</sup></li>
+      </ul>
+      <h3>Le Chatelier’s Principle</h3>
+      <p>System shifts to counteract changes in concentration, pressure, or temperature.</p>
+    `
+  },
+  {
+    id: 'note-chem-11-6-detailed',
+    chapterId: 'chem-11-6',
+    type: 'theory',
+    title: 'Organic Chemistry I — Basics',
+    content: `
+      <h3>IUPAC Naming</h3>
+      <p>Prefix + Root + Suffix. E.g., Ethane, Ethanol.</p>
+      <h3>Isomerism</h3>
+      <p>Same formula, different structure.</p>
+      <ul>
+        <li><strong>Structural</strong>: Chain, Position, Functional.</li>
+        <li><strong>Stereo</strong>: Cis-trans (Geometrical).</li>
+      </ul>
+      <h3>Hydrocarbons</h3>
+      <p>Alkanes (substitution), Alkenes/Alkynes (addition reactions).</p>
+    `
+  },
+  // Detailed Notes for New Biology 11 Chapters
+  {
+    id: 'note-bio-11-3-detailed',
+    chapterId: 'bio-11-3',
+    type: 'theory',
+    title: 'Biodiversity — Five Kingdom Classification',
+    content: `
+      <h3>Whittaker’s Classification (1969)</h3>
+      <ul>
+        <li><strong>Monera</strong>: Prokaryotes (Bacteria).</li>
+        <li><strong>Protista</strong>: Unicellular eukaryotes (Amoeba).</li>
+        <li><strong>Fungi</strong>: Chitin cell wall, heterotrophs (Mushroom).</li>
+        <li><strong>Plantae</strong>: Cellulose cell wall, autotrophs.</li>
+        <li><strong>Animalia</strong>: No cell wall, heterotrophs.</li>
+      </ul>
+    `
+  },
+  {
+    id: 'note-bio-11-4-detailed',
+    chapterId: 'bio-11-4',
+    type: 'theory',
+    title: 'Ecology — Basics',
+    content: `
+      <h3>Ecosystem Components</h3>
+      <ul>
+        <li><strong>Biotic</strong>: Producers, Consumers, Decomposers.</li>
+        <li><strong>Abiotic</strong>: Light, Soil, Water, Temperature.</li>
+      </ul>
+      <h3>Trophic Levels</h3>
+      <p>Flow of energy: Producer → Primary Consumer → Secondary Consumer.</p>
     `
   },
 ];
