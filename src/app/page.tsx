@@ -32,7 +32,7 @@ export default function Home() {
     <div className="flex flex-col min-h-screen">
       <section className="relative py-28 px-4 sm:px-6 lg:px-8 overflow-hidden">
         <div className="absolute inset-0 -z-10">
-          <div className="h-72 bg-gradient-to-r from-indigo-500/20 via-fuchsia-500/20 to-emerald-500/20 blur-3xl" />
+          <div className="h-72 bg-gradient-to-r from-blue-600/20 via-violet-600/20 to-rose-600/20 blur-3xl" />
           <div className="absolute inset-0 bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900" />
         </div>
         <div className="max-w-7xl mx-auto text-center">
