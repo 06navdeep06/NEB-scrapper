@@ -12,6 +12,8 @@ export default function Footer() {
             <p className="mt-4 text-slate-500 text-sm leading-relaxed max-w-sm dark:text-slate-400">
               A comprehensive study platform for NEB +2 Science students. 
               Get access to notes, past papers, mock tests, and more.
+              <br/><br/>
+              Data sourced from <a href="https://nebplus2notes.com/" target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">NEB Plus 2 Notes</a> and <a href="https://readersnepal.com/" target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">Readersnepal</a>.
             </p>
           </div>
           <div>
