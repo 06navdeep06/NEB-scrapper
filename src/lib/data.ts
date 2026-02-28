@@ -384,6 +384,178 @@ export const notes: Note[] = [
   { id: 'note-bio-12-1-1', chapterId: 'bio-12-1', type: 'theory', title: 'Human Physiology — Digest & Respire', content: '<p>Digestive organs and enzymes; respiratory mechanics and gas exchange; brief overview of circulation and excretion.</p>' },
   { id: 'note-bio-12-2-1', chapterId: 'bio-12-2', type: 'theory', title: 'Genetics & Evolution — Summary', content: '<p>Central dogma; variation and natural selection; Darwinian evolution; evidence from fossils and molecular biology.</p>' },
   { id: 'note-cs-12-3-1', chapterId: 'cs-12-3', type: 'theory', title: 'C Advanced — Pointers, Structures & Files', content: '<p>Pointers: declaration, dereferencing, pointer arithmetic; structures: definition and access; file handling: fopen/fclose, fprintf/fscanf.</p>' },
+  // Detailed Physics Grade 12 Notes
+  {
+    id: 'note-phy-12-1-detailed',
+    chapterId: 'phy-12-1',
+    type: 'theory',
+    title: 'Wave Optics — Detailed Notes',
+    content: `
+      <h3>Interference</h3>
+      <p>The superposition of two coherent light waves resulting in regions of maximum and minimum intensity.</p>
+      <ul>
+        <li><strong>Young’s Double Slit Experiment (YDSE)</strong>: Demonstrates interference.</li>
+        <li><strong>Path Difference</strong>: Δx = d sin θ ≈ dy/D</li>
+        <li><strong>Bright Fringes (Maxima)</strong>: Δx = nλ (for n = 0, 1, 2...)</li>
+        <li><strong>Dark Fringes (Minima)</strong>: Δx = (n + 0.5)λ</li>
+        <li><strong>Fringe Width (β)</strong>: β = λD/d</li>
+      </ul>
+      <h3>Diffraction</h3>
+      <p>The bending of light waves around the corners of an obstacle or through an aperture.</p>
+      <ul>
+        <li><strong>Single Slit Diffraction</strong>: Central bright maximum flanked by secondary maxima and minima.</li>
+        <li><strong>Minima Condition</strong>: a sin θ = nλ (where a is slit width).</li>
+      </ul>
+      <h3>Polarization</h3>
+      <p>Restricting light vibrations to a single plane, proving light is a transverse wave.</p>
+      <ul>
+        <li><strong>Brewster’s Law</strong>: μ = tan i<sub>p</sub></li>
+        <li><strong>Malus’s Law</strong>: I = I<sub>0</sub> cos² θ</li>
+      </ul>
+    `
+  },
+  {
+    id: 'note-phy-12-2-detailed',
+    chapterId: 'phy-12-2',
+    type: 'theory',
+    title: 'Current Electricity — Detailed Notes',
+    content: `
+      <h3>Kirchhoff’s Laws</h3>
+      <ul>
+        <li><strong>First Law (KCL)</strong>: ΣI = 0 (Conservation of Charge). Sum of currents entering a junction equals sum leaving.</li>
+        <li><strong>Second Law (KVL)</strong>: ΣΔV = 0 (Conservation of Energy). Algebraic sum of potential changes in a closed loop is zero.</li>
+      </ul>
+      <h3>Potentiometer</h3>
+      <p>A device to measure EMF and internal resistance without drawing current.</p>
+      <ul>
+        <li><strong>Comparing EMFs</strong>: E<sub>1</sub>/E<sub>2</sub> = l<sub>1</sub>/l<sub>2</sub></li>
+        <li><strong>Internal Resistance (r)</strong>: r = R((l<sub>1</sub>/l<sub>2</sub>) - 1)</li>
+      </ul>
+    `
+  },
+  {
+    id: 'note-phy-12-3-detailed',
+    chapterId: 'phy-12-3',
+    type: 'theory',
+    title: 'Modern Physics — Detailed Notes',
+    content: `
+      <h3>Photoelectric Effect</h3>
+      <p>Emission of electrons when light hits a metal surface.</p>
+      <ul>
+        <li><strong>Einstein’s Equation</strong>: hν = Φ + K<sub>max</sub></li>
+        <li><strong>Stopping Potential</strong>: K<sub>max</sub> = eV<sub>s</sub></li>
+      </ul>
+      <h3>Bohr’s Atomic Model</h3>
+      <ul>
+        <li><strong>Quantized Angular Momentum</strong>: L = nh/2π</li>
+        <li><strong>Energy Levels</strong>: E<sub>n</sub> = -13.6/n² eV (for Hydrogen)</li>
+      </ul>
+    `
+  },
+  // Detailed Chemistry Grade 12 Notes
+  {
+    id: 'note-chem-12-1-detailed',
+    chapterId: 'chem-12-1',
+    type: 'theory',
+    title: 'Volumetric Analysis — Detailed Notes',
+    content: `
+      <h3>Titration Types</h3>
+      <ul>
+        <li><strong>Acid-Base</strong>: Neutralization (Indicators: Phenolphthalein, Methyl Orange).</li>
+        <li><strong>Redox</strong>: Electron transfer (e.g., KMnO<sub>4</sub> acting as self-indicator).</li>
+      </ul>
+      <h3>Concentration Units</h3>
+      <ul>
+        <li><strong>Normality (N)</strong>: Gram equivalent weight per liter.</li>
+        <li><strong>Molarity (M)</strong>: Moles per liter.</li>
+        <li><strong>Principle of Volumetry</strong>: N<sub>1</sub>V<sub>1</sub> = N<sub>2</sub>V<sub>2</sub></li>
+      </ul>
+    `
+  },
+  {
+    id: 'note-chem-12-2-detailed',
+    chapterId: 'chem-12-2',
+    type: 'theory',
+    title: 'Organic Chemistry II — Reaction Mechanisms',
+    content: `
+      <h3>Nucleophilic Substitution</h3>
+      <ul>
+        <li><strong>S<sub>N</sub>1</strong>: Unimolecular, two-step, carbocation intermediate, racemization. Favored by tertiary halides.</li>
+        <li><strong>S<sub>N</sub>2</strong>: Bimolecular, one-step, transition state, Walden inversion. Favored by primary halides.</li>
+      </ul>
+      <h3>Key Reactions</h3>
+      <ul>
+        <li><strong>Williamson Synthesis</strong>: R-X + R'-ONa → R-O-R' + NaX (Ether formation).</li>
+        <li><strong>Esterification</strong>: Alcohol + Carboxylic Acid → Ester + Water.</li>
+        <li><strong>Aldol Condensation</strong>: Aldehydes/Ketones with α-hydrogen condense with dilute alkali.</li>
+      </ul>
+    `
+  },
+  // Detailed CS Grade 12 Notes
+  {
+    id: 'note-cs-12-2-detailed',
+    chapterId: 'cs-12-2',
+    type: 'theory',
+    title: 'Web Technology II — PHP & JavaScript',
+    content: `
+      <h3>JavaScript Form Validation</h3>
+      <p>Client-side validation to ensure data integrity before submission.</p>
+      <ul>
+        <li><strong>Accessing Elements</strong>: document.getElementById('id').value</li>
+        <li><strong>Common Checks</strong>: Empty fields, email format, password length.</li>
+        <li><strong>Events</strong>: onsubmit, onclick, onchange.</li>
+      </ul>
+      <h3>PHP & MySQL</h3>
+      <p>Server-side scripting for dynamic sites.</p>
+      <ul>
+        <li><strong>Connection</strong>: mysqli_connect('localhost', 'user', 'pass', 'db')</li>
+        <li><strong>Insert Data</strong>: INSERT INTO table (col1, col2) VALUES ('val1', 'val2')</li>
+      </ul>
+    `
+  },
+  {
+    id: 'note-cs-12-3-detailed',
+    chapterId: 'cs-12-3',
+    type: 'theory',
+    title: 'C Advanced — File Handling',
+    content: `
+      <h3>File Operations</h3>
+      <ul>
+        <li><strong>Opening</strong>: FILE *fp = fopen("filename.txt", "mode"); (Modes: "r", "w", "a")</li>
+        <li><strong>Writing</strong>: fprintf(fp, "format", vars);</li>
+        <li><strong>Reading</strong>: fscanf(fp, "format", &vars);</li>
+        <li><strong>Closing</strong>: fclose(fp);</li>
+      </ul>
+      <h3>Pointers & Structures</h3>
+      <ul>
+        <li><strong>Pointer</strong>: Variable storing memory address (*p).</li>
+        <li><strong>Structure</strong>: User-defined data type grouping different variables (struct).</li>
+      </ul>
+    `
+  },
+  // Detailed Math Grade 12 Notes
+  {
+    id: 'note-math-12-2-detailed',
+    chapterId: 'math-12-2',
+    type: 'theory',
+    title: 'Integrals — Detailed Notes',
+    content: `
+      <h3>Indefinite Integrals</h3>
+      <p>Antiderivatives of functions. Standard forms:</p>
+      <ul>
+        <li>∫ x<sup>n</sup> dx = x<sup>n+1</sup>/(n+1) + C</li>
+        <li>∫ e<sup>x</sup> dx = e<sup>x</sup> + C</li>
+        <li>∫ (1/x) dx = ln|x| + C</li>
+      </ul>
+      <h3>Techniques</h3>
+      <ul>
+        <li><strong>Substitution</strong>: Let u = g(x), du = g'(x)dx.</li>
+        <li><strong>Integration by Parts</strong>: ∫ u dv = uv - ∫ v du.</li>
+      </ul>
+      <h3>Definite Integrals & Area</h3>
+      <p>Area under curve y = f(x) from a to b is ∫<sub>a</sub><sup>b</sup> f(x) dx.</p>
+    `
+  },
 ];
 
 export const pastPapers: PastPaper[] = [
