@@ -1167,6 +1167,281 @@ export const notes: Note[] = [
       <p>3. Law of Independent Assortment.</p>
     `
   },
+  // --- ADDITIONAL CONTENT: PHYSICS GRADE 11 ---
+  {
+    id: 'note-phy-11-electrostatics-detailed',
+    chapterId: 'phy-11-8',
+    type: 'theory',
+    title: 'Electrostatics — Gauss Law & Potential',
+    content: `
+      <h3>Gauss's Law</h3>
+      <p>Total flux Φ through a closed surface is q/ε₀. Φ = ∮ E·dA = q/ε₀.</p>
+      <h3>Applications</h3>
+      <ul>
+        <li><strong>Line Charge:</strong> E = λ / (2πε₀r)</li>
+        <li><strong>Sheet Charge:</strong> E = σ / (2ε₀)</li>
+        <li><strong>Spherical Shell:</strong> E = 0 (inside), E = kQ/r² (outside)</li>
+      </ul>
+      <h3>Electric Potential</h3>
+      <p>Work done to move unit positive charge. V = kQ/r. Equipotential surfaces are perpendicular to E-field lines.</p>
+    `
+  },
+  {
+    id: 'note-phy-11-waves-detailed',
+    chapterId: 'phy-11-7', 
+    type: 'theory',
+    title: 'Waves & Sound — Doppler Effect',
+    content: `
+      <h3>Doppler Effect</h3>
+      <p>Apparent change in frequency due to relative motion.</p>
+      <p>f' = f (v ± v₀) / (v ∓ vₛ)</p>
+      <ul>
+        <li>Observer towards source: (+) numerator.</li>
+        <li>Source towards observer: (-) denominator.</li>
+      </ul>
+      <h3>Stationary Waves</h3>
+      <p>Formed by superposition of two identical waves traveling in opposite directions. Nodes (zero amplitude), Antinodes (max amplitude).</p>
+      <p>Open Pipe: f = nv/2L (All harmonics). Closed Pipe: f = nv/4L (Odd harmonics only).</p>
+    `
+  },
+  // --- ADDITIONAL CONTENT: PHYSICS GRADE 12 ---
+  {
+    id: 'note-phy-12-current-detailed',
+    chapterId: 'phy-12-2',
+    type: 'theory',
+    title: 'Current Electricity — Circuits',
+    content: `
+      <h3>Kirchhoff's Laws</h3>
+      <ul>
+        <li><strong>KCL (Junction Rule):</strong> ΣI = 0 (Conservation of Charge).</li>
+        <li><strong>KVL (Loop Rule):</strong> ΣΔV = 0 (Conservation of Energy).</li>
+      </ul>
+      <h3>Potentiometer</h3>
+      <p>Measures EMF accurately (no current drawn). Principle: V ∝ l.</p>
+      <p>Comparison of EMFs: E₁/E₂ = l₁/l₂. Internal Resistance: r = R(l₁/l₂ - 1).</p>
+      <h3>Wheatstone Bridge</h3>
+      <p>Balanced condition: P/Q = R/S. No current flows through galvanometer.</p>
+    `
+  },
+  {
+    id: 'note-phy-12-mag-detailed',
+    chapterId: 'phy-12-6',
+    type: 'theory',
+    title: 'Magnetic Effects — Biot-Savart & Ampere',
+    content: `
+      <h3>Biot-Savart Law</h3>
+      <p>dB = (μ₀/4π) (I dl sinθ / r²).</p>
+      <p><strong>Straight Wire:</strong> B = μ₀I / 2πr (Infinite length).</p>
+      <p><strong>Circular Loop (Center):</strong> B = μ₀I / 2R.</p>
+      <h3>Ampere's Circuital Law</h3>
+      <p>∮ B·dl = μ₀ I_enclosed. Used for Solenoid (B = μ₀nI) and Toroid.</p>
+      <h3>Force on Conductor</h3>
+      <p>F = I(L × B) = BIL sinθ. Force between parallel wires: F/L = μ₀I₁I₂ / 2πd.</p>
+    `
+  },
+  {
+    id: 'note-phy-12-ac-detailed',
+    chapterId: 'phy-12-2',
+    type: 'theory',
+    title: 'Alternating Current (AC)',
+    content: `
+      <h3>LCR Series Circuit</h3>
+      <p>Impedance Z = √[R² + (X_L - X_C)²]. Phase φ = tan⁻¹((X_L - X_C)/R).</p>
+      <p><strong>Resonance:</strong> X_L = X_C ⇒ f = 1 / (2π√LC). Z is minimum (R), Current is maximum.</p>
+      <p><strong>Power:</strong> P = V_rms I_rms cosφ (cosφ = Power Factor = R/Z).</p>
+    `
+  },
+  // --- ADDITIONAL CONTENT: CHEMISTRY GRADE 11 ---
+  {
+    id: 'note-chem-11-states-detailed',
+    chapterId: 'chem-11-4',
+    type: 'theory',
+    title: 'States of Matter — Real Gases',
+    content: `
+      <h3>Ideal vs Real Gases</h3>
+      <p>Ideal gases follow PV=nRT at all conditions. Real gases deviate at high P and low T.</p>
+      <h3>Van der Waals Equation</h3>
+      <p>(P + an²/V²)(V - nb) = nRT</p>
+      <ul>
+        <li><strong>a:</strong> Intermolecular attraction correction.</li>
+        <li><strong>b:</strong> Volume correction (excluded volume).</li>
+      </ul>
+      <h3>Dalton's Law</h3>
+      <p>Total Pressure P_total = P₁ + P₂ + ... + Pₙ (Partial pressures).</p>
+    `
+  },
+  {
+    id: 'note-chem-11-ionic-detailed',
+    chapterId: 'chem-11-5',
+    type: 'theory',
+    title: 'Ionic Equilibrium — pH & Buffers',
+    content: `
+      <h3>Ostwald's Dilution Law</h3>
+      <p>Degree of dissociation α = √(Ka/C) for weak electrolytes.</p>
+      <h3>pH Concept</h3>
+      <p>pH = -log[H⁺]. pH + pOH = 14.</p>
+      <h3>Buffer Solutions</h3>
+      <p>Resist pH change. Henderson-Hasselbalch Eq:</p>
+      <p>Acidic Buffer: pH = pKa + log([Salt]/[Acid]).</p>
+      <p>Basic Buffer: pOH = pKb + log([Salt]/[Base]).</p>
+    `
+  },
+  // --- ADDITIONAL CONTENT: CHEMISTRY GRADE 12 ---
+  {
+    id: 'note-chem-12-heavy-detailed',
+    chapterId: 'chem-12-4',
+    type: 'theory',
+    title: 'Heavy Metals — Extraction',
+    content: `
+      <h3>Iron (Fe) — Hematite</h3>
+      <p><strong>Blast Furnace:</strong> Reduction by CO.</p>
+      <ul>
+        <li>Zone of Reduction: Fe₂O₃ + CO → Fe.</li>
+        <li>Zone of Fusion: Limestone (Flux) + Silica (Impurity) → Slag (CaSiO₃).</li>
+      </ul>
+      <h3>Copper (Cu) — Copper Pyrites</h3>
+      <p><strong>Process:</strong> Froth Flotation → Roasting → Smelting (Matte: Cu₂S + FeS) → Bessemerization (Blister Copper) → Refining.</p>
+      <h3>Zinc (Zn) — Zinc Blende</h3>
+      <p>Roasting (ZnO) → Carbon Reduction (Vertical Retort Process).</p>
+    `
+  },
+  {
+    id: 'note-chem-12-trans-detailed',
+    chapterId: 'chem-12-3',
+    type: 'theory',
+    title: 'Transition Metals (d-block)',
+    content: `
+      <h3>General Properties</h3>
+      <ul>
+        <li><strong>Variable Oxidation States:</strong> ns and (n-1)d electrons participate.</li>
+        <li><strong>Color:</strong> d-d transition of unpaired electrons.</li>
+        <li><strong>Magnetic Properties:</strong> Paramagnetic due to unpaired electrons. Magnetic Moment μ = √[n(n+2)] BM.</li>
+        <li><strong>Complex Formation:</strong> Small size, high charge, vacant d-orbitals.</li>
+      </ul>
+      <h3>Lanthanide Contraction</h3>
+      <p>Poor shielding by 4f electrons causes atomic size to decrease steadily, making Zr/Hf similar.</p>
+    `
+  },
+  // --- ADDITIONAL CONTENT: BIOLOGY GRADE 11 ---
+  {
+    id: 'note-bio-11-botany-families',
+    chapterId: 'bio-11-3',
+    type: 'theory',
+    title: 'Botany — Angiosperm Families',
+    content: `
+      <h3>Cruciferae (Brassicaceae)</h3>
+      <p>Mustard Family. Flower: Tetramerous, Cruciform corolla. Stamens: Tetradynamous (2+4). Fruit: Siliqua.</p>
+      <p>Floral Formula: ⊕ ⚥ K2+2 C4 A2+4 G(2).</p>
+      <h3>Solanaceae</h3>
+      <p>Potato Family. Flower: Pentamerous. Anthers: Epipetalous. Ovary: Obliquely placed, swollen placenta.</p>
+      <p>Floral Formula: ⊕ ⚥ K(5) C(5) A5 G(2).</p>
+      <h3>Leguminosae (Papilionaceae)</h3>
+      <p>Pea Family. Corolla: Papilionaceous (Vexillary aestivation - Standard, Wings, Keel). Stamens: Diadelphous (9)+1.</p>
+      <p>Floral Formula: % ⚥ K(5) C1+2+(2) A(9)+1 G1.</p>
+    `
+  },
+  // --- ADDITIONAL CONTENT: BIOLOGY GRADE 12 ---
+  {
+    id: 'note-bio-12-nervous-detailed',
+    chapterId: 'bio-12-1',
+    type: 'theory',
+    title: 'Nervous System — Synapse & Reflex',
+    content: `
+      <h3>Synaptic Transmission</h3>
+      <p>Electrical signal → Ca²⁺ influx → Neurotransmitter release (Acetylcholine) → Binds to receptors → Na⁺ influx → Depolarization.</p>
+      <h3>Reflex Arc</h3>
+      <p>Receptor → Sensory Neuron → CNS (Interneuron) → Motor Neuron → Effector (Muscle). Involuntary and rapid.</p>
+    `
+  },
+  {
+    id: 'note-bio-12-endo-detailed',
+    chapterId: 'bio-12-1',
+    type: 'theory',
+    title: 'Endocrine System — Hormones',
+    content: `
+      <h3>Pituitary Gland (Master Gland)</h3>
+      <ul>
+        <li><strong>Anterior:</strong> GH (Growth), TSH, ACTH, FSH/LH (Gonads), Prolactin.</li>
+        <li><strong>Posterior:</strong> ADH (Water balance), Oxytocin (Birth/Milk).</li>
+      </ul>
+      <h3>Other Glands</h3>
+      <ul>
+        <li><strong>Thyroid:</strong> Thyroxine (T3/T4) - Metabolism.</li>
+        <li><strong>Pancreas:</strong> Insulin (Beta cells - lowers glucose), Glucagon (Alpha cells - raises glucose).</li>
+        <li><strong>Adrenal:</strong> Adrenaline (Flight/Fight), Cortisol (Stress).</li>
+      </ul>
+    `
+  },
+  {
+    id: 'note-bio-12-applied-detailed',
+    chapterId: 'bio-12-4',
+    type: 'theory',
+    title: 'Applied Biology — Biotech',
+    content: `
+      <h3>Tissue Culture</h3>
+      <p>Growing cells in sterile medium (nutrient agar). Totipotency: Ability of a cell to generate whole plant.</p>
+      <p>Steps: Explant → Callus → Organogenesis → Plantlet → Hardening.</p>
+      <h3>Recombinant DNA Technology</h3>
+      <p>1. Isolation of DNA. 2. Cutting with Restriction Endonucleases (Molecular Scissors). 3. Ligation (DNA Ligase) into Vector (Plasmid). 4. Transformation into Host (E. coli). 5. Selection & Culture.</p>
+    `
+  },
+  // --- ADDITIONAL CONTENT: COMPUTER SCIENCE GRADE 11 ---
+  {
+    id: 'note-cs-11-num-detailed',
+    chapterId: 'cs-11-1',
+    type: 'theory',
+    title: 'Number Systems & Boolean Algebra',
+    content: `
+      <h3>Conversions</h3>
+      <ul>
+        <li><strong>Binary to Decimal:</strong> Sum of digit × 2ⁿ.</li>
+        <li><strong>Decimal to Binary:</strong> Repeated division by 2.</li>
+        <li><strong>Hexadecimal:</strong> Base 16 (0-9, A-F). 1 Hex digit = 4 Binary bits.</li>
+      </ul>
+      <h3>Logic Gates</h3>
+      <ul>
+        <li><strong>Universal Gates:</strong> NAND, NOR (Can implement any Boolean function).</li>
+        <li><strong>XOR:</strong> Output 1 if inputs are different.</li>
+      </ul>
+      <h3>Boolean Laws</h3>
+      <p>De Morgan's: (A+B)' = A'.B' and (A.B)' = A' + B'.</p>
+    `
+  },
+  // --- ADDITIONAL CONTENT: COMPUTER SCIENCE GRADE 12 ---
+  {
+    id: 'note-cs-12-net-detailed',
+    chapterId: 'cs-12-4',
+    type: 'theory',
+    title: 'Networking — OSI Model',
+    content: `
+      <h3>OSI Reference Model (7 Layers)</h3>
+      <ol>
+        <li><strong>Physical:</strong> Bits, Cables, Hubs.</li>
+        <li><strong>Data Link:</strong> Frames, MAC Address, Switch.</li>
+        <li><strong>Network:</strong> Packets, IP Address, Router.</li>
+        <li><strong>Transport:</strong> Segments, TCP/UDP (Reliability).</li>
+        <li><strong>Session:</strong> Session management.</li>
+        <li><strong>Presentation:</strong> Encryption, Compression.</li>
+        <li><strong>Application:</strong> HTTP, FTP, SMTP (User Interface).</li>
+      </ol>
+      <h3>Topologies</h3>
+      <p>Star (Central hub), Bus (Single cable), Ring, Mesh (Full connection).</p>
+    `
+  },
+  {
+    id: 'note-cs-12-c-struct-detailed',
+    chapterId: 'cs-12-3',
+    type: 'theory',
+    title: 'C Programming — Struct vs Union',
+    content: `
+      <h3>Structure (struct)</h3>
+      <p>Allocates memory for ALL members. Size = Sum of members (plus padding).</p>
+      <p><code>struct Point { int x; int y; };</code></p>
+      <h3>Union</h3>
+      <p>Allocates memory for LARGEST member only. Shared memory space.</p>
+      <p>Useful for memory saving when only one member is used at a time.</p>
+    `
+  },
 ];
 
 export const pastPapers: PastPaper[] = [
