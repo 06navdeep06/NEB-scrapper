@@ -8,7 +8,7 @@ export const subjects: Subject[] = [
     slug: 'physics',
     icon: 'atom',
     description: 'Mechanics, Thermodynamics, Electricity & Magnetism, and Modern Physics.',
-    totalChapters: 24,
+    totalChapters: 11,
   },
   {
     id: 'chem',
@@ -16,7 +16,7 @@ export const subjects: Subject[] = [
     slug: 'chemistry',
     icon: 'flask',
     description: 'Physical, Organic, and Inorganic Chemistry concepts and reactions.',
-    totalChapters: 20,
+    totalChapters: 9,
   },
   {
     id: 'bio',
@@ -24,7 +24,7 @@ export const subjects: Subject[] = [
     slug: 'biology',
     icon: 'microscope',
     description: 'Botany and Zoology: Cell biology, Genetics, Ecology, and Human Physiology.',
-    totalChapters: 18,
+    totalChapters: 6,
   },
   {
     id: 'math',
@@ -32,7 +32,7 @@ export const subjects: Subject[] = [
     slug: 'mathematics',
     icon: 'calculator',
     description: 'Calculus, Algebra, Coordinate Geometry, and Vectors.',
-    totalChapters: 15,
+    totalChapters: 8,
   },
   {
     id: 'cs',
@@ -40,7 +40,7 @@ export const subjects: Subject[] = [
     slug: 'computer-science',
     icon: 'monitor',
     description: 'C Programming, Web Technology (HTML/CSS), Database (SQL), and Python.',
-    totalChapters: 12,
+    totalChapters: 8,
   },
   {
     id: 'eng',
@@ -75,6 +75,9 @@ export const chapters: Chapter[] = [
   { id: 'phy-12-1', subjectId: 'phy', number: 6, title: 'Wave Optics', description: 'Interference, Diffraction, Polarization of light.', estimatedHours: 10, grade: 12 },
   { id: 'phy-12-2', subjectId: 'phy', number: 7, title: 'Current Electricity', description: 'Ohm’s law, Kirchhoff’s laws, Potentiometer.', estimatedHours: 12, grade: 12 },
   { id: 'phy-12-3', subjectId: 'phy', number: 8, title: 'Modern Physics', description: 'Photoelectric effect, Bohr’s model, X-rays.', estimatedHours: 10, grade: 12 },
+  { id: 'phy-12-4', subjectId: 'phy', number: 9, title: 'Mechanics (Rotational & Fluids)', description: 'Rotational dynamics, SHM, fluid statics, viscosity, surface tension.', estimatedHours: 12, grade: 12 },
+  { id: 'phy-12-5', subjectId: 'phy', number: 10, title: 'Thermodynamics', description: 'First and Second laws, heat engines, entropy.', estimatedHours: 8, grade: 12 },
+  { id: 'phy-12-6', subjectId: 'phy', number: 11, title: 'Magnetic Effects of Current', description: 'Biot-Savart law, Ampere’s law, moving charges.', estimatedHours: 10, grade: 12 },
 
   // Chemistry - Grade 11
   { id: 'chem-11-1', subjectId: 'chem', number: 1, title: 'Stoichiometry', description: 'Mole concept, chemical equations, and calculations.', estimatedHours: 6, grade: 11 },
@@ -88,6 +91,9 @@ export const chapters: Chapter[] = [
   // Chemistry - Grade 12
   { id: 'chem-12-1', subjectId: 'chem', number: 5, title: 'Volumetric Analysis', description: 'Titration, acid-base reactions, redox titration.', estimatedHours: 8, grade: 12 },
   { id: 'chem-12-2', subjectId: 'chem', number: 6, title: 'Organic Chemistry II', description: 'Haloalkanes, Alcohols, Phenols, Ethers.', estimatedHours: 15, grade: 12 },
+  { id: 'chem-12-3', subjectId: 'chem', number: 7, title: 'Transition Metals', description: 'Properties of d-block elements, coordination compounds.', estimatedHours: 8, grade: 12 },
+  { id: 'chem-12-4', subjectId: 'chem', number: 8, title: 'Heavy Metals', description: 'Extraction and properties of Fe, Cu, Zn, Hg, Ag.', estimatedHours: 10, grade: 12 },
+  { id: 'chem-12-5', subjectId: 'chem', number: 9, title: 'Biochemistry', description: 'Carbohydrates, proteins, lipids, nucleic acids.', estimatedHours: 6, grade: 12 },
 
   // Biology - Grade 11
   { id: 'bio-11-1', subjectId: 'bio', number: 1, title: 'Cell Biology', description: 'Structure and function of cell organelles, cell division.', estimatedHours: 8, grade: 11 },
@@ -98,6 +104,8 @@ export const chapters: Chapter[] = [
   // Biology - Grade 12
   { id: 'bio-12-1', subjectId: 'bio', number: 3, title: 'Human Physiology', description: 'Digestion, respiration, circulation, and excretion systems.', estimatedHours: 15, grade: 12 },
   { id: 'bio-12-2', subjectId: 'bio', number: 4, title: 'Genetics and Evolution', description: 'Molecular basis of inheritance, Evolution theories.', estimatedHours: 12, grade: 12 },
+  { id: 'bio-12-3', subjectId: 'bio', number: 5, title: 'Plant Physiology', description: 'Water relations, photosynthesis, respiration, hormones.', estimatedHours: 10, grade: 12 },
+  { id: 'bio-12-4', subjectId: 'bio', number: 6, title: 'Applied Biology', description: 'Biotechnology, tissue culture, and economic biology.', estimatedHours: 8, grade: 12 },
 
   // Math - Grade 11
   { id: 'math-11-1', subjectId: 'math', number: 1, title: 'Sequence and Series', description: 'AP, GP, HP, and special series.', estimatedHours: 6, grade: 11 },
@@ -107,6 +115,9 @@ export const chapters: Chapter[] = [
   // Math - Grade 12
   { id: 'math-12-1', subjectId: 'math', number: 4, title: 'Permutation and Combination', description: 'Counting principles, binomial theorem.', estimatedHours: 8, grade: 12 },
   { id: 'math-12-2', subjectId: 'math', number: 5, title: 'Integrals', description: 'Definite and indefinite integrals, applications.', estimatedHours: 15, grade: 12 },
+  { id: 'math-12-3', subjectId: 'math', number: 6, title: 'Complex Numbers', description: 'De Moivre’s theorem, roots of unity.', estimatedHours: 6, grade: 12 },
+  { id: 'math-12-4', subjectId: 'math', number: 7, title: 'Vectors', description: 'Scalar and vector products, triple products.', estimatedHours: 8, grade: 12 },
+  { id: 'math-12-5', subjectId: 'math', number: 8, title: 'Statistics', description: 'Correlation, regression, probability.', estimatedHours: 8, grade: 12 },
 
   // CS - Grade 11
   { id: 'cs-11-1', subjectId: 'cs', number: 1, title: 'Computer System Architecture', description: 'Logic gates, boolean algebra, and CPU architecture.', estimatedHours: 6, grade: 11 },
@@ -117,6 +128,8 @@ export const chapters: Chapter[] = [
   { id: 'cs-12-1', subjectId: 'cs', number: 4, title: 'Database Management System (SQL)', description: 'DBMS concepts, normalization, and SQL queries.', estimatedHours: 10, grade: 12 },
   { id: 'cs-12-2', subjectId: 'cs', number: 5, title: 'Web Technology II', description: 'PHP, JavaScript basics.', estimatedHours: 10, grade: 12 },
   { id: 'cs-12-3', subjectId: 'cs', number: 6, title: 'Programming in C (Advanced)', description: 'Pointers, Structures, File Handling.', estimatedHours: 12, grade: 12 },
+  { id: 'cs-12-4', subjectId: 'cs', number: 7, title: 'Networking', description: 'OSI model, TCP/IP, topologies, security.', estimatedHours: 8, grade: 12 },
+  { id: 'cs-12-5', subjectId: 'cs', number: 8, title: 'Software Process Model', description: 'SDLC, Waterfall, Agile models.', estimatedHours: 6, grade: 12 },
   
   // English - Grade 11 (Language Development Units 1–20)
   { id: 'eng-11-1', subjectId: 'eng', number: 1, title: 'Education and Humanity', description: 'Language Development unit exercises and summary.', estimatedHours: 4, grade: 11 },
