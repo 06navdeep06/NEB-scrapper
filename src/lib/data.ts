@@ -556,6 +556,192 @@ export const notes: Note[] = [
       <p>Area under curve y = f(x) from a to b is ∫<sub>a</sub><sup>b</sup> f(x) dx.</p>
     `
   },
+  // Detailed Physics Grade 11 Notes
+  {
+    id: 'note-phy-11-3-detailed',
+    chapterId: 'phy-11-3',
+    type: 'theory',
+    title: 'Kinematics — Detailed Notes',
+    content: `
+      <h3>Equations of Motion</h3>
+      <p>For uniform acceleration:</p>
+      <ul>
+        <li>v = u + at</li>
+        <li>s = ut + ½at²</li>
+        <li>v² = u² + 2as</li>
+      </ul>
+      <h3>Projectile Motion</h3>
+      <p>Motion in two dimensions under gravity.</p>
+      <ul>
+        <li><strong>Time of Flight (T)</strong>: 2u sinθ / g</li>
+        <li><strong>Horizontal Range (R)</strong>: u² sin2θ / g</li>
+        <li><strong>Max Height (H)</strong>: u² sin²θ / 2g</li>
+      </ul>
+    `
+  },
+  {
+    id: 'note-phy-11-5-detailed',
+    chapterId: 'phy-11-5',
+    type: 'theory',
+    title: 'Work, Energy & Power — Detailed Notes',
+    content: `
+      <h3>Work & Energy</h3>
+      <ul>
+        <li><strong>Work (W)</strong>: F · s = Fs cosθ</li>
+        <li><strong>Kinetic Energy (KE)</strong>: ½mv²</li>
+        <li><strong>Potential Energy (PE)</strong>: mgh</li>
+      </ul>
+      <h3>Work-Energy Theorem</h3>
+      <p>Work done by all forces equals change in kinetic energy: W = ΔKE.</p>
+      <h3>Power</h3>
+      <p>Rate of doing work: P = W/t = F · v.</p>
+    `
+  },
+  // Detailed Chemistry Grade 11 Notes
+  {
+    id: 'note-chem-11-2-detailed',
+    chapterId: 'chem-11-2',
+    type: 'theory',
+    title: 'Atomic Structure — Detailed Notes',
+    content: `
+      <h3>Quantum Numbers</h3>
+      <ul>
+        <li><strong>Principal (n)</strong>: Energy shell (1, 2, 3...)</li>
+        <li><strong>Azimuthal (l)</strong>: Subshell shape (0 to n-1)</li>
+        <li><strong>Magnetic (m)</strong>: Orbital orientation (-l to +l)</li>
+        <li><strong>Spin (s)</strong>: Electron spin (+½, -½)</li>
+      </ul>
+      <h3>Rules</h3>
+      <ul>
+        <li><strong>Pauli Exclusion</strong>: No two electrons can have same 4 quantum numbers.</li>
+        <li><strong>Hund's Rule</strong>: Pairing starts only after each orbital gets one electron.</li>
+      </ul>
+    `
+  },
+  {
+    id: 'note-chem-11-3-detailed',
+    chapterId: 'chem-11-3',
+    type: 'theory',
+    title: 'Chemical Bonding — Detailed Notes',
+    content: `
+      <h3>VSEPR Theory</h3>
+      <p>Valence Shell Electron Pair Repulsion theory predicts molecular shapes.</p>
+      <ul>
+        <li><strong>Linear</strong>: sp hybridization (e.g., BeF<sub>2</sub>)</li>
+        <li><strong>Trigonal Planar</strong>: sp² hybridization (e.g., BF<sub>3</sub>)</li>
+        <li><strong>Tetrahedral</strong>: sp³ hybridization (e.g., CH<sub>4</sub>)</li>
+      </ul>
+      <h3>Hybridization</h3>
+      <p>Mixing of atomic orbitals to form new hybrid orbitals equivalent in energy.</p>
+    `
+  },
+  // Detailed Biology Grade 11 & 12 Notes
+  {
+    id: 'note-bio-11-1-detailed',
+    chapterId: 'bio-11-1',
+    type: 'theory',
+    title: 'Cell Biology — Detailed Notes',
+    content: `
+      <h3>Cell Organelles</h3>
+      <ul>
+        <li><strong>Mitochondria</strong>: Powerhouse, site of Krebs cycle and ETC.</li>
+        <li><strong>Ribosomes</strong>: Protein synthesis factories (70S in prokaryotes, 80S in eukaryotes).</li>
+        <li><strong>Golgi Body</strong>: Packaging and secretion.</li>
+      </ul>
+      <h3>Cell Division</h3>
+      <ul>
+        <li><strong>Mitosis</strong>: Equational division (2n → 2n). Prophase, Metaphase, Anaphase, Telophase.</li>
+        <li><strong>Meiosis</strong>: Reductional division (2n → n). Homologous pairing and crossing over in Prophase I.</li>
+      </ul>
+    `
+  },
+  {
+    id: 'note-bio-12-1-detailed',
+    chapterId: 'bio-12-1',
+    type: 'theory',
+    title: 'Human Physiology — Detailed Notes',
+    content: `
+      <h3>Digestion</h3>
+      <p>Breakdown of food. Enzymes: Pepsin (Stomach), Trypsin/Lipase (Pancreas). Absorption occurs in villi.</p>
+      <h3>Respiration</h3>
+      <p>Gas exchange in alveoli. O<sub>2</sub> transport: 97% as Oxyhemoglobin. CO<sub>2</sub> transport: 70% as Bicarbonate.</p>
+      <h3>Circulation</h3>
+      <p>Double circulation. Cardiac cycle (0.8s). SA Node is the pacemaker.</p>
+      <h3>Excretion</h3>
+      <p>Nephron structure. Urine formation: Ultrafiltration, Reabsorption, Secretion.</p>
+    `
+  },
+  {
+    id: 'note-bio-12-2-detailed',
+    chapterId: 'bio-12-2',
+    type: 'theory',
+    title: 'Molecular Genetics — Detailed Notes',
+    content: `
+      <h3>Central Dogma</h3>
+      <p>DNA → mRNA → Protein</p>
+      <ul>
+        <li><strong>Replication</strong>: Semiconservative. Enzymes: Helicase (unwinds), DNA Polymerase (adds bases).</li>
+        <li><strong>Transcription</strong>: DNA to mRNA. Occurs in nucleus.</li>
+        <li><strong>Translation</strong>: mRNA to Protein. Occurs in ribosomes. tRNA carries amino acids.</li>
+      </ul>
+    `
+  },
+  // Detailed Math Grade 11 Notes
+  {
+    id: 'note-math-11-1-detailed',
+    chapterId: 'math-11-1',
+    type: 'theory',
+    title: 'Sequence & Series — Detailed Notes',
+    content: `
+      <h3>Arithmetic Progression (AP)</h3>
+      <ul>
+        <li><strong>nth Term</strong>: t<sub>n</sub> = a + (n-1)d</li>
+        <li><strong>Sum</strong>: S<sub>n</sub> = n/2 (2a + (n-1)d)</li>
+      </ul>
+      <h3>Geometric Progression (GP)</h3>
+      <ul>
+        <li><strong>nth Term</strong>: t<sub>n</sub> = ar<sup>n-1</sup></li>
+        <li><strong>Sum</strong>: S<sub>n</sub> = a(r<sup>n</sup> - 1) / (r - 1)</li>
+      </ul>
+    `
+  },
+  {
+    id: 'note-math-11-3-detailed',
+    chapterId: 'math-11-3',
+    type: 'theory',
+    title: 'Calculus — Limits & Derivatives',
+    content: `
+      <h3>Limits</h3>
+      <p>Concept of approaching a value. lim(x→a) f(x) = L.</p>
+      <h3>Derivatives</h3>
+      <p>Rate of change. Standard rules:</p>
+      <ul>
+        <li>d/dx(x<sup>n</sup>) = nx<sup>n-1</sup></li>
+        <li>d/dx(sin x) = cos x</li>
+        <li><strong>Product Rule</strong>: (uv)' = u'v + uv'</li>
+      </ul>
+    `
+  },
+  // Detailed CS Grade 11 Notes
+  {
+    id: 'note-cs-11-1-detailed',
+    chapterId: 'cs-11-1',
+    type: 'theory',
+    title: 'Logic Gates — Detailed Notes',
+    content: `
+      <h3>Basic Gates</h3>
+      <ul>
+        <li><strong>AND</strong>: Output 1 only if all inputs are 1. (A.B)</li>
+        <li><strong>OR</strong>: Output 1 if at least one input is 1. (A+B)</li>
+        <li><strong>NOT</strong>: Inverts input. (A')</li>
+      </ul>
+      <h3>Derived Gates</h3>
+      <ul>
+        <li><strong>NAND</strong>: NOT of AND. Universal gate.</li>
+        <li><strong>XOR</strong>: Output 1 if inputs are different.</li>
+      </ul>
+    `
+  },
 ];
 
 export const pastPapers: PastPaper[] = [
