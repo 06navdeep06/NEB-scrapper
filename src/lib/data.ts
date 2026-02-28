@@ -886,6 +886,287 @@ export const notes: Note[] = [
       <p>Flow of energy: Producer → Primary Consumer → Secondary Consumer.</p>
     `
   },
+  // --- ENRICHED CONTENT: PHYSICS GRADE 11 ---
+  {
+    id: 'note-phy-11-mech-detailed',
+    chapterId: 'phy-11-1',
+    type: 'theory',
+    title: 'Units & Dimensions - In Depth',
+    content: `
+      <h3>Fundamental & Derived Units</h3>
+      <p><strong>Fundamental:</strong> Mass (kg), Length (m), Time (s), Current (A), Temp (K), Amount (mol), Luminous Intensity (cd).</p>
+      <p><strong>Derived:</strong> Force (N = kg·m/s²), Work (J = N·m), Power (W = J/s).</p>
+      <h3>Dimensional Analysis</h3>
+      <ul>
+        <li>Force: [MLT⁻²]</li>
+        <li>Work/Energy: [ML²T⁻²]</li>
+        <li>Power: [ML²T⁻³]</li>
+        <li>Pressure/Stress: [ML⁻¹T⁻²]</li>
+      </ul>
+      <p><strong>Uses:</strong> Checking equation correctness, deriving relationships, converting units.</p>
+    `
+  },
+  {
+    id: 'note-phy-11-vec-detailed',
+    chapterId: 'phy-11-2',
+    type: 'formula',
+    title: 'Vector Algebra Formulas',
+    content: `
+      <p><strong>Dot Product:</strong> A · B = |A||B|cosθ (Scalar)</p>
+      <p><strong>Cross Product:</strong> A × B = |A||B|sinθ n̂ (Vector)</p>
+      <p><strong>Resultant:</strong> R = √(A² + B² + 2ABcosθ)</p>
+      <p><strong>Direction (α):</strong> tanα = (Bsinθ) / (A + Bcosθ)</p>
+    `
+  },
+  {
+    id: 'note-phy-11-kin-detailed',
+    chapterId: 'phy-11-3',
+    type: 'theory',
+    title: 'Kinematics & Projectiles',
+    content: `
+      <h3>Equations of Motion (Uniform Acc.)</h3>
+      <ul>
+        <li>v = u + at</li>
+        <li>s = ut + ½at²</li>
+        <li>v² = u² + 2as</li>
+      </ul>
+      <h3>Projectile Motion</h3>
+      <p><strong>Time of Flight:</strong> T = 2u sinθ / g</p>
+      <p><strong>Max Height:</strong> H = u² sin²θ / 2g</p>
+      <p><strong>Horizontal Range:</strong> R = u² sin2θ / g</p>
+      <p><strong>Max Range:</strong> At θ = 45°, Rmax = u²/g</p>
+    `
+  },
+  {
+    id: 'note-phy-11-heat-detailed',
+    chapterId: 'phy-11-6',
+    type: 'theory',
+    title: 'Heat & Thermodynamics Summary',
+    content: `
+      <h3>Thermal Expansion</h3>
+      <p>Linear (α), Superficial (β), Cubical (γ). Relation: β = 2α, γ = 3α.</p>
+      <p>L₂ = L₁(1 + αΔT)</p>
+      <h3>Gas Laws</h3>
+      <ul>
+        <li><strong>Boyle's Law:</strong> PV = k (const T)</li>
+        <li><strong>Charles's Law:</strong> V/T = k (const P)</li>
+        <li><strong>Ideal Gas Eq:</strong> PV = nRT (R = 8.314 J/mol·K)</li>
+      </ul>
+      <h3>First Law of Thermodynamics</h3>
+      <p>dQ = dU + dW (Conservation of Energy)</p>
+      <p>Isothermal: dT=0, dU=0 ⇒ dQ = dW</p>
+      <p>Adiabatic: dQ=0 ⇒ dU = -dW</p>
+    `
+  },
+  // --- ENRICHED CONTENT: PHYSICS GRADE 12 ---
+  {
+    id: 'note-phy-12-optics-detailed',
+    chapterId: 'phy-12-1',
+    type: 'theory',
+    title: 'Wave Optics: Interference & Diffraction',
+    content: `
+      <h3>Young's Double Slit Experiment (YDSE)</h3>
+      <p><strong>Path Diff:</strong> Δx = d sinθ ≈ dy/D</p>
+      <p><strong>Constructive (Bright):</strong> Δx = nλ</p>
+      <p><strong>Destructive (Dark):</strong> Δx = (2n-1)λ/2</p>
+      <p><strong>Fringe Width (β):</strong> β = λD/d</p>
+      <h3>Polarization</h3>
+      <p><strong>Brewster's Law:</strong> μ = tan(ip)</p>
+      <p><strong>Malus's Law:</strong> I = I₀ cos²θ</p>
+    `
+  },
+  {
+    id: 'note-phy-12-modern-detailed',
+    chapterId: 'phy-12-3',
+    type: 'theory',
+    title: 'Modern Physics Key Concepts',
+    content: `
+      <h3>Photoelectric Effect</h3>
+      <p>Einstein's Eq: hf = Φ + KEmax</p>
+      <p>Work Function (Φ) = hf₀ (threshold freq)</p>
+      <h3>Bohr's Model</h3>
+      <p>Angular Momentum: L = mvr = nh/2π</p>
+      <p>Energy Levels: En = -13.6 eV / n²</p>
+      <p>Rydberg Formula: 1/λ = R(1/n₁² - 1/n₂²)</p>
+    `
+  },
+  // --- ENRICHED CONTENT: CHEMISTRY GRADE 11 ---
+  {
+    id: 'note-chem-11-atom-detailed',
+    chapterId: 'chem-11-2',
+    type: 'theory',
+    title: 'Atomic Structure Deep Dive',
+    content: `
+      <h3>Quantum Numbers</h3>
+      <ul>
+        <li><strong>Principal (n):</strong> Energy shell (1, 2, 3...)</li>
+        <li><strong>Azimuthal (l):</strong> Subshell shape (0=s, 1=p, 2=d, 3=f). 0 to n-1.</li>
+        <li><strong>Magnetic (m):</strong> Orbital orientation (-l to +l).</li>
+        <li><strong>Spin (s):</strong> Electron spin (+½, -½).</li>
+      </ul>
+      <h3>Rules</h3>
+      <p><strong>Aufbau:</strong> Fill lowest energy first (1s<2s<2p...).</p>
+      <p><strong>Pauli Exclusion:</strong> No two electrons same 4 quantum numbers.</p>
+      <p><strong>Hund's Rule:</strong> Maximize unpaired spins in degenerate orbitals.</p>
+    `
+  },
+  {
+    id: 'note-chem-11-bond-detailed',
+    chapterId: 'chem-11-3',
+    type: 'theory',
+    title: 'Chemical Bonding Theories',
+    content: `
+      <h3>VSEPR Theory</h3>
+      <p>Predicts geometry based on electron pairs repulsion (lp-lp > lp-bp > bp-bp).</p>
+      <ul>
+        <li>2 bp: Linear (180°)</li>
+        <li>3 bp: Trigonal Planar (120°)</li>
+        <li>4 bp: Tetrahedral (109.5°)</li>
+        <li>3 bp + 1 lp: Pyramidal (NH₃)</li>
+        <li>2 bp + 2 lp: Bent (H₂O)</li>
+      </ul>
+      <h3>Hybridization</h3>
+      <p>Mixing atomic orbitals to form new equivalent orbitals (sp, sp², sp³, dsp²).</p>
+    `
+  },
+  // --- ENRICHED CONTENT: CHEMISTRY GRADE 12 ---
+  {
+    id: 'note-chem-12-vol-detailed',
+    chapterId: 'chem-12-1',
+    type: 'formula',
+    title: 'Volumetric Analysis Formulas',
+    content: `
+      <p><strong>Normality (N):</strong> Gram Eq. Wt. per Litre.</p>
+      <p><strong>Molarity (M):</strong> Moles per Litre.</p>
+      <p><strong>Relation:</strong> N = M × n-factor (valency/acidity/basicity)</p>
+      <p><strong>Titration Eq:</strong> N₁V₁ = N₂V₂</p>
+      <p><strong>% Purity:</strong> (Pure Mass / Impure Mass) × 100</p>
+    `
+  },
+  {
+    id: 'note-chem-12-org-detailed',
+    chapterId: 'chem-12-2',
+    type: 'theory',
+    title: 'Organic Mechanisms',
+    content: `
+      <h3>SN1 vs SN2</h3>
+      <p><strong>SN1:</strong> Unimolecular, 2 steps, Carbocation intermediate, Racemization. Favored by tertiary halides, polar protic solvents.</p>
+      <p><strong>SN2:</strong> Bimolecular, 1 step, Transition state, Inversion of config (Walden). Favored by primary halides, aprotic solvents.</p>
+      <h3>Name Reactions</h3>
+      <ul>
+        <li><strong>Williamson Ether:</strong> R-X + R'ONa → R-O-R'</li>
+        <li><strong>Reimer-Tiemann:</strong> Phenol + CHCl₃ + KOH → Salicylaldehyde</li>
+        <li><strong>Cannizzaro:</strong> Aldehydes w/o α-H (HCHO) disproportionate.</li>
+        <li><strong>Aldol:</strong> Aldehydes w/ α-H condense to β-hydroxy aldehyde.</li>
+      </ul>
+    `
+  },
+  // --- ENRICHED CONTENT: COMPUTER SCIENCE ---
+  {
+    id: 'note-cs-12-c-detailed',
+    chapterId: 'cs-12-3',
+    type: 'theory',
+    title: 'Advanced C: Pointers & Files',
+    content: `
+      <h3>Pointers</h3>
+      <p>Variable storing memory address. Declaration: <code>int *ptr;</code></p>
+      <p>Address of operator (&), Value at address (*).</p>
+      <h3>File Handling</h3>
+      <p><code>FILE *fp;</code></p>
+      <ul>
+        <li><code>fopen("file.txt", "w")</code>: Open for writing.</li>
+        <li><code>fprintf(fp, "text")</code>: Write formatted output.</li>
+        <li><code>fscanf(fp, "%d", &var)</code>: Read formatted input.</li>
+        <li><code>fclose(fp)</code>: Close file.</li>
+      </ul>
+    `
+  },
+  {
+    id: 'note-cs-12-dbms-detailed',
+    chapterId: 'cs-12-1',
+    type: 'theory',
+    title: 'DBMS & SQL Concepts',
+    content: `
+      <h3>Normalization</h3>
+      <p>Process to minimize redundancy. 1NF (Atomic), 2NF (No partial dependency), 3NF (No transitive dependency).</p>
+      <h3>SQL Commands</h3>
+      <ul>
+        <li><strong>DDL:</strong> CREATE, ALTER, DROP, TRUNCATE.</li>
+        <li><strong>DML:</strong> INSERT, UPDATE, DELETE, SELECT.</li>
+        <li><strong>DCL:</strong> GRANT, REVOKE.</li>
+        <li><strong>TCL:</strong> COMMIT, ROLLBACK.</li>
+      </ul>
+      <p>Ex: <code>SELECT * FROM Students WHERE Grade=12;</code></p>
+    `
+  },
+  {
+    id: 'note-cs-web-detailed',
+    chapterId: 'cs-12-2',
+    type: 'theory',
+    title: 'Web Tech II: PHP & JS',
+    content: `
+      <h3>JavaScript (Client-side)</h3>
+      <p>Dynamic interactivity. DOM manipulation: <code>document.getElementById()</code>. Events: <code>onclick</code>, <code>onload</code>.</p>
+      <h3>PHP (Server-side)</h3>
+      <p>Scripting language. Variables: <code>$var</code>. DB Connection: <code>mysqli_connect()</code>.</p>
+      <p>Form Handling: <code>$_GET</code> (visible URL), <code>$_POST</code> (secure).</p>
+    `
+  },
+  // --- ENRICHED CONTENT: MATHEMATICS ---
+  {
+    id: 'note-math-11-calc-detailed',
+    chapterId: 'math-11-3',
+    type: 'formula',
+    title: 'Calculus: Limits & Derivatives',
+    content: `
+      <h3>Limits</h3>
+      <p>lim(x→a) (xⁿ - aⁿ)/(x - a) = n·aⁿ⁻¹</p>
+      <p>lim(x→0) (sin x)/x = 1</p>
+      <p>lim(x→0) (eˣ - 1)/x = 1</p>
+      <h3>Derivatives</h3>
+      <ul>
+        <li>d/dx(xⁿ) = nxⁿ⁻¹</li>
+        <li>d/dx(sin x) = cos x</li>
+        <li>d/dx(ln x) = 1/x</li>
+        <li>Product Rule: d/dx(uv) = u'v + uv'</li>
+      </ul>
+    `
+  },
+  {
+    id: 'note-math-12-int-detailed',
+    chapterId: 'math-12-2',
+    type: 'formula',
+    title: 'Integrals: Standard Forms',
+    content: `
+      <h3>Indefinite Integrals</h3>
+      <ul>
+        <li>∫ xⁿ dx = xⁿ⁺¹/(n+1) + C</li>
+        <li>∫ (1/x) dx = ln|x| + C</li>
+        <li>∫ eˣ dx = eˣ + C</li>
+      </ul>
+      <h3>Integration by Parts</h3>
+      <p>∫ u v dx = u ∫v dx - ∫(u' ∫v dx) dx</p>
+      <p>Order of choice (ILATE): Inverse, Log, Alg, Trig, Exp.</p>
+    `
+  },
+  // --- ENRICHED CONTENT: BIOLOGY ---
+  {
+    id: 'note-bio-12-gen-detailed',
+    chapterId: 'bio-12-2',
+    type: 'theory',
+    title: 'Genetics: Molecular Basis',
+    content: `
+      <h3>DNA Structure</h3>
+      <p>Double helix model (Watson & Crick). Nucleotides: Sugar + Phosphate + Nitrogen Base (A, T, G, C).</p>
+      <p>Base Pairing: A=T (2 H-bonds), G≡C (3 H-bonds).</p>
+      <h3>Central Dogma</h3>
+      <p>DNA → (Transcription) → mRNA → (Translation) → Protein.</p>
+      <h3>Mendel's Laws</h3>
+      <p>1. Law of Dominance.</p>
+      <p>2. Law of Segregation (Purity of Gametes).</p>
+      <p>3. Law of Independent Assortment.</p>
+    `
+  },
 ];
 
 export const pastPapers: PastPaper[] = [
