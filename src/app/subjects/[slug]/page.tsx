@@ -1,84 +1,100 @@
 import Link from 'next/link'
 import { getSubjectBySlug, getChaptersBySubjectId } from '@/lib/data'
-import { ArrowLeft, BookOpen, Clock, ChevronRight } from 'lucide-react'
+import { ArrowLeft, BookOpen, Clock, ChevronRight, FileText, Sigma, ClipboardList } from 'lucide-react'
 import { notFound } from 'next/navigation'
 
-const getAccent = (iconName: string) => {
-  switch (iconName) {
-    case 'atom':
-      return { glow: 'from-indigo-500 to-sky-500', text: 'text-indigo-600 dark:text-indigo-400', chip: 'bg-indigo-50 dark:bg-indigo-900/30', hoverBorder: 'hover:border-indigo-300 dark:hover:border-indigo-700' }
-    case 'flask':
-      return { glow: 'from-emerald-500 to-teal-500', text: 'text-emerald-600 dark:text-emerald-400', chip: 'bg-emerald-50 dark:bg-emerald-900/30', hoverBorder: 'hover:border-emerald-300 dark:hover:border-emerald-700' }
-    case 'calculator':
-      return { glow: 'from-violet-500 to-fuchsia-500', text: 'text-violet-600 dark:text-violet-400', chip: 'bg-violet-50 dark:bg-violet-900/30', hoverBorder: 'hover:border-violet-300 dark:hover:border-violet-700' }
-    case 'monitor':
-      return { glow: 'from-orange-500 to-amber-500', text: 'text-orange-600 dark:text-orange-400', chip: 'bg-orange-50 dark:bg-orange-900/30', hoverBorder: 'hover:border-orange-300 dark:hover:border-orange-700' }
-    default:
-      return { glow: 'from-slate-400 to-slate-600', text: 'text-slate-700 dark:text-slate-300', chip: 'bg-slate-100 dark:bg-slate-800', hoverBorder: 'hover:border-slate-300 dark:hover:border-slate-700' }
-  }
+const accentMap: Record<string, {
+  color: string; bg: string; border: string; hoverBorder: string; glow: string; barGrad: string; chipBg: string
+}> = {
+  atom: {
+    color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-950/40',
+    border: 'border-blue-100 dark:border-blue-900/40', hoverBorder: 'hover:border-blue-300 dark:hover:border-blue-700',
+    glow: 'from-blue-500 to-cyan-500', barGrad: 'from-blue-500 to-cyan-400', chipBg: 'bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300',
+  },
+  flask: {
+    color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-950/40',
+    border: 'border-emerald-100 dark:border-emerald-900/40', hoverBorder: 'hover:border-emerald-300 dark:hover:border-emerald-700',
+    glow: 'from-emerald-500 to-teal-500', barGrad: 'from-emerald-500 to-teal-400', chipBg: 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300',
+  },
+  calculator: {
+    color: 'text-violet-600 dark:text-violet-400', bg: 'bg-violet-50 dark:bg-violet-950/40',
+    border: 'border-violet-100 dark:border-violet-900/40', hoverBorder: 'hover:border-violet-300 dark:hover:border-violet-700',
+    glow: 'from-violet-500 to-purple-500', barGrad: 'from-violet-500 to-purple-400', chipBg: 'bg-violet-50 dark:bg-violet-950/50 text-violet-700 dark:text-violet-300',
+  },
+  monitor: {
+    color: 'text-orange-600 dark:text-orange-400', bg: 'bg-orange-50 dark:bg-orange-950/40',
+    border: 'border-orange-100 dark:border-orange-900/40', hoverBorder: 'hover:border-orange-300 dark:hover:border-orange-700',
+    glow: 'from-orange-500 to-amber-500', barGrad: 'from-orange-500 to-amber-400', chipBg: 'bg-orange-50 dark:bg-orange-950/50 text-orange-700 dark:text-orange-300',
+  },
+  microscope: {
+    color: 'text-pink-600 dark:text-pink-400', bg: 'bg-pink-50 dark:bg-pink-950/40',
+    border: 'border-pink-100 dark:border-pink-900/40', hoverBorder: 'hover:border-pink-300 dark:hover:border-pink-700',
+    glow: 'from-pink-500 to-rose-500', barGrad: 'from-pink-500 to-rose-400', chipBg: 'bg-pink-50 dark:bg-pink-950/50 text-pink-700 dark:text-pink-300',
+  },
+  book: {
+    color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-950/40',
+    border: 'border-amber-100 dark:border-amber-900/40', hoverBorder: 'hover:border-amber-300 dark:hover:border-amber-700',
+    glow: 'from-amber-500 to-yellow-500', barGrad: 'from-amber-500 to-yellow-400', chipBg: 'bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300',
+  },
 }
 
-export default async function SubjectChaptersPage({ params }: { params: { slug: string } }) {
+export default async function SubjectChaptersPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  
   const subject = await getSubjectBySlug(slug)
-
-  if (!subject) {
-    notFound()
-  }
+  if (!subject) notFound()
 
   const chapters = await getChaptersBySubjectId(subject.id)
-  const accent = getAccent(subject.icon)
-  
-  // Group chapters by grade
-  const grade11Chapters = chapters.filter(c => c.grade === 11).sort((a, b) => a.number - b.number)
-  const grade12Chapters = chapters.filter(c => c.grade === 12).sort((a, b) => a.number - b.number)
-  const otherChapters = chapters.filter(c => !c.grade).sort((a, b) => a.number - b.number)
+  const a = accentMap[subject.icon] ?? accentMap['book']
 
-  const renderChapterList = (chaptersList: typeof chapters, title: string) => (
+  const grade11 = chapters.filter(c => c.grade === 11).sort((x, y) => x.number - y.number)
+  const grade12 = chapters.filter(c => c.grade === 12).sort((x, y) => x.number - y.number)
+  const other   = chapters.filter(c => !c.grade).sort((x, y) => x.number - y.number)
+
+  const renderSection = (list: typeof chapters, label: string) => (
     <div className="mb-12">
-      <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center">
-        <span className={`w-2 h-8 rounded-full mr-3 bg-gradient-to-b ${accent.glow}`}></span>
-        {title}
-      </h2>
-      <div className="grid gap-4">
-        {chaptersList.map((chapter) => (
-          <Link 
-            href={`/subjects/${slug}/${chapter.id}`} 
+      <div className="flex items-center gap-3 mb-5">
+        <div className={`h-6 w-1.5 rounded-full bg-gradient-to-b ${a.barGrad}`} />
+        <h2 className="text-xl font-bold text-slate-900 dark:text-white">{label}</h2>
+        <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${a.chipBg}`}>{list.length} chapters</span>
+      </div>
+      <div className="grid gap-3">
+        {list.map((chapter) => (
+          <Link
+            href={`/subjects/${slug}/${chapter.id}`}
             key={chapter.id}
-            className={`group block relative bg-white/80 dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm transition-all duration-200 overflow-hidden ${accent.hoverBorder}`}
+            className={`group relative flex items-center gap-4 bg-white dark:bg-slate-900 rounded-2xl border p-5 shadow-sm transition-all duration-200 overflow-hidden ${a.border} ${a.hoverBorder} hover:-translate-y-0.5 hover:shadow-md`}
           >
-            <div className={`absolute -top-16 -right-20 h-44 w-44 bg-gradient-to-tr ${accent.glow} opacity-20 group-hover:opacity-40 blur-2xl`} />
-            <div className="flex items-center justify-between">
-              <div className="flex items-start space-x-4">
-                <div className={`flex-shrink-0 h-12 w-12 rounded-xl flex items-center justify-center font-bold text-lg ring-1 ring-slate-200 dark:ring-slate-700 bg-white dark:bg-slate-800 ${accent.text}`}>
-                  {chapter.number}
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-                    {chapter.title}
-                  </h3>
-                  <p className="text-slate-500 dark:text-slate-400 text-sm mt-1 line-clamp-2">
-                    {chapter.description}
-                  </p>
-                  <div className="flex items-center mt-3 text-xs font-medium text-slate-500 dark:text-slate-400 space-x-4">
-                    <span className="flex items-center px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-800">
-                      <Clock className="mr-1.5 h-3 w-3" />
-                      {chapter.estimatedHours} hours
-                    </span>
-                    <span className={`flex items-center px-2 py-1 rounded-full ${accent.chip} ${accent.text}`}>
-                      <BookOpen className="mr-1.5 h-3 w-3" />
-                      Notes Available
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className="flex-shrink-0 ml-4">
-                <div className="h-10 w-10 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center group-hover:scale-105 transition-transform">
-                  <ChevronRight className={`h-5 w-5 text-slate-400 group-hover:${accent.text.split(' ').join(' ')} transition-colors`} />
-                </div>
+            {/* Glow */}
+            <div className={`absolute -top-10 -right-10 w-32 h-32 bg-gradient-to-tr ${a.glow} opacity-[0.06] group-hover:opacity-[0.12] blur-2xl transition-opacity`} />
+
+            {/* Chapter number */}
+            <div className={`flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center font-bold text-lg ${a.bg} ${a.color} group-hover:scale-105 transition-transform`}>
+              {chapter.number}
+            </div>
+
+            {/* Info */}
+            <div className="flex-1 min-w-0">
+              <h3 className="font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors text-sm sm:text-base">
+                {chapter.title}
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1">
+                {chapter.description}
+              </p>
+              <div className="flex flex-wrap items-center gap-2 mt-2">
+                <span className="inline-flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-800 px-2 py-0.5 rounded-md">
+                  <Clock className="h-3 w-3" /> {chapter.estimatedHours}h study time
+                </span>
+                <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-md ${a.chipBg}`}>
+                  <BookOpen className="h-3 w-3" /> Notes
+                </span>
+                <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-md ${a.chipBg}`}>
+                  <Sigma className="h-3 w-3" /> Formulas
+                </span>
               </div>
             </div>
+
+            {/* Arrow */}
+            <ChevronRight className={`flex-shrink-0 h-5 w-5 text-slate-300 dark:text-slate-600 group-hover:${a.color.split(' ')[0]} group-hover:translate-x-1 transition-all`} />
           </Link>
         ))}
       </div>
@@ -86,41 +102,42 @@ export default async function SubjectChaptersPage({ params }: { params: { slug: 
   )
 
   return (
-    <div className="relative min-h-screen py-12">
-      <div className="absolute inset-0 -z-10 [mask-image:radial-gradient(ellipse_at_top,black,transparent)] pointer-events-none">
-        <div className={`h-40 bg-gradient-to-r ${accent.glow} blur-3xl`} />
-      </div>
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-10">
-          <Link href="/subjects" className="inline-flex items-center text-sm font-medium text-slate-500 hover:text-indigo-600 mb-6 transition-colors group">
-            <ArrowLeft className="h-4 w-4 mr-1 group-hover:-translate-x-1 transition-transform" /> Back to Subjects
-          </Link>
-          <div className="flex items-center space-x-4 mb-4">
-            <div className="p-3 bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800">
-              <BookOpen className="h-8 w-8 text-indigo-600" />
-            </div>
-            <h1 className="text-4xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300">
-              {subject.name}
-            </h1>
+    <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto">
+        {/* Breadcrumb */}
+        <Link href="/subjects" className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 mb-6 transition-colors group">
+          <ArrowLeft className="h-4 w-4 group-hover:-translate-x-0.5 transition-transform" />
+          All Subjects
+        </Link>
+
+        {/* Subject header */}
+        <div className="flex items-start gap-4 mb-10 p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+          <div className={`w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 ${a.bg} ${a.color}`}>
+            <BookOpen className="h-7 w-7" />
           </div>
-          <p className="text-lg text-slate-600 dark:text-slate-400 max-w-3xl leading-relaxed">
-            {subject.description}
-          </p>
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">{subject.name}</h1>
+            <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm sm:text-base leading-relaxed">{subject.description}</p>
+            <div className="flex flex-wrap gap-3 mt-3">
+              <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full ${a.chipBg}`}>
+                <FileText className="h-3 w-3" /> {chapters.length} Total Chapters
+              </span>
+              <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full ${a.chipBg}`}>
+                <ClipboardList className="h-3 w-3" /> Mock Tests Available
+              </span>
+            </div>
+          </div>
         </div>
 
-        {grade11Chapters.length > 0 && renderChapterList(grade11Chapters, 'Grade 11 Syllabus')}
-        {grade12Chapters.length > 0 && renderChapterList(grade12Chapters, 'Grade 12 Syllabus')}
-        {otherChapters.length > 0 && renderChapterList(otherChapters, 'Chapters')}
+        {grade11.length > 0 && renderSection(grade11, 'Grade 11 Syllabus')}
+        {grade12.length > 0 && renderSection(grade12, 'Grade 12 Syllabus')}
+        {other.length   > 0 && renderSection(other,   'All Chapters')}
 
         {chapters.length === 0 && (
-          <div className="text-center py-20 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 border-dashed">
-            <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
-              <BookOpen className="h-8 w-8 text-slate-400" />
-            </div>
-            <h3 className="text-lg font-medium text-slate-900 dark:text-white">No chapters found</h3>
-            <p className="mt-2 text-slate-500 dark:text-slate-400">
-              Content for this subject is being prepared. Check back soon!
-            </p>
+          <div className="text-center py-20 bg-white dark:bg-slate-900 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700">
+            <BookOpen className="h-10 w-10 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
+            <h3 className="font-semibold text-slate-900 dark:text-white">No chapters yet</h3>
+            <p className="text-sm text-slate-400 mt-1">Content for this subject is being prepared. Check back soon!</p>
           </div>
         )}
       </div>

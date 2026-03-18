@@ -1,97 +1,166 @@
 import Link from 'next/link'
 import { subjects } from '@/lib/data'
-import { ArrowRight, Book, Atom, FlaskConical, Calculator, Monitor } from 'lucide-react'
+import { ArrowRight, Atom, FlaskConical, Calculator, Monitor, Microscope, BookMarked, BookOpen } from 'lucide-react'
 
-const getIcon = (iconName: string) => {
-  switch (iconName) {
-    case 'atom': return <Atom className="h-10 w-10 text-indigo-600 dark:text-indigo-400" />;
-    case 'flask': return <FlaskConical className="h-10 w-10 text-emerald-600 dark:text-emerald-400" />;
-    case 'calculator': return <Calculator className="h-10 w-10 text-violet-600 dark:text-violet-400" />;
-    case 'monitor': return <Monitor className="h-10 w-10 text-orange-600 dark:text-orange-400" />;
-    default: return <Book className="h-10 w-10 text-slate-600 dark:text-slate-400" />;
-  }
-}
-
-const getAccent = (iconName: string) => {
-  switch (iconName) {
-    case 'atom':
-      return {
-        glow: 'from-indigo-500 to-sky-500',
-        hoverBorder: 'hover:border-indigo-300 dark:hover:border-indigo-700',
-        chip: 'bg-indigo-50 dark:bg-indigo-900/30',
-        text: 'text-indigo-600 dark:text-indigo-400'
-      }
-    case 'flask':
-      return {
-        glow: 'from-emerald-500 to-teal-500',
-        hoverBorder: 'hover:border-emerald-300 dark:hover:border-emerald-700',
-        chip: 'bg-emerald-50 dark:bg-emerald-900/30',
-        text: 'text-emerald-600 dark:text-emerald-400'
-      }
-    case 'calculator':
-      return {
-        glow: 'from-violet-500 to-fuchsia-500',
-        hoverBorder: 'hover:border-violet-300 dark:hover:border-violet-700',
-        chip: 'bg-violet-50 dark:bg-violet-900/30',
-        text: 'text-violet-600 dark:text-violet-400'
-      }
-    case 'monitor':
-      return {
-        glow: 'from-orange-500 to-amber-500',
-        hoverBorder: 'hover:border-orange-300 dark:hover:border-orange-700',
-        chip: 'bg-orange-50 dark:bg-orange-900/30',
-        text: 'text-orange-600 dark:text-orange-400'
-      }
-    default:
-      return {
-        glow: 'from-slate-400 to-slate-600',
-        hoverBorder: 'hover:border-slate-300 dark:hover:border-slate-700',
-        chip: 'bg-slate-100 dark:bg-slate-800',
-        text: 'text-slate-600 dark:text-slate-400'
-      }
-  }
+const subjectMeta: Record<string, {
+  icon: React.ReactNode
+  color: string
+  bg: string
+  border: string
+  hoverBorder: string
+  glow: string
+  badge: string
+}> = {
+  atom: {
+    icon: <Atom className="h-7 w-7" />,
+    color: 'text-blue-600 dark:text-blue-400',
+    bg: 'bg-blue-50 dark:bg-blue-950/40',
+    border: 'border-blue-100 dark:border-blue-900/50',
+    hoverBorder: 'hover:border-blue-300 dark:hover:border-blue-700',
+    glow: 'from-blue-500 to-cyan-500',
+    badge: 'bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300',
+  },
+  flask: {
+    icon: <FlaskConical className="h-7 w-7" />,
+    color: 'text-emerald-600 dark:text-emerald-400',
+    bg: 'bg-emerald-50 dark:bg-emerald-950/40',
+    border: 'border-emerald-100 dark:border-emerald-900/50',
+    hoverBorder: 'hover:border-emerald-300 dark:hover:border-emerald-700',
+    glow: 'from-emerald-500 to-teal-500',
+    badge: 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300',
+  },
+  calculator: {
+    icon: <Calculator className="h-7 w-7" />,
+    color: 'text-violet-600 dark:text-violet-400',
+    bg: 'bg-violet-50 dark:bg-violet-950/40',
+    border: 'border-violet-100 dark:border-violet-900/50',
+    hoverBorder: 'hover:border-violet-300 dark:hover:border-violet-700',
+    glow: 'from-violet-500 to-purple-500',
+    badge: 'bg-violet-50 dark:bg-violet-950/50 text-violet-700 dark:text-violet-300',
+  },
+  monitor: {
+    icon: <Monitor className="h-7 w-7" />,
+    color: 'text-orange-600 dark:text-orange-400',
+    bg: 'bg-orange-50 dark:bg-orange-950/40',
+    border: 'border-orange-100 dark:border-orange-900/50',
+    hoverBorder: 'hover:border-orange-300 dark:hover:border-orange-700',
+    glow: 'from-orange-500 to-amber-500',
+    badge: 'bg-orange-50 dark:bg-orange-950/50 text-orange-700 dark:text-orange-300',
+  },
+  microscope: {
+    icon: <Microscope className="h-7 w-7" />,
+    color: 'text-pink-600 dark:text-pink-400',
+    bg: 'bg-pink-50 dark:bg-pink-950/40',
+    border: 'border-pink-100 dark:border-pink-900/50',
+    hoverBorder: 'hover:border-pink-300 dark:hover:border-pink-700',
+    glow: 'from-pink-500 to-rose-500',
+    badge: 'bg-pink-50 dark:bg-pink-950/50 text-pink-700 dark:text-pink-300',
+  },
+  book: {
+    icon: <BookMarked className="h-7 w-7" />,
+    color: 'text-amber-600 dark:text-amber-400',
+    bg: 'bg-amber-50 dark:bg-amber-950/40',
+    border: 'border-amber-100 dark:border-amber-900/50',
+    hoverBorder: 'hover:border-amber-300 dark:hover:border-amber-700',
+    glow: 'from-amber-500 to-yellow-500',
+    badge: 'bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300',
+  },
 }
 
 export default function SubjectsPage() {
+  const scienceSubjects = subjects.filter(s => !['english', 'nepali'].includes(s.slug))
+  const langSubjects = subjects.filter(s => ['english', 'nepali'].includes(s.slug))
+
   return (
-    <div className="relative bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900 min-h-screen py-24">
-      <div className="absolute inset-0 -z-10 [mask-image:radial-gradient(ellipse_at_top,black,transparent)] pointer-events-none">
-        <div className="h-40 bg-gradient-to-r from-indigo-500/20 via-fuchsia-500/20 to-emerald-500/20 blur-3xl" />
+    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+      {/* Page header */}
+      <div className="max-w-7xl mx-auto mb-10">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-8 h-8 bg-indigo-100 dark:bg-indigo-950/60 rounded-lg flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+            <BookOpen className="h-4 w-4" />
+          </div>
+          <span className="text-sm font-medium text-slate-500 dark:text-slate-400">All Subjects</span>
+        </div>
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mb-2">
+          NEB +2 Subjects
+        </h1>
+        <p className="text-slate-500 dark:text-slate-400">
+          Select a subject to explore chapter-wise notes, formulas, past papers, and mock tests.
+        </p>
       </div>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-2">Subjects</h1>
-          <p className="text-base text-slate-600 dark:text-slate-400">Open a subject to view chapters and notes.</p>
+
+      <div className="max-w-7xl mx-auto">
+        {/* Science & Technical */}
+        <div className="mb-10">
+          <h2 className="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-5 flex items-center gap-2">
+            <span className="w-6 h-0.5 bg-slate-300 dark:bg-slate-600 rounded" />
+            Science & Technical
+            <span className="h-0.5 flex-1 bg-slate-100 dark:bg-slate-800 rounded" />
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {scienceSubjects.map((subject) => {
+              const meta = subjectMeta[subject.icon] ?? subjectMeta['book']
+              return (
+                <Link href={`/subjects/${subject.slug}`} key={subject.id} className="group">
+                  <div className={`relative rounded-2xl border bg-white dark:bg-slate-900 p-6 flex flex-col h-full shadow-sm transition-all duration-300 overflow-hidden ${meta.border} ${meta.hoverBorder} group-hover:-translate-y-1 group-hover:shadow-lg`}>
+                    {/* Glow */}
+                    <div className={`absolute -top-16 -right-16 w-48 h-48 bg-gradient-to-tr ${meta.glow} opacity-[0.07] group-hover:opacity-[0.14] blur-2xl transition-opacity`} />
+
+                    {/* Icon */}
+                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-5 ${meta.bg} ${meta.color} group-hover:scale-105 transition-transform shadow-sm`}>
+                      {meta.icon}
+                    </div>
+
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{subject.name}</h3>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed flex-1">{subject.description}</p>
+
+                    <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                      <span className={`text-xs font-semibold px-3 py-1 rounded-full ${meta.badge}`}>
+                        {subject.totalChapters} chapters
+                      </span>
+                      <span className={`flex items-center gap-1 text-sm font-semibold ${meta.color} group-hover:gap-2 transition-all`}>
+                        Explore <ArrowRight className="h-3.5 w-3.5" />
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              )
+            })}
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {subjects?.map((subject) => {
-            const accent = getAccent(subject.icon)
-            return (
-              <Link href={`/subjects/${subject.slug}`} key={subject.id} className="group h-full">
-                <div className={`relative rounded-2xl border border-slate-200 dark:border-slate-800 p-8 flex flex-col items-start h-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm shadow-md transition-all duration-300 ${accent.hoverBorder} overflow-hidden group-hover:-translate-y-1`}>
-                  <div className={`absolute -top-20 -right-16 h-56 w-56 bg-gradient-to-tr ${accent.glow} opacity-25 group-hover:opacity-50 blur-3xl`} />
-                  <div className="w-14 h-14 mb-6 rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-100 dark:ring-slate-700 flex items-center justify-center shadow-sm group-hover:scale-105 group-hover:rotate-3 transition-transform duration-300">
-                    {getIcon(subject.icon)}
+        {/* Language subjects */}
+        <div>
+          <h2 className="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-5 flex items-center gap-2">
+            <span className="w-6 h-0.5 bg-slate-300 dark:bg-slate-600 rounded" />
+            Language
+            <span className="h-0.5 flex-1 bg-slate-100 dark:bg-slate-800 rounded" />
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            {langSubjects.map((subject) => {
+              const meta = subjectMeta[subject.icon] ?? subjectMeta['book']
+              return (
+                <Link href={`/subjects/${subject.slug}`} key={subject.id} className="group">
+                  <div className={`relative rounded-2xl border bg-white dark:bg-slate-900 p-6 flex items-center gap-5 shadow-sm transition-all duration-200 overflow-hidden ${meta.border} ${meta.hoverBorder} group-hover:-translate-y-1 group-hover:shadow-md`}>
+                    <div className={`absolute -top-12 -right-12 w-40 h-40 bg-gradient-to-tr ${meta.glow} opacity-[0.07] group-hover:opacity-[0.14] blur-2xl transition-opacity`} />
+                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 ${meta.bg} ${meta.color}`}>
+                      {meta.icon}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-lg font-bold text-slate-900 dark:text-white">{subject.name}</h3>
+                      <p className="text-sm text-slate-500 dark:text-slate-400 truncate mt-0.5">{subject.description}</p>
+                    </div>
+                    <div className="flex items-center gap-3 flex-shrink-0">
+                      <span className={`text-xs font-semibold px-3 py-1 rounded-full ${meta.badge}`}>
+                        {subject.totalChapters} ch
+                      </span>
+                      <ArrowRight className={`h-4 w-4 ${meta.color} group-hover:translate-x-1 transition-transform`} />
+                    </div>
                   </div>
-                  <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-                    {subject.name}
-                  </h3>
-                  <p className="text-slate-600 dark:text-slate-400 text-sm mb-6 leading-relaxed">
-                    {subject.description}
-                  </p>
-                  <div className="mt-auto w-full pt-6 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                    <span className={`text-sm font-semibold text-slate-700 dark:text-slate-300 px-3 py-1 rounded-full ${accent.chip}`}>
-                      {subject.totalChapters} Chapters
-                    </span>
-                    <span className={`flex items-center font-medium text-sm ${accent.text} group-hover:translate-x-1 transition-transform`}>
-                      Explore <ArrowRight className="ml-2 h-4 w-4" />
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            )
-          })}
+                </Link>
+              )
+            })}
+          </div>
         </div>
       </div>
     </div>

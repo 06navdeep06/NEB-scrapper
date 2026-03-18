@@ -1,65 +1,68 @@
-import { Book, Clock, AlertCircle } from 'lucide-react'
+import { ClipboardList, Clock, Target, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import type { MockTest } from '@/types'
+
+const difficultyConfig = {
+  easy:   { label: 'Easy',   color: 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300', dot: 'bg-emerald-500' },
+  medium: { label: 'Medium', color: 'bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300',         dot: 'bg-amber-500'   },
+  hard:   { label: 'Hard',   color: 'bg-red-50 dark:bg-red-950/50 text-red-700 dark:text-red-300',                 dot: 'bg-red-500'     },
+}
 
 export default function MockTestTab({ tests }: { tests: MockTest[] }) {
   if (!tests || tests.length === 0) {
     return (
-      <div className="text-center py-12">
-        <Book className="mx-auto h-12 w-12 text-gray-400" />
-        <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">No mock tests available</h3>
-        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Mock tests for this chapter will be added soon.
+      <div className="py-16 text-center">
+        <div className="w-14 h-14 bg-slate-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <ClipboardList className="h-6 w-6 text-slate-400" />
+        </div>
+        <h3 className="font-semibold text-slate-900 dark:text-white mb-1">No mock tests yet</h3>
+        <p className="text-sm text-slate-400 dark:text-slate-500 max-w-xs mx-auto">
+          Mock tests for this chapter are being prepared. Check out the full test library.
         </p>
+        <Link href="/mock-test" className="inline-flex items-center gap-1.5 mt-4 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">
+          Browse All Tests <ChevronRight className="h-3.5 w-3.5" />
+        </Link>
       </div>
     )
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {tests.map((test) => (
-        <div key={test.id} className="bg-white dark:bg-slate-800 overflow-hidden shadow rounded-lg border border-gray-100 dark:border-slate-700">
-          <div className="p-5">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <Book className="h-6 w-6 text-gray-400" aria-hidden="true" />
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {tests.map((test) => {
+        const d = difficultyConfig[test.difficulty] ?? difficultyConfig.medium
+        return (
+          <div key={test.id} className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5">
+            <div className="p-5">
+              <div className="flex items-start justify-between gap-3 mb-3">
+                <div className="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 flex items-center justify-center text-indigo-600 dark:text-indigo-400 flex-shrink-0">
+                  <ClipboardList className="h-4.5 w-4.5" style={{width:'18px', height:'18px'}} />
+                </div>
+                <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full ${d.color}`}>
+                  <span className={`w-1.5 h-1.5 rounded-full ${d.dot}`} />
+                  {d.label}
+                </span>
               </div>
-              <div className="ml-5 w-0 flex-1">
-                <dl>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
-                    {test.difficulty.charAt(0).toUpperCase() + test.difficulty.slice(1)} Difficulty
-                  </dt>
-                  <dd>
-                    <div className="text-lg font-medium text-gray-900 dark:text-white">
-                      {test.title}
-                    </div>
-                  </dd>
-                </dl>
+              <h3 className="font-bold text-slate-900 dark:text-white text-sm leading-snug mb-3">{test.title}</h3>
+              <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
+                <span className="flex items-center gap-1">
+                  <Clock className="h-3.5 w-3.5" /> {test.durationMinutes} min
+                </span>
+                <span className="flex items-center gap-1">
+                  <Target className="h-3.5 w-3.5" /> {test.totalMarks} marks
+                </span>
               </div>
             </div>
-          </div>
-          <div className="bg-gray-50 dark:bg-slate-700/50 px-5 py-3">
-            <div className="text-sm flex justify-between items-center">
-              <div className="flex space-x-4 text-gray-500 dark:text-gray-400">
-                <span className="flex items-center">
-                  <Clock className="h-4 w-4 mr-1" />
-                  {test.durationMinutes} mins
-                </span>
-                <span className="flex items-center">
-                  <AlertCircle className="h-4 w-4 mr-1" />
-                  {test.totalMarks} marks
-                </span>
-              </div>
+            <div className="px-5 py-3 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-700 flex justify-end">
               <Link
                 href={`/mock-test/${test.id}`}
-                className="font-medium text-blue-700 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors"
               >
-                Start Test
+                Start Test <ChevronRight className="h-4 w-4" />
               </Link>
             </div>
           </div>
-        </div>
-      ))}
+        )
+      })}
     </div>
   )
 }
