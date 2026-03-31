@@ -1,6 +1,8 @@
 """Parsers for scraping NEB educational content from target websites."""
 
 import re
+import json
+import html as _html_module
 import logging
 from typing import Optional
 from bs4 import BeautifulSoup, NavigableString, Tag
@@ -17,6 +19,89 @@ from .utils import (
 
 MIN_CONTENT_CHARS = 400
 MIN_TEXT_CHARS = 200
+
+# ─── Heuristic link-finding helpers ────────────────────────────────────────
+
+# Matches href paths that strongly indicate a note/chapter page
+_NOTE_HREF_RE = re.compile(
+    r"/(?:e-notes?|notes?|unit[-_]|chapter[-_]|lesson[-_]|solution)",
+    re.IGNORECASE,
+)
+# Matches visible link text like "Unit 1", "Chapter 3", "Lesson 2"
+_NOTE_TEXT_RE = re.compile(
+    r"\b(?:unit|chapter|lesson|exercise)\b",
+    re.IGNORECASE,
+)
+# URL tokens that indicate navigation/utility pages — skip these
+_NAV_SKIP_TOKENS = frozenset({
+    "category", "tag", "author", "contact", "about", "privacy",
+    "terms", "login", "register", "cart", "shop", "search",
+    "sitemap", "feed", "javascript:",
+})
+
+
+def _find_dense_container(soup: BeautifulSoup) -> Optional[Tag]:
+    """Return the block element with the most <p> tags (paragraph-density heuristic).
+
+    This finds the 'real' article body on pages where known CSS selectors are absent
+    — the content div almost always has more paragraphs than any nav/sidebar element.
+    """
+    best: Optional[Tag] = None
+    best_count = 0
+    for el in soup.find_all(["div", "section", "article", "main"]):
+        count = len(el.find_all(["p", "li"]))
+        if count > best_count:
+            best_count = count
+            best = el
+    return best if best_count >= 3 else None
+
+
+def _heuristic_chapter_links(
+    soup: BeautifulSoup,
+    base_url: str = "",
+    subject_url: str = "",
+) -> list[dict]:
+    """Find chapter links anywhere on the page using pattern heuristics.
+
+    Does NOT rely on specific CSS class names.  A link qualifies if:
+    - Its href path contains a note/unit/chapter keyword pattern, OR
+    - Its visible text matches 'Unit N' / 'Chapter N' style text.
+    Navigation links (category, tag, author, contact…) are always skipped.
+    """
+    chapters: list[dict] = []
+    seen: set[str] = set()
+
+    for link in soup.find_all("a", href=True):
+        href: str = link["href"]
+        title = clean_text(link.get_text())
+
+        if not title or len(title) < 3:
+            continue
+
+        if href.startswith("/") and base_url:
+            href = base_url.rstrip("/") + href
+        elif not href.startswith("http"):
+            continue
+
+        # Split path into segments to avoid substring false-positives
+        # (e.g. "search" must not match "research")
+        href_segments = set(re.split(r"[/\-_?#]", href.lower()))
+        if href_segments & _NAV_SKIP_TOKENS:
+            continue
+
+        if href == subject_url or href in seen:
+            continue
+
+        href_ok = bool(_NOTE_HREF_RE.search(href))
+        text_ok = bool(_NOTE_TEXT_RE.search(title))
+        if not (href_ok or text_ok):
+            continue
+
+        seen.add(href)
+        chapters.append({"title": title, "url": href})
+
+    return chapters
+
 
 # Domains whose links must be stripped from scraped content
 _STRIP_DOMAINS = [
@@ -77,41 +162,58 @@ def scrape_nebplus2_subject_page(url: str) -> list[dict]:
         return []
 
     soup = remove_unwanted_elements(soup)
-    chapters = []
 
-    # Look for chapter links in the main content area
-    content_area = (
+    # 1. Try known containers; fall back to paragraph-density heuristic
+    container = (
         soup.select_one(".entry-content")
         or soup.select_one("article")
         or soup.select_one(".post-content")
         or soup.select_one("main")
+        or _find_dense_container(soup)
+        or soup
     )
 
-    if not content_area:
-        logger.warning(f"No content area found on: {url}")
-        return []
+    all_links = container.find_all("a", href=True)
+    logger.info(f"[nebplus2] Found {len(all_links)} <a> tags in container for {url}")
+    print(f"DEBUG [nebplus2]: Found {len(all_links)} links in container for {url}")
 
-    # Find all links that look like chapter links
-    for link in content_area.find_all("a", href=True):
+    chapters: list[dict] = []
+    seen: set[str] = set()
+
+    for link in all_links:
         href = link["href"]
         title = clean_text(link.get_text())
 
         if not title or len(title) < 3:
             continue
-        # Skip non-content links
         if any(skip in href.lower() for skip in ["#", "javascript:", "facebook", "twitter"]):
             continue
 
-        # Only include links from the same domain
         if NEBPLUS2_BASE in href or href.startswith("/"):
             if href.startswith("/"):
                 href = NEBPLUS2_BASE + href
+            if href == url or href in seen:
+                continue
+            seen.add(href)
+            chapters.append({"title": title, "url": href})
 
-            chapters.append({
-                "title": title,
-                "url": href,
-            })
+    # 2. Full-page heuristic fallback when container search found nothing
+    if not chapters:
+        logger.info(f"[nebplus2] Container search 0 links — trying heuristic finder for {url}")
+        print(f"DEBUG [nebplus2]: 0 links in container — falling back to heuristic finder")
+        chapters = [
+            c for c in _heuristic_chapter_links(soup, base_url=NEBPLUS2_BASE, subject_url=url)
+            if NEBPLUS2_BASE in c["url"]
+        ]
+        if not chapters:
+            body = soup.find("body")
+            raw = str(body)[:1000] if body else str(soup)[:1000]
+            print(
+                f"DEBUG [nebplus2]: Still 0 links after heuristic. "
+                f"Raw HTML Dump:\n{raw}"
+            )
 
+    logger.info(f"[nebplus2] Kept {len(chapters)} chapter links.")
     return chapters
 
 
@@ -181,7 +283,7 @@ READERS_SUBJECTS = {
     },
     11: {
         "Science": {
-            "Physics": f"{READERS_BASE}/e-notes/neb-new-course-class-11/physics-1",
+            "Physics": f"{READERS_BASE}/e-notes/neb-new-course-class-11/physics",
             "Chemistry": f"{READERS_BASE}/e-notes/neb-new-course-class-11/chemistry",
             "Biology": f"{READERS_BASE}/e-notes/neb-new-course-class-11/biology",
             "Computer Science": f"{READERS_BASE}/e-notes/neb-new-course-class-11/computer-science-2",
@@ -194,7 +296,7 @@ READERS_SUBJECTS = {
 }
 
 
-def scrape_readers_subject_page(url: str) -> list[dict]:
+def scrape_readers_subject_page(url: str, subject: str = "") -> list[dict]:
     """Scrape a subject page from readersnepal.com to get chapter list."""
     soup = fetch_page(url)
     if not soup:
@@ -204,43 +306,115 @@ def scrape_readers_subject_page(url: str) -> list[dict]:
     # Do NOT call remove_unwanted_elements here — it strips ALL <header> tags,
     # which includes WordPress <header class="entry-header"> blocks that contain
     # the chapter title <a> links on category/archive pages.
-    chapters = []
+    label = subject or url
+    print(f"DEBUG [readers]: Fetched {url} — using heuristic link finder")
 
-    # On WordPress category pages the chapter links are inside <article> elements,
-    # NOT inside .entry-content (that container only exists on single-post pages).
-    # Search the full document so no links are missed regardless of page layout.
-    all_links = soup.find_all("a", href=True)
-    logger.info(f"Found {len(all_links)} total <a> tags on page.")
+    chapters = _heuristic_chapter_links(soup, base_url=READERS_BASE, subject_url=url)
+    chapters = [c for c in chapters if READERS_BASE in c["url"]]
 
-    seen_hrefs: set[str] = set()
-    for link in all_links:
-        href = link["href"]
-        title = clean_text(link.get_text())
+    logger.info(f"[readers] Kept {len(chapters)} chapter links for {label}")
+    print(f"DEBUG [readers]: Kept {len(chapters)} chapter links for {label}")
 
-        # Normalise relative URLs before any filtering
-        if href.startswith("/"):
-            href = READERS_BASE + href
+    if not chapters:
+        body = soup.find("body")
+        raw = str(body)[:1000] if body else str(soup)[:1000]
+        print(f"DEBUG [readers]: 0 links — Raw HTML Dump:\n{raw}")
 
-        # Only chapter/note links contain /e-notes/ in their path
-        if "/e-notes/" not in href:
+    return chapters
+
+
+def extract_readers_note_json(html_text: str) -> Optional[dict]:
+    """Extract the :note Vue prop JSON embedded in a readersnepal.com subject page.
+
+    readersnepal.com is a Laravel+Vue SPA that server-injects all chapter data
+    (including full HTML content) as a single JSON prop on the root component:
+        <note-view :note='{"id":...,"chapters":[{"name":"...","content":"..."}]}'...>
+    The content strings are Unicode-escaped HTML (\\u003Cp\\u003E…).
+    json.loads() decodes them automatically.
+    """
+    m = re.search(r":note='([^']+)'\s", html_text)
+    if not m:
+        m = re.search(r':note="([^"]+)"\s', html_text)
+    if not m:
+        return None
+    raw = _html_module.unescape(m.group(1))
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError as exc:
+        logger.warning(f"[readers] Failed to parse :note JSON: {exc}")
+        return None
+
+
+def scrape_readers_full_subject(url: str, subject: str = "") -> list[dict]:
+    """Scrape a readersnepal.com subject page and return fully-populated chapter dicts.
+
+    Because the site embeds all chapter content in the page HTML (via a Vue prop),
+    this function returns chapter dicts that already contain 'content' — so the
+    caller does NOT need to issue separate per-chapter HTTP requests.
+
+    Returns a list of dicts compatible with scrape_chapter() output:
+        {title, url, content, source_url, content_quality}
+    plus an extra 'slug' key for reference.
+    """
+    import requests as _requests
+
+    label = subject or url
+    try:
+        resp = _requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=15)
+        if resp.status_code in (403, 404, 410):
+            logger.warning(f"[readers] HTTP {resp.status_code} on subject page: {url}")
+            return []
+        resp.raise_for_status()
+        html_text = resp.text
+    except Exception as exc:
+        logger.warning(f"[readers] Could not fetch subject page {url}: {exc}")
+        return []
+
+    note = extract_readers_note_json(html_text)
+    if not note:
+        logger.warning(f"[readers] No embedded :note JSON found at {url}")
+        return []
+
+    chapters_raw = note.get("chapters", [])
+    logger.info(f"[readers] Found {len(chapters_raw)} chapters in embedded JSON for {label}")
+
+    results = []
+    for ch in chapters_raw:
+        ch_name = clean_text(ch.get("name", "") or "")
+        ch_slug = ch.get("slug", "")
+        ch_content_raw = ch.get("content", "") or ""
+
+        if not ch_name or not ch_slug:
             continue
 
-        # Drop links with empty text
-        if not title:
-            continue
+        # Content is already decoded HTML after json.loads()
+        # Run it through BeautifulSoup to clean and standardise it
+        try:
+            area = BeautifulSoup(ch_content_raw, "html.parser")
+            content = extract_html_content(area)
+        except Exception:
+            content = ch_content_raw
 
-        # Skip duplicate hrefs and the subject index URL itself
-        if href == url or href in seen_hrefs:
-            continue
+        ok, reason = validate_content_quality(content)
+        if not ok:
+            logger.debug(f"[readers] Low quality ({reason}) for chapter '{ch_name}'")
+            # Still include it — caller can decide
+            content_quality = "low"
+        else:
+            content_quality = "full"
 
-        seen_hrefs.add(href)
-        chapters.append({
-            "title": title,
-            "url": href,
+        ch_url = url.rstrip("/") + "/" + ch_slug
+        results.append({
+            "title": ch_name,
+            "url": ch_url,
+            "content": content,
+            "source_url": ch_url,
+            "content_quality": content_quality,
+            "slug": ch_slug,
         })
 
-    logger.info(f"Kept {len(chapters)} chapter links after filtering.")
-    return chapters
+    logger.info(f"[readers] Returning {len(results)} chapters for {label}")
+    return results
 
 
 def scrape_readers_chapter(url: str) -> Optional[dict]:
@@ -268,6 +442,8 @@ def scrape_readers_chapter(url: str) -> Optional[dict]:
             "nav",
             "[class*='navigation']",
             "[class*='nav-links']",
+            "style",
+            "script",
         ):
             for el in entry.select(unwanted_sel):
                 el.decompose()

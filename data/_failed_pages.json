@@ -1,0 +1,29 @@
+{
+  "failed": [
+    {
+      "url": "https://readersnepal.com/e-notes/neb-new-course-class-11/physics/new-course",
+      "reason": "too short (85 < 400 chars)",
+      "source": "readers"
+    },
+    {
+      "url": "https://readersnepal.com/e-notes/neb-new-course-class-11/chemistry/new-course",
+      "reason": "too short (85 < 400 chars)",
+      "source": "readers"
+    },
+    {
+      "url": "https://readersnepal.com/e-notes/neb-new-course-class-11/biology/new-course",
+      "reason": "too short (77 < 400 chars)",
+      "source": "readers"
+    },
+    {
+      "url": "https://readersnepal.com/e-notes/neb-new-course-class-11/computer-science-2/new-course",
+      "reason": "too short (189 < 400 chars)",
+      "source": "readers"
+    },
+    {
+      "url": "https://readersnepal.com/e-notes/neb-new-course-class-11/economics/new-course",
+      "reason": "too short (132 < 400 chars)",
+      "source": "readers"
+    }
+  ]
+}

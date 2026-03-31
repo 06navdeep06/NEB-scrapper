@@ -2,25 +2,29 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Search, ArrowRight, Atom, FlaskConical, Calculator, Monitor, Microscope, BookMarked } from 'lucide-react'
+import { Search, ArrowRight, Atom, FlaskConical, Calculator, Monitor, Microscope, BookMarked, TrendingUp, Briefcase } from 'lucide-react'
 import type { Subject } from '@/types'
 
 const iconMap: Record<string, React.ReactNode> = {
-  atom:       <Atom className="h-6 w-6" />,
-  flask:      <FlaskConical className="h-6 w-6" />,
-  calculator: <Calculator className="h-6 w-6" />,
-  monitor:    <Monitor className="h-6 w-6" />,
-  microscope: <Microscope className="h-6 w-6" />,
-  book:       <BookMarked className="h-6 w-6" />,
+  atom:         <Atom className="h-6 w-6" />,
+  flask:        <FlaskConical className="h-6 w-6" />,
+  calculator:   <Calculator className="h-6 w-6" />,
+  monitor:      <Monitor className="h-6 w-6" />,
+  microscope:   <Microscope className="h-6 w-6" />,
+  book:         <BookMarked className="h-6 w-6" />,
+  'trending-up': <TrendingUp className="h-6 w-6" />,
+  briefcase:    <Briefcase className="h-6 w-6" />,
 }
 
 const colorMap: Record<string, { color: string; bg: string; border: string; glow: string }> = {
-  atom:       { color: 'text-blue-600 dark:text-blue-400',    bg: 'bg-blue-50 dark:bg-blue-950/40',    border: 'border-blue-200 dark:border-blue-900',    glow: 'from-blue-500 to-cyan-500'    },
-  flask:      { color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-950/40', border: 'border-emerald-200 dark:border-emerald-900', glow: 'from-emerald-500 to-teal-500' },
-  calculator: { color: 'text-violet-600 dark:text-violet-400', bg: 'bg-violet-50 dark:bg-violet-950/40',  border: 'border-violet-200 dark:border-violet-900', glow: 'from-violet-500 to-purple-500' },
-  monitor:    { color: 'text-orange-600 dark:text-orange-400', bg: 'bg-orange-50 dark:bg-orange-950/40',  border: 'border-orange-200 dark:border-orange-900', glow: 'from-orange-500 to-amber-500'  },
-  microscope: { color: 'text-pink-600 dark:text-pink-400',    bg: 'bg-pink-50 dark:bg-pink-950/40',     border: 'border-pink-200 dark:border-pink-900',    glow: 'from-pink-500 to-rose-500'    },
-  book:       { color: 'text-amber-600 dark:text-amber-400',  bg: 'bg-amber-50 dark:bg-amber-950/40',   border: 'border-amber-200 dark:border-amber-900',  glow: 'from-amber-500 to-yellow-500' },
+  atom:         { color: 'text-blue-600 dark:text-blue-400',    bg: 'bg-blue-50 dark:bg-blue-950/40',    border: 'border-blue-200 dark:border-blue-900',    glow: 'from-blue-500 to-cyan-500'    },
+  flask:        { color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-950/40', border: 'border-emerald-200 dark:border-emerald-900', glow: 'from-emerald-500 to-teal-500' },
+  calculator:   { color: 'text-violet-600 dark:text-violet-400', bg: 'bg-violet-50 dark:bg-violet-950/40',  border: 'border-violet-200 dark:border-violet-900', glow: 'from-violet-500 to-purple-500' },
+  monitor:      { color: 'text-orange-600 dark:text-orange-400', bg: 'bg-orange-50 dark:bg-orange-950/40',  border: 'border-orange-200 dark:border-orange-900', glow: 'from-orange-500 to-amber-500'  },
+  microscope:   { color: 'text-pink-600 dark:text-pink-400',    bg: 'bg-pink-50 dark:bg-pink-950/40',     border: 'border-pink-200 dark:border-pink-900',    glow: 'from-pink-500 to-rose-500'    },
+  book:         { color: 'text-amber-600 dark:text-amber-400',  bg: 'bg-amber-50 dark:bg-amber-950/40',   border: 'border-amber-200 dark:border-amber-900',  glow: 'from-amber-500 to-yellow-500' },
+  'trending-up': { color: 'text-teal-600 dark:text-teal-400',   bg: 'bg-teal-50 dark:bg-teal-950/40',    border: 'border-teal-200 dark:border-teal-900',    glow: 'from-teal-500 to-cyan-500'    },
+  briefcase:    { color: 'text-indigo-600 dark:text-indigo-400', bg: 'bg-indigo-50 dark:bg-indigo-950/40', border: 'border-indigo-200 dark:border-indigo-900', glow: 'from-indigo-500 to-blue-500'  },
 }
 
 const FACULTY_SUBJECTS: Record<string, Record<string, string[]>> = {
@@ -29,8 +33,8 @@ const FACULTY_SUBJECTS: Record<string, Record<string, string[]>> = {
     12: ['physics', 'chemistry', 'mathematics', 'biology', 'computer-science', 'english', 'nepali'],
   },
   Management: {
-    11: ['english', 'nepali'],
-    12: ['english', 'nepali'],
+    11: ['economics', 'business-studies', 'english', 'nepali'],
+    12: ['economics', 'business-studies', 'english', 'nepali'],
   },
 }
 

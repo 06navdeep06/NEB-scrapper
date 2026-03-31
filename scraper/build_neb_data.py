@@ -32,6 +32,10 @@ DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
 # ─── Content merging helpers ──────────────────────────────────────────
 
 _BLOCK_RE = re.compile(r"(<h[1-6][^>]*>.*?</h[1-6]>|<p[^>]*>.*?</p>|<ul[^>]*>.*?</ul>|<ol[^>]*>.*?</ol>|<blockquote[^>]*>.*?</blockquote>|<table[^>]*>.*?</table>)", re.IGNORECASE | re.DOTALL)
+_PREFIX_RE = re.compile(
+    r"^(?:chapter|unit|part)\s+[\w]+\s*[:\-\.]+\s*(?:[a-z]+\s*[:\-\.]+\s*)?",
+    re.IGNORECASE,
+)
 _TAG_RE = re.compile(r"<[^>]+>")
 _HEADING_RE = re.compile(r"<(h[1-6])([^>]*)>", re.IGNORECASE)
 _WS_RE = re.compile(r"\s+")
@@ -68,8 +72,20 @@ def _extract_blocks(html: str) -> list[str]:
     return [b.strip() for b in blocks if b.strip()]
 
 
+def _content_score(content: str) -> float:
+    """Score content quality: word count + heading bonus (structure signal)."""
+    text = _strip_tags(content)
+    word_count = len(text.split())
+    heading_count = len(re.findall(r"<h[1-6][\s>]", content, re.IGNORECASE))
+    return word_count + heading_count * 20
+
+
 def merge_html_content(sources: list[dict]) -> tuple[str, str]:
     """Merge HTML content from multiple scraped sources into one unified note.
+
+    Sources are sorted by quality score before merging so the best content
+    anchors the block order.  Duplicate blocks (fingerprint-matched) are
+    dropped regardless of which source they come from.
 
     Args:
         sources: list of dicts with keys 'content' (HTML str) and 'source_url'
@@ -82,11 +98,14 @@ def merge_html_content(sources: list[dict]) -> tuple[str, str]:
     if len(sources) == 1:
         return sources[0]["content"], sources[0].get("source_url", "")
 
+    # Sort highest-quality source first so its block order dominates
+    ranked = sorted(sources, key=lambda s: _content_score(s.get("content", "")), reverse=True)
+
     seen_fps: set[str] = set()
     merged_blocks: list[str] = []
     all_urls: list[str] = []
 
-    for src in sources:
+    for src in ranked:
         raw = src.get("content", "").strip()
         url = src.get("source_url", "")
         if url:
@@ -144,6 +163,9 @@ def _save(data: dict, filename: str):
     print(f"Saved: {path}")
 
 
+_STOP_WORDS = frozenset({"and", "or", "of", "in", "the", "a", "an", "to", "for"})
+
+
 def _normalise(text: str) -> str:
     """Lowercase, strip punctuation and extra spaces for fuzzy matching."""
     text = text.lower()
@@ -151,27 +173,67 @@ def _normalise(text: str) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
+def _strip_title_prefix(title: str) -> str:
+    """Remove common numeric prefixes like 'Chapter 1:', 'UNIT 5.', 'Part B - Ch6:'."""
+    return _PREFIX_RE.sub("", title).strip()
+
+
 def _title_similarity(a: str, b: str) -> float:
-    """Simple word-overlap similarity between two normalised strings."""
-    words_a = set(_normalise(a).split())
-    words_b = set(_normalise(b).split())
+    """Word-overlap similarity ignoring stop words."""
+    words_a = set(_normalise(a).split()) - _STOP_WORDS
+    words_b = set(_normalise(b).split()) - _STOP_WORDS
     if not words_a or not words_b:
         return 0.0
     intersection = words_a & words_b
+    # Also give a boost if all words of the shorter title appear in the longer
+    shorter, longer = (words_a, words_b) if len(words_a) <= len(words_b) else (words_b, words_a)
+    if shorter and shorter.issubset(longer):
+        return 0.85
     return len(intersection) / max(len(words_a), len(words_b))
 
 
 def _find_best_chapter_match(
-    scraped_title: str, candidates: list[dict], threshold: float = 0.5
+    scraped_title: str,
+    candidates: list[dict],
+    threshold: float = 0.45,
+    class_num: Optional[int] = None,
 ) -> Optional[dict]:
-    """Return the best-matching chapter from candidates, or None."""
+    """Return the best-matching chapter from candidates, or None.
+
+    Tries both the original title and the prefix-stripped title, takes the higher score.
+    When class_num is provided, prefers candidates whose ID contains '-{class_num}-'.
+    """
+    stripped = _strip_title_prefix(scraped_title)
+
+    # Scope to class if possible
+    if class_num:
+        class_tag = f"-{class_num}-"
+        class_candidates = [ch for ch in candidates if class_tag in ch.get("id", "")]
+        search_order = (class_candidates or candidates, candidates)
+    else:
+        search_order = (candidates,)
+
     best_score = 0.0
     best = None
-    for ch in candidates:
-        score = _title_similarity(scraped_title, ch.get("title", ""))
-        if score > best_score:
-            best_score = score
-            best = ch
+    seen: set[str] = set()
+
+    for pool in search_order:
+        for ch in pool:
+            ch_id = ch.get("id", "")
+            if ch_id in seen:
+                continue
+            seen.add(ch_id)
+            ch_title = ch.get("title", "")
+            score = max(
+                _title_similarity(scraped_title, ch_title),
+                _title_similarity(stripped, ch_title),
+            )
+            if score > best_score:
+                best_score = score
+                best = ch
+        if best_score >= threshold:
+            break  # Found a good match in the class-scoped pool; stop
+
     return best if best_score >= threshold else None
 
 
@@ -194,17 +256,28 @@ def build(dry_run: bool = False):
         sid = ch.get("subjectId", "")
         subject_chapters.setdefault(sid, []).append(ch)
 
-    sources = [
-        ("nebplus2_data.json", "nebplus2"),
-        ("readers_data.json", "readers"),
-    ]
+    # Auto-detect all scraped source files — any *_data.json except the
+    # canonical outputs (neb_data.json, existing_data.json) and debug/tracker files.
+    _SKIP = {"neb_data.json", "existing_data.json"}
+    detected: list[tuple[str, str]] = []
+    for fname in sorted(os.listdir(DATA_DIR)):
+        if not fname.endswith("_data.json") or fname in _SKIP:
+            continue
+        key = fname[: -len("_data.json")]
+        detected.append((fname, key))
+
+    if not detected:
+        print("  No scraped source files found in data/. Run scraper first.")
+        return
+
+    print(f"\nAuto-detected {len(detected)} source file(s): {[f for f, _ in detected]}")
 
     # First pass: collect all scraped content per chapter_id across sources
     # Structure: chapter_id → list of {content, source_url, title, source_key}
     chapter_sources: dict[str, list[dict]] = {}
     unmatched: list[dict] = []
 
-    for filename, source_key in sources:
+    for filename, source_key in detected:
         scraped = _load(filename)
         if not scraped:
             print(f"  Skipping {filename} (not found)")
@@ -224,12 +297,16 @@ def build(dry_run: bool = False):
                 print(f"  ! No chapters found for subject '{subject_id}'")
                 continue
 
+            class_num = subject_entry.get("class")
+
             for scraped_ch in subject_entry.get("chapters", []):
                 content = scraped_ch.get("content", "")
                 if not content or not content.strip():
                     continue
 
-                matched = _find_best_chapter_match(scraped_ch["title"], candidates)
+                matched = _find_best_chapter_match(
+                    scraped_ch["title"], candidates, class_num=class_num
+                )
                 if not matched:
                     unmatched.append({
                         "source": source_key,
@@ -249,6 +326,9 @@ def build(dry_run: bool = False):
                 })
                 print(f"  ✓ Matched [{source_key}]: '{scraped_ch['title']}' → {chapter_id}")
 
+    # Collect all known source keys for legacy ID cleanup
+    all_source_keys = {key for _, key in detected}
+
     # Second pass: merge multi-source content and build/update note records
     existing_note_ids: set[str] = {n["id"] for n in notes}
     new_notes: list[dict] = []
@@ -259,9 +339,12 @@ def build(dry_run: bool = False):
         note_id = f"scraped-merged-{chapter_id}"
 
         if len(src_list) > 1:
-            print(f"  ↔ Merging {len(src_list)} sources for chapter {chapter_id}")
+            scores = {s["source_key"]: int(_content_score(s["content"])) for s in src_list}
+            score_str = ", ".join(f"{k}={v}" for k, v in sorted(scores.items(), key=lambda x: -x[1]))
+            print(f"  ↔ Merging {len(src_list)} sources for {chapter_id} [{score_str}]")
             merged_html, merged_urls = merge_html_content(src_list)
-            best_title = max(src_list, key=lambda s: len(s["content"]))["title"]
+            # Title from the highest-quality source
+            best_title = max(src_list, key=lambda s: _content_score(s["content"]))["title"]
         else:
             merged_html = src_list[0]["content"]
             merged_urls = src_list[0].get("source_url", "")
@@ -284,8 +367,8 @@ def build(dry_run: bool = False):
                     updated_count += 1
                     break
         else:
-            # Also remove old per-source notes for this chapter (clean up legacy IDs)
-            old_ids = {f"scraped-{sk}-{chapter_id}" for sk in ("nebplus2", "readers")}
+            # Remove old per-source notes for this chapter (legacy IDs from any source)
+            old_ids = {f"scraped-{sk}-{chapter_id}" for sk in all_source_keys}
             notes = [n for n in notes if n["id"] not in old_ids]
             existing_note_ids -= old_ids
 

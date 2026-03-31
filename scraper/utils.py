@@ -8,7 +8,7 @@ import json
 from typing import Optional
 
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 
 logging.basicConfig(
     level=logging.INFO,
@@ -106,3 +106,63 @@ def load_json(filename: str) -> Optional[dict]:
         with open(filepath, "r", encoding="utf-8") as f:
             return json.load(f)
     return None
+
+
+_CONTENT_SELECTORS = [
+    ".entry-content", ".post-content", ".note-content", ".article-body",
+    ".single-content", ".post-body", "article .content",
+    "#main-content", ".main-content", "#content article",
+    "article", ".content-area", "#content", "main",
+]
+
+_CLUTTER_TOKENS = frozenset({
+    "nav", "sidebar", "footer", "header", "menu", "widget",
+    "advertisement", "social", "share", "comment", "related",
+    "breadcrumb", "pagination", "search", "cookie", "popup",
+    "banner", "promo", "subscribe", "newsletter",
+})
+
+
+def extract_universal_content(soup: BeautifulSoup) -> Optional[Tag]:
+    """Find the main content element using readability-style heuristics.
+
+    Strategy:
+    1. Try common semantic/WordPress content selectors (fastest path).
+    2. Fall back to scoring every block-level element by text density —
+       elements that are mostly links (nav/sidebar) score poorly; dense
+       prose (notes content) scores highly.
+
+    Returns the best candidate Tag, or None.
+    """
+    for sel in _CONTENT_SELECTORS:
+        el = soup.select_one(sel)
+        if el and len(el.get_text(strip=True)) > 200:
+            return el
+
+    best: Optional[Tag] = None
+    best_score: float = 0.0
+
+    for el in soup.find_all(["div", "section", "article", "main"]):
+        classes = " ".join(el.get("class") or []).lower()
+        el_id = (el.get("id") or "").lower()
+        combined = classes + " " + el_id
+
+        if any(tok in combined for tok in _CLUTTER_TOKENS):
+            continue
+
+        text = el.get_text(separator=" ", strip=True)
+        text_len = len(text)
+        if text_len < 200:
+            continue
+
+        link_chars = sum(len(a.get_text(strip=True)) for a in el.find_all("a"))
+        link_ratio = link_chars / max(text_len, 1)
+        if link_ratio > 0.45:
+            continue
+
+        score = text_len * (1.0 - link_ratio)
+        if score > best_score:
+            best_score = score
+            best = el
+
+    return best

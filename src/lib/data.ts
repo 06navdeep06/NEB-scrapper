@@ -39,8 +39,8 @@ export const subjects: Subject[] = [
     name: 'Computer Science',
     slug: 'computer-science',
     icon: 'monitor',
-    description: 'C Programming, Web Technology (HTML/CSS), Database (SQL), and Python.',
-    totalChapters: 8,
+    description: 'C Programming, Web Technology (HTML/CSS), Database (SQL), Python, OOP, Networking, and Multimedia.',
+    totalChapters: 15,
   },
   {
     id: 'eng',
@@ -57,6 +57,22 @@ export const subjects: Subject[] = [
     icon: 'book',
     description: 'Compulsory Nepali chapters and exercises (Grade 11 & 12).',
     totalChapters: 24,
+  },
+  {
+    id: 'eco',
+    name: 'Economics',
+    slug: 'economics',
+    icon: 'trending-up',
+    description: 'Micro and Macroeconomics: demand, supply, production, and development economics.',
+    totalChapters: 14,
+  },
+  {
+    id: 'bus',
+    name: 'Business Studies',
+    slug: 'business-studies',
+    icon: 'briefcase',
+    description: 'Management principles, office management, and business organisation.',
+    totalChapters: 29,
   },
 ];
 
@@ -224,13 +240,20 @@ export const chapters: Chapter[] = [
   { id: 'cs-11-1', subjectId: 'cs', number: 1, title: 'Computer System Architecture', description: 'Logic gates, boolean algebra, and CPU architecture.', estimatedHours: 6, grade: 11 },
   { id: 'cs-11-2', subjectId: 'cs', number: 2, title: 'Web Technology I', description: 'Introduction to HTML, CSS basics.', estimatedHours: 8, grade: 11 },
   { id: 'cs-11-3', subjectId: 'cs', number: 3, title: 'Programming in C', description: 'Flowcharts, Algorithms, C syntax, Control structures.', estimatedHours: 12, grade: 11 },
+  { id: 'cs-11-4', subjectId: 'cs', number: 4, title: 'Number System, Conversion and Boolean Logic', description: 'Binary, octal, hexadecimal conversions and Boolean algebra.', estimatedHours: 6, grade: 11 },
+  { id: 'cs-11-5', subjectId: 'cs', number: 5, title: 'Application Package', description: 'Word processor, spreadsheet, presentation, and database software.', estimatedHours: 5, grade: 11 },
+  { id: 'cs-11-6', subjectId: 'cs', number: 6, title: 'Programming Concepts and Logics', description: 'Problem solving, algorithms, flowcharts, and pseudocode.', estimatedHours: 5, grade: 11 },
+  { id: 'cs-11-7', subjectId: 'cs', number: 7, title: 'Multimedia', description: 'Types of multimedia, applications, and multimedia file formats.', estimatedHours: 4, grade: 11 },
+  { id: 'cs-11-8', subjectId: 'cs', number: 8, title: 'Information Security and Cyber Law', description: 'Cyber threats, cryptography, digital signatures, and IT Act.', estimatedHours: 5, grade: 11 },
 
   // CS - Grade 12
-  { id: 'cs-12-1', subjectId: 'cs', number: 4, title: 'Database Management System (SQL)', description: 'DBMS concepts, normalization, and SQL queries.', estimatedHours: 10, grade: 12 },
-  { id: 'cs-12-2', subjectId: 'cs', number: 5, title: 'Web Technology II', description: 'PHP, JavaScript basics.', estimatedHours: 10, grade: 12 },
-  { id: 'cs-12-3', subjectId: 'cs', number: 6, title: 'Programming in C (Advanced)', description: 'Pointers, Structures, File Handling.', estimatedHours: 12, grade: 12 },
-  { id: 'cs-12-4', subjectId: 'cs', number: 7, title: 'Networking', description: 'OSI model, TCP/IP, topologies, security.', estimatedHours: 8, grade: 12 },
-  { id: 'cs-12-5', subjectId: 'cs', number: 8, title: 'Software Process Model', description: 'SDLC, Waterfall, Agile models.', estimatedHours: 6, grade: 12 },
+  { id: 'cs-12-1', subjectId: 'cs', number: 9, title: 'Database Management System (SQL)', description: 'DBMS concepts, normalization, and SQL queries.', estimatedHours: 10, grade: 12 },
+  { id: 'cs-12-2', subjectId: 'cs', number: 10, title: 'Web Technology II', description: 'PHP, JavaScript basics.', estimatedHours: 10, grade: 12 },
+  { id: 'cs-12-3', subjectId: 'cs', number: 11, title: 'Programming in C (Advanced)', description: 'Pointers, Structures, File Handling.', estimatedHours: 12, grade: 12 },
+  { id: 'cs-12-4', subjectId: 'cs', number: 12, title: 'Networking', description: 'OSI model, TCP/IP, topologies, security.', estimatedHours: 8, grade: 12 },
+  { id: 'cs-12-5', subjectId: 'cs', number: 13, title: 'Software Process Model', description: 'SDLC, Waterfall, Agile models.', estimatedHours: 6, grade: 12 },
+  { id: 'cs-12-6', subjectId: 'cs', number: 14, title: 'Object Oriented Programming', description: 'OOP concepts: classes, objects, inheritance, polymorphism.', estimatedHours: 10, grade: 12 },
+  { id: 'cs-12-7', subjectId: 'cs', number: 15, title: 'Recent Trends in Technology', description: 'AI, cloud computing, IoT, blockchain, and emerging tech.', estimatedHours: 4, grade: 12 },
   
   // English - Grade 11 (Language Development Units 1–20)
   { id: 'eng-11-1', subjectId: 'eng', number: 1, title: 'Education and Humanity', description: 'Language Development unit exercises and summary.', estimatedHours: 4, grade: 11 },
@@ -284,6 +307,57 @@ export const chapters: Chapter[] = [
   { id: 'nep-12-10', subjectId: 'nep', number: 22, title: 'नेपाली पहिचान', description: 'रचना — अभ्यास र सार', estimatedHours: 4, grade: 12 },
   { id: 'nep-12-11', subjectId: 'nep', number: 23, title: 'सहकारी', description: 'रचना — अभ्यास र सार', estimatedHours: 3, grade: 12 },
   { id: 'nep-12-12', subjectId: 'nep', number: 24, title: 'जीवन मार्ग', description: 'रचना — अभ्यास र सार', estimatedHours: 4, grade: 12 },
+
+  // Economics - Grade 11
+  { id: 'eco-11-1', subjectId: 'eco', number: 1, title: 'Introduction of Economics', description: 'Meaning, scope, and basic concepts of economics.', estimatedHours: 5, grade: 11 },
+  { id: 'eco-11-2', subjectId: 'eco', number: 2, title: 'Basic Issues of Economics', description: 'Fundamental economic problems and their solutions.', estimatedHours: 5, grade: 11 },
+  { id: 'eco-11-3', subjectId: 'eco', number: 3, title: 'Demand and Supply', description: 'Law of demand and supply, market equilibrium.', estimatedHours: 6, grade: 11 },
+  { id: 'eco-11-4', subjectId: 'eco', number: 4, title: 'Meaning and Indicator of Economic Development', description: 'Concepts and indicators of economic development and growth.', estimatedHours: 5, grade: 11 },
+  { id: 'eco-11-5', subjectId: 'eco', number: 5, title: 'Poverty and Inequality', description: 'Nature, causes, and measures of poverty and inequality.', estimatedHours: 5, grade: 11 },
+  { id: 'eco-11-6', subjectId: 'eco', number: 6, title: 'Human Resources', description: 'Human capital, labour force, and employment in Nepal.', estimatedHours: 4, grade: 11 },
+  { id: 'eco-11-7', subjectId: 'eco', number: 7, title: 'Development Planning', description: 'Planning process and economic planning in Nepal.', estimatedHours: 4, grade: 11 },
+  { id: 'eco-11-8', subjectId: 'eco', number: 8, title: 'Natural Resources of Nepal', description: 'Types and importance of natural resources in Nepal.', estimatedHours: 4, grade: 11 },
+  { id: 'eco-11-9', subjectId: 'eco', number: 9, title: 'Agriculture', description: 'Role, problems, and development of agriculture in Nepal.', estimatedHours: 4, grade: 11 },
+
+  // Economics - Grade 12
+  { id: 'eco-12-1', subjectId: 'eco', number: 10, title: 'Economics: Meaning and Types', description: 'Microeconomics vs. macroeconomics, scope, and methodology.', estimatedHours: 4, grade: 12 },
+  { id: 'eco-12-2', subjectId: 'eco', number: 11, title: 'Elasticity and its measurement', description: 'Price, income, and cross elasticity of demand.', estimatedHours: 6, grade: 12 },
+  { id: 'eco-12-3', subjectId: 'eco', number: 12, title: "Theory of consumer's behaviour", description: 'Cardinal and ordinal utility, indifference curves.', estimatedHours: 7, grade: 12 },
+  { id: 'eco-12-4', subjectId: 'eco', number: 13, title: 'Theory of production', description: 'Production function, laws of returns, economies of scale.', estimatedHours: 7, grade: 12 },
+  { id: 'eco-12-5', subjectId: 'eco', number: 14, title: 'Revenue and cost curves', description: 'Total, average, and marginal revenue and cost concepts.', estimatedHours: 6, grade: 12 },
+
+  // Business Studies - Grade 11
+  { id: 'bus-11-1', subjectId: 'bus', number: 1, title: 'Introduction to Business', description: 'Meaning, features, objectives, and scope of business.', estimatedHours: 4, grade: 11 },
+  { id: 'bus-11-2', subjectId: 'bus', number: 2, title: 'Evolution of Business', description: 'Historical development and modern forms of business.', estimatedHours: 4, grade: 11 },
+  { id: 'bus-11-3', subjectId: 'bus', number: 3, title: 'Sole Trading Concern', description: 'Features, merits, and demerits of sole proprietorship.', estimatedHours: 3, grade: 11 },
+  { id: 'bus-11-4', subjectId: 'bus', number: 4, title: 'Partnership Firm', description: 'Types of partners, registration, dissolution.', estimatedHours: 3, grade: 11 },
+  { id: 'bus-11-5', subjectId: 'bus', number: 5, title: 'Joint Stock Company', description: 'Formation, types of shares, and company management.', estimatedHours: 4, grade: 11 },
+  { id: 'bus-11-6', subjectId: 'bus', number: 6, title: 'Public Enterprises', description: 'Government-owned enterprises and their role.', estimatedHours: 3, grade: 11 },
+  { id: 'bus-11-7', subjectId: 'bus', number: 7, title: 'Co-operative Organization', description: 'Principles, types, and importance of co-operatives.', estimatedHours: 3, grade: 11 },
+  { id: 'bus-11-8', subjectId: 'bus', number: 8, title: 'Multinational Companies', description: 'Nature, advantages, and disadvantages of MNCs.', estimatedHours: 3, grade: 11 },
+  { id: 'bus-11-9', subjectId: 'bus', number: 9, title: 'Business Support Agencies in Nepal', description: 'Role of FNCCI, NRB, and other business bodies.', estimatedHours: 3, grade: 11 },
+  { id: 'bus-11-10', subjectId: 'bus', number: 10, title: 'Office Management', description: 'Functions, layout, and modern office practices.', estimatedHours: 4, grade: 11 },
+  { id: 'bus-11-11', subjectId: 'bus', number: 11, title: 'Filing', description: 'Methods, systems, and importance of filing.', estimatedHours: 3, grade: 11 },
+  { id: 'bus-11-12', subjectId: 'bus', number: 12, title: 'Indexing', description: 'Types and methods of indexing records.', estimatedHours: 3, grade: 11 },
+  { id: 'bus-11-13', subjectId: 'bus', number: 13, title: 'Record Management', description: 'Record keeping, retention, and disposal.', estimatedHours: 3, grade: 11 },
+  { id: 'bus-11-14', subjectId: 'bus', number: 14, title: 'Office Machine and Furniture', description: 'Types and uses of office equipment.', estimatedHours: 3, grade: 11 },
+  { id: 'bus-11-15', subjectId: 'bus', number: 15, title: 'Business Communication', description: 'Principles, methods, and barriers of communication.', estimatedHours: 4, grade: 11 },
+
+  // Business Studies - Grade 12
+  { id: 'bus-12-1', subjectId: 'bus', number: 16, title: 'Nature of Management', description: 'Concept, levels, and functions of management.', estimatedHours: 4, grade: 12 },
+  { id: 'bus-12-2', subjectId: 'bus', number: 17, title: 'Principle of Management', description: "Fayol's and Taylor's principles of management.", estimatedHours: 4, grade: 12 },
+  { id: 'bus-12-3', subjectId: 'bus', number: 18, title: 'Planning', description: 'Nature, types, and steps in planning process.', estimatedHours: 5, grade: 12 },
+  { id: 'bus-12-4', subjectId: 'bus', number: 19, title: 'Organizing', description: 'Types of organisation, delegation, and decentralisation.', estimatedHours: 5, grade: 12 },
+  { id: 'bus-12-5', subjectId: 'bus', number: 20, title: 'Decision Making', description: 'Types, process, and techniques of decision making.', estimatedHours: 4, grade: 12 },
+  { id: 'bus-12-6', subjectId: 'bus', number: 21, title: 'Direction', description: 'Meaning, principles, and elements of direction.', estimatedHours: 4, grade: 12 },
+  { id: 'bus-12-7', subjectId: 'bus', number: 22, title: 'Motivation', description: 'Theories of motivation: Maslow, Herzberg.', estimatedHours: 4, grade: 12 },
+  { id: 'bus-12-8', subjectId: 'bus', number: 23, title: 'Leadership', description: 'Styles, qualities, and theories of leadership.', estimatedHours: 4, grade: 12 },
+  { id: 'bus-12-9', subjectId: 'bus', number: 24, title: 'Supervision', description: 'Role and qualities of a supervisor.', estimatedHours: 3, grade: 12 },
+  { id: 'bus-12-10', subjectId: 'bus', number: 25, title: 'Communication', description: 'Formal and informal communication channels in management.', estimatedHours: 4, grade: 12 },
+  { id: 'bus-12-11', subjectId: 'bus', number: 26, title: 'Co-ordination', description: 'Need, principles, and techniques of co-ordination.', estimatedHours: 3, grade: 12 },
+  { id: 'bus-12-12', subjectId: 'bus', number: 27, title: 'Controlling', description: 'Process, methods, and importance of control.', estimatedHours: 4, grade: 12 },
+  { id: 'bus-12-13', subjectId: 'bus', number: 28, title: 'Risk Management and Insurance', description: 'Types of business risk and role of insurance.', estimatedHours: 4, grade: 12 },
+  { id: 'bus-12-14', subjectId: 'bus', number: 29, title: 'Emerging Management Concept', description: 'TQM, MBO, and contemporary management approaches.', estimatedHours: 4, grade: 12 },
 ];
 
 export const notes: Note[] = [

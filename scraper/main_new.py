@@ -1,3 +1,5 @@
+# This file is a leftover from a refactor. It is safe to delete.
+# main.py now contains the same registry-driven scraper logic.
 """
 NEB Notes Scraper — Universal Edition
 ======================================
@@ -16,7 +18,6 @@ Usage:
     python -m scraper.main --merge-sources         # Run build_neb_data after scraping
     python -m scraper.main --force-rescrape        # Clear URL cache
     python -m scraper.main --min-length 200        # Override quality threshold
-    python -m scraper.main --convert-existing      # Convert data.ts to JSON
 """
 
 import argparse
@@ -33,7 +34,6 @@ from .parsers import validate_content_quality
 
 
 def generate_id(class_num: int, subject: str, chapter_title: str) -> str:
-    """Generate a deterministic chapter ID."""
     raw = f"{class_num}-{subject}-{chapter_title}".lower()
     short_hash = hashlib.md5(raw.encode()).hexdigest()[:6]
     slug = re.sub(r"[^a-z0-9]+", "-", subject.lower()).strip("-")
@@ -41,27 +41,20 @@ def generate_id(class_num: int, subject: str, chapter_title: str) -> str:
 
 
 def get_scraped_urls() -> set:
-    """Load already-scraped URLs to avoid duplicates."""
     tracker = load_json("_scraped_urls.json")
-    if tracker:
-        return set(tracker.get("urls", []))
-    return set()
+    return set(tracker.get("urls", [])) if tracker else set()
 
 
 def save_scraped_urls(urls: set):
-    """Save the set of already-scraped URLs."""
     save_json({"urls": sorted(urls)}, "_scraped_urls.json")
 
 
 def get_failed_pages() -> dict:
-    """Load the failed-pages log."""
     return load_json("_failed_pages.json") or {"failed": []}
 
 
 def log_failed_page(url: str, reason: str, source: str):
-    """Append a failed page entry to the failed-pages log."""
     data = get_failed_pages()
-    # Avoid duplicate entries
     existing_urls = {e["url"] for e in data["failed"]}
     if url not in existing_urls:
         data["failed"].append({"url": url, "reason": reason, "source": source})
@@ -112,12 +105,8 @@ def scrape_source(config: SourceConfig, min_length: int = 0):
                         logger.info(f"Already scraped: {ch_info['title']}")
                         continue
 
-                    # Custom scrapers (e.g. readers) may embed content directly in ch_info
-                    if ch_info.get("content"):
-                        chapter_data = ch_info
-                    else:
-                        chapter_data = scrape_chapter(config, ch_url)
-                        polite_delay()
+                    chapter_data = scrape_chapter(config, ch_url)
+                    polite_delay()
 
                     if chapter_data:
                         ok, reason = validate_content_quality(chapter_data.get("content", ""))
@@ -144,106 +133,7 @@ def scrape_source(config: SourceConfig, min_length: int = 0):
     logger.info(f"{config.name} scrape complete. {len(all_data['subjects'])} subjects saved.")
 
 
-def convert_existing_data():
-    """Convert the existing data.ts into structured JSON for the backend."""
-    logger.info("Converting existing data.ts to structured JSON...")
-
-    data_ts_path = os.path.join(
-        os.path.dirname(os.path.dirname(__file__)), "src", "lib", "data.ts"
-    )
-
-    if not os.path.exists(data_ts_path):
-        logger.error(f"data.ts not found at: {data_ts_path}")
-        return
-
-    with open(data_ts_path, "r", encoding="utf-8") as f:
-        content = f.read()
-
-    # Extract subjects array
-    subjects = extract_ts_array(content, "subjects")
-    chapters = extract_ts_array(content, "chapters")
-    notes = extract_ts_array(content, "notes")
-    past_papers = extract_ts_array(content, "pastPapers")
-    mock_tests = extract_ts_array(content, "mockTests")
-    questions = extract_ts_array(content, "questions")
-
-    combined = {
-        "source": "existing_data",
-        "subjects": subjects,
-        "chapters": chapters,
-        "notes": notes,
-        "pastPapers": past_papers,
-        "mockTests": mock_tests,
-        "questions": questions,
-    }
-
-    save_json(combined, "existing_data.json")
-    logger.info("Existing data converted and saved to data/existing_data.json")
-
-
-def extract_ts_array(content: str, var_name: str) -> list:
-    """
-    Extract a TypeScript array from data.ts content.
-    This is a best-effort parser for the specific format used in this project.
-    """
-    # Find the variable declaration
-    patterns = [
-        rf"export\s+const\s+{var_name}\s*:\s*\w+(?:\[\])?\s*=\s*\[",
-        rf"export\s+const\s+{var_name}\s*=\s*\[",
-        rf"const\s+{var_name}\s*:\s*\w+(?:\[\])?\s*=\s*\[",
-    ]
-
-    start_idx = -1
-    for pattern in patterns:
-        match = re.search(pattern, content)
-        if match:
-            start_idx = match.end() - 1  # Position of the opening [
-            break
-
-    if start_idx == -1:
-        logger.warning(f"Could not find array: {var_name}")
-        return []
-
-    # Find matching closing bracket
-    depth = 0
-    end_idx = start_idx
-    for i in range(start_idx, len(content)):
-        if content[i] == "[":
-            depth += 1
-        elif content[i] == "]":
-            depth -= 1
-            if depth == 0:
-                end_idx = i + 1
-                break
-
-    array_str = content[start_idx:end_idx]
-
-    # Convert TS object syntax to valid JSON
-    # Add quotes around unquoted keys
-    json_str = re.sub(r"(\w+)\s*:", r'"\1":', array_str)
-    # Replace single quotes with double quotes
-    json_str = json_str.replace("'", '"')
-    # Remove trailing commas before } or ]
-    json_str = re.sub(r",\s*([}\]])", r"\1", json_str)
-    # Handle template literals (backtick strings) - replace with double quotes
-    json_str = re.sub(r"`([^`]*)`", lambda m: '"' + m.group(1).replace('"', '\\"').replace("\n", "\\n") + '"', json_str)
-    # Remove TypeScript type assertions
-    json_str = re.sub(r"\bas\s+\w+(?:\[\])?", "", json_str)
-
-    try:
-        return json.loads(json_str)
-    except json.JSONDecodeError as e:
-        logger.warning(f"Could not parse {var_name} as JSON: {e}")
-        # Save the problematic string for debugging
-        debug_path = os.path.join(DATA_DIR, f"_debug_{var_name}.txt")
-        with open(debug_path, "w", encoding="utf-8") as f:
-            f.write(json_str[:5000])
-        logger.info(f"Debug output saved to {debug_path}")
-        return []
-
-
 def retry_failed_pages(min_length: int = 0):
-    """Re-scrape all URLs logged in _failed_pages.json."""
     failed = get_failed_pages()
     pages = failed.get("failed", [])
     if not pages:
@@ -266,12 +156,13 @@ def retry_failed_pages(min_length: int = 0):
 
         logger.info(f"Retrying [{source_key}]: {url}")
 
-        if not config:
+        if config:
+            result = scrape_chapter(config, url)
+        else:
             logger.warning(f"Unknown source key '{source_key}' — skipping")
             still_failed.append(entry)
             continue
 
-        result = scrape_chapter(config, url)
         polite_delay()
 
         if result:
@@ -289,7 +180,8 @@ def retry_failed_pages(min_length: int = 0):
     _parsers.MIN_CONTENT_CHARS = original_min
     save_scraped_urls(scraped_urls)
     save_json({"failed": still_failed}, "_failed_pages.json")
-    logger.info(f"Retry complete. {len(pages) - len(still_failed)} recovered, {len(still_failed)} still failing.")
+    recovered = len(pages) - len(still_failed)
+    logger.info(f"Retry complete. {recovered} recovered, {len(still_failed)} still failing.")
 
 
 def main():
@@ -299,17 +191,12 @@ def main():
     parser.add_argument(
         "--source",
         default="all",
-        help=f"Source key to scrape, or 'all'. Registered: {', '.join(all_keys)}",
+        help=f"Source key to scrape, or 'all'. Available: {', '.join(all_keys)}",
     )
     parser.add_argument(
         "--list-sources",
         action="store_true",
         help="Print all registered sources and exit",
-    )
-    parser.add_argument(
-        "--convert-existing",
-        action="store_true",
-        help="Convert existing data.ts to JSON",
     )
     parser.add_argument(
         "--force-rescrape",
@@ -319,7 +206,7 @@ def main():
     parser.add_argument(
         "--retry-failed",
         action="store_true",
-        help="Re-scrape all URLs logged in data/_failed_pages.json",
+        help="Re-scrape all URLs in data/_failed_pages.json",
     )
     parser.add_argument(
         "--min-length",
@@ -332,11 +219,6 @@ def main():
         "--merge-sources",
         action="store_true",
         help="After scraping, merge all sources into neb_data.json",
-    )
-    parser.add_argument(
-        "--verbose",
-        action="store_true",
-        help="Enable verbose/debug output during scraping",
     )
     args = parser.parse_args()
 
@@ -360,22 +242,17 @@ def main():
             os.remove(cache_path)
             logger.info("Cleared scraped URL cache — will re-scrape all pages.")
 
-    if args.convert_existing:
-        convert_existing_data()
-        return
-
     if args.retry_failed:
         retry_failed_pages(min_length=args.min_length)
         return
 
-    if args.source == "all":
-        targets = SOURCES
-    else:
+    targets = SOURCES if args.source == "all" else []
+    if args.source != "all":
         cfg = SOURCES_BY_KEY.get(args.source)
         if not cfg:
             logger.error(
                 f"Unknown source '{args.source}'. "
-                f"Registered keys: {', '.join(all_keys)}"
+                f"Available: {', '.join(all_keys)}"
             )
             sys.exit(1)
         targets = [cfg]
@@ -387,7 +264,7 @@ def main():
     logger.info(f"Data saved to: {DATA_DIR}")
 
     if args.merge_sources:
-        logger.info("\nRunning --merge-sources: merging all sources into neb_data.json...")
+        logger.info("\nRunning --merge-sources: merging all scraped content into neb_data.json...")
         from scraper.build_neb_data import build
         build(dry_run=False)
 
