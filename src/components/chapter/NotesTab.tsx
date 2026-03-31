@@ -1,9 +1,18 @@
-import { FileText, Sigma, BookOpen, FlaskConical, Clock } from 'lucide-react'
+import { FileText, Sigma, BookOpen, FlaskConical, Clock, CheckCircle2, AlertCircle } from 'lucide-react'
 import type { Note } from '@/types'
+import TableOfContents from './TableOfContents'
+
+interface NoteWithQuality extends Note {
+  word_count?: number
+  heading_count?: number
+  is_complete?: boolean
+  quality_score?: number
+}
 
 interface Props {
-  notes: Note[]
+  notes: NoteWithQuality[]
   isFormulas?: boolean
+  showToc?: boolean
 }
 
 const typeConfig = {
@@ -39,14 +48,33 @@ function stripTags(html: string) {
   return html.replace(/<[^>]+>/g, '').trim()
 }
 
-function isStubContent(content: string) {
-  return stripTags(content).length < STUB_THRESHOLD
+function estimatedReadTime(wordCount: number): string {
+  const mins = Math.max(1, Math.round(wordCount / 220))
+  return `${mins} min read`
 }
 
-function NoteCard({ note }: { note: Note }) {
+function QualityBadge({ isComplete, qualityScore }: { isComplete: boolean; qualityScore?: number }) {
+  if (isComplete) {
+    return (
+      <span className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+        <CheckCircle2 className="h-3 w-3" />
+        Complete
+      </span>
+    )
+  }
+  return (
+    <span className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
+      <AlertCircle className="h-3 w-3" />
+      Needs Improvement
+    </span>
+  )
+}
+
+function NoteCard({ note }: { note: NoteWithQuality }) {
   const cfg = typeConfig[note.type] ?? typeConfig.theory
-  const stub = isStubContent(note.content)
-  const wordCount = stripTags(note.content).split(/\s+/).filter(Boolean).length
+  const wordCount = note.word_count ?? stripTags(note.content).split(/\s+/).filter(Boolean).length
+  const stub = wordCount < STUB_THRESHOLD / 5  // ~60 words threshold for stub
+  const isComplete = note.is_complete ?? (!stub && wordCount >= 300)
 
   return (
     <div
@@ -57,13 +85,19 @@ function NoteCard({ note }: { note: Note }) {
         <h3 className="font-bold text-slate-900 dark:text-white text-sm sm:text-base flex-1 min-w-0 mr-3">
           {note.title}
         </h3>
-        <div className="flex items-center gap-2 flex-shrink-0">
-          {!stub && (
-            <span className="hidden sm:inline-flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500">
-              <Clock className="h-3 w-3" />
-              {wordCount} words
-            </span>
+        <div className="flex items-center gap-2 flex-shrink-0 flex-wrap justify-end">
+          {!stub && wordCount > 0 && (
+            <>
+              <span className="hidden sm:inline-flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500">
+                <Clock className="h-3 w-3" />
+                {estimatedReadTime(wordCount)}
+              </span>
+              <span className="hidden md:inline-flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500">
+                {wordCount.toLocaleString()} words
+              </span>
+            </>
           )}
+          <QualityBadge isComplete={isComplete} qualityScore={note.quality_score} />
           <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full ${cfg.chip}`}>
             {cfg.icon}
             {cfg.label}
@@ -81,8 +115,7 @@ function NoteCard({ note }: { note: Note }) {
             <Clock className="h-4 w-4 text-amber-500 mt-0.5 flex-shrink-0" />
             <p className="text-xs text-amber-700 dark:text-amber-400 leading-relaxed">
               Full detailed notes for this section are being prepared. Re-run the scraper
-              (<code className="font-mono bg-amber-100 dark:bg-amber-900/40 px-1 rounded">python -m scraper.main</code>)
-              then rebuild (<code className="font-mono bg-amber-100 dark:bg-amber-900/40 px-1 rounded">python -m scraper.build_neb_data</code>)
+              (<code className="font-mono bg-amber-100 dark:bg-amber-900/40 px-1 rounded">python -m scraper.main --merge-sources</code>)
               to populate complete content.
             </p>
           </div>
@@ -91,13 +124,26 @@ function NoteCard({ note }: { note: Note }) {
         /* Full content */
         <div className="px-5 py-5 notes-content text-sm sm:text-base">
           <div dangerouslySetInnerHTML={{ __html: note.content }} />
+          {note.source_url && (
+            <p className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-400 dark:text-slate-600">
+              Source:{' '}
+              <a
+                href={note.source_url.split(',')[0].trim()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-slate-600 dark:hover:text-slate-400"
+              >
+                {note.source_url.split(',')[0].trim()}
+              </a>
+            </p>
+          )}
         </div>
       )}
     </div>
   )
 }
 
-export default function NotesTab({ notes, isFormulas }: Props) {
+export default function NotesTab({ notes, isFormulas, showToc = true }: Props) {
   if (!notes || notes.length === 0) {
     return (
       <div className="py-16 text-center">
@@ -120,8 +166,14 @@ export default function NotesTab({ notes, isFormulas }: Props) {
     )
   }
 
+  const hasFullContent = notes.some(n => {
+    const wc = n.word_count ?? stripTags(n.content).split(/\s+/).filter(Boolean).length
+    return wc >= 60
+  })
+
   return (
     <div className="space-y-5">
+      {showToc && !isFormulas && hasFullContent && <TableOfContents />}
       {notes.map((note) => (
         <NoteCard key={note.id} note={note} />
       ))}

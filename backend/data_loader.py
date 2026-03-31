@@ -2,10 +2,101 @@
 
 import json
 import os
+import re
 from functools import lru_cache
 from typing import Optional
 
 DATA_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "neb_data.json")
+
+
+# ─── Quality computation ──────────────────────────────────────────────
+
+def _compute_note_quality(content: str) -> dict:
+    """Compute quality metrics for a note's HTML content.
+
+    Returns:
+        word_count       – number of words in the plain-text content
+        heading_count    – number of heading tags (h1-h6)
+        list_item_count  – number of <li> items
+        is_complete      – True when word_count>=300 AND heading_count>=2
+        quality_score    – integer 0-100
+    """
+    if not content:
+        return {"word_count": 0, "heading_count": 0, "list_item_count": 0,
+                "is_complete": False, "quality_score": 0}
+
+    text = re.sub(r"<[^>]+>", " ", content)
+    text = re.sub(r"\s+", " ", text).strip()
+    words = [w for w in text.split() if w]
+    word_count = len(words)
+
+    heading_count = len(re.findall(r"<h[1-6][\s>]", content, re.IGNORECASE))
+    list_item_count = len(re.findall(r"<li[\s>]", content, re.IGNORECASE))
+
+    score = 0
+    if word_count >= 800:
+        score += 40
+    elif word_count >= 400:
+        score += 30
+    elif word_count >= 200:
+        score += 15
+    elif word_count >= 100:
+        score += 5
+
+    if heading_count >= 4:
+        score += 30
+    elif heading_count >= 2:
+        score += 20
+    elif heading_count >= 1:
+        score += 10
+
+    if list_item_count >= 10:
+        score += 20
+    elif list_item_count >= 4:
+        score += 12
+    elif list_item_count >= 1:
+        score += 6
+
+    if word_count >= 100 and heading_count >= 1:
+        score += 10
+
+    is_complete = word_count >= 300 and heading_count >= 2
+
+    return {
+        "word_count": word_count,
+        "heading_count": heading_count,
+        "list_item_count": list_item_count,
+        "is_complete": is_complete,
+        "quality_score": min(score, 100),
+    }
+
+
+def _compute_chapter_quality(chapter_id: str) -> dict:
+    """Aggregate quality metrics across all notes for a chapter."""
+    notes = get_notes_by_chapter(chapter_id)
+    if not notes:
+        return {"is_complete": False, "quality_score": 0, "total_words": 0,
+                "note_count": 0, "best_quality_score": 0}
+
+    total_words = 0
+    best_score = 0
+    any_complete = False
+
+    for note in notes:
+        q = _compute_note_quality(note.get("content", ""))
+        total_words += q["word_count"]
+        if q["quality_score"] > best_score:
+            best_score = q["quality_score"]
+        if q["is_complete"]:
+            any_complete = True
+
+    return {
+        "is_complete": any_complete,
+        "quality_score": best_score,
+        "total_words": total_words,
+        "note_count": len(notes),
+        "best_quality_score": best_score,
+    }
 
 
 @lru_cache(maxsize=1)
@@ -84,7 +175,13 @@ def _build_chapter_subject_map() -> dict:
 
 
 def search(query: str, limit: int = 20) -> list[dict]:
-    """Full-text search across subjects, chapters, and notes."""
+    """Full-text search across subjects, chapters, and notes.
+
+    Results are ranked by a composite score that factors in:
+    - keyword relevance (term frequency + title bonus)
+    - content length (more words = more useful)
+    - completeness (is_complete notes ranked higher)
+    """
     query_lower = query.lower()
     terms = query_lower.split()
     results = []
@@ -94,44 +191,58 @@ def search(query: str, limit: int = 20) -> list[dict]:
 
     # Search subjects
     for s in get_subjects():
-        score = _score_match(terms, f"{s['name']} {s.get('description', '')}")
-        if score > 0:
+        rel = _score_match(terms, f"{s['name']} {s.get('description', '')}")
+        if rel > 0:
             results.append({
                 "type": "subject",
                 "id": s["id"],
                 "title": s["name"],
-                "snippet": s.get("description", "")[:150],
+                "snippet": s.get("description", "")[:200],
                 "subjectId": s["id"],
                 "subjectSlug": s.get("slug", s["id"]),
-                "score": score,
+                "chapterId": None,
+                "score": rel,
+                "is_complete": True,
+                "quality_score": 100,
             })
 
     # Search chapters
     for c in get_chapters():
         text = f"{c['title']} {c.get('description', '')}"
-        score = _score_match(terms, text)
-        if score > 0:
+        rel = _score_match(terms, text)
+        if rel > 0:
             subject_id = c.get("subjectId")
+            cq = _compute_chapter_quality(c["id"])
+            # Composite: relevance * 10 + quality bonus
+            composite = rel * 10 + (cq["quality_score"] / 10)
             results.append({
                 "type": "chapter",
                 "id": c["id"],
                 "title": c["title"],
-                "snippet": c.get("description", "")[:150],
+                "snippet": c.get("description", "")[:200],
                 "subjectId": subject_id,
                 "subjectSlug": slug_map.get(subject_id, subject_id),
                 "chapterId": c["id"],
-                "score": score,
+                "score": composite,
+                "is_complete": cq["is_complete"],
+                "quality_score": cq["quality_score"],
+                "total_words": cq["total_words"],
             })
 
     # Search notes
     for n in get_notes():
-        text = f"{n['title']} {n.get('content', '')}"
-        score = _score_match(terms, text)
-        if score > 0:
+        content = n.get("content", "")
+        text = f"{n['title']} {content}"
+        rel = _score_match(terms, text)
+        if rel > 0:
             chapter_id = n.get("chapterId")
             subject_id = chapter_subject_map.get(chapter_id)
-            content = n.get("content", "")
+            nq = _compute_note_quality(content)
             snippet = _extract_snippet(content, terms)
+            # Composite: relevance * 10 + quality bonus + completeness bonus
+            composite = rel * 10 + (nq["quality_score"] / 10)
+            if nq["is_complete"]:
+                composite += 5
             results.append({
                 "type": "note",
                 "id": n["id"],
@@ -140,10 +251,13 @@ def search(query: str, limit: int = 20) -> list[dict]:
                 "subjectId": subject_id,
                 "subjectSlug": slug_map.get(subject_id, subject_id),
                 "chapterId": chapter_id,
-                "score": score,
+                "score": composite,
+                "is_complete": nq["is_complete"],
+                "quality_score": nq["quality_score"],
+                "word_count": nq["word_count"],
             })
 
-    # Sort by relevance score descending
+    # Sort by composite score descending
     results.sort(key=lambda r: r["score"], reverse=True)
     return results[:limit]
 

@@ -6,6 +6,8 @@ FastAPI backend serving educational content for NEB students.
 Run: uvicorn backend.main:app --reload --port 8000
 """
 
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -20,14 +22,19 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# CORS — allow the Next.js frontend
+# CORS — allow the Next.js frontend (local + Vercel deployment)
+_base_origins = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://127.0.0.1:3000",
+]
+# Accept comma-separated extra origins from env (e.g. your Vercel URL)
+_extra = os.getenv("ALLOWED_ORIGINS", "")
+_extra_origins = [o.strip() for o in _extra.split(",") if o.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://localhost:3001",
-        "http://127.0.0.1:3000",
-    ],
+    allow_origins=_base_origins + _extra_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

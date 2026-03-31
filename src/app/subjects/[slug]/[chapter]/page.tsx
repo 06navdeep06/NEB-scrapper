@@ -1,11 +1,29 @@
 import Link from 'next/link'
 import { getSubjectBySlug, chapters, notes as allNotes, pastPapers as allPapers, mockTests as allTests } from '@/lib/data'
-import { ArrowLeft, BookOpen, FileText, Sigma, BookMarked, ClipboardList, Clock, ChevronRight } from 'lucide-react'
+import { ArrowLeft, BookOpen, FileText, Sigma, BookMarked, ClipboardList, Clock, ChevronRight, CheckCircle2, AlertCircle } from 'lucide-react'
 import { notFound } from 'next/navigation'
 import NotesTab from '@/components/chapter/NotesTab'
 import PastPapersTab from '@/components/chapter/PastPapersTab'
 import MockTestTab from '@/components/chapter/MockTestTab'
+import ReadingProgressBar from '@/components/chapter/ReadingProgressBar'
 import type { Note, PastPaper, MockTest } from '@/types'
+
+function stripTagsServer(html: string) {
+  return html.replace(/<[^>]+>/g, '').trim()
+}
+
+function computeChapterStats(notes: Note[]) {
+  let totalWords = 0
+  let headingCount = 0
+  for (const n of notes) {
+    const text = stripTagsServer(n.content)
+    totalWords += text.split(/\s+/).filter(Boolean).length
+    headingCount += (n.content.match(/<h[1-6][\s>]/gi) ?? []).length
+  }
+  const isComplete = totalWords >= 300 && headingCount >= 2
+  const readMins = Math.max(1, Math.round(totalWords / 220))
+  return { totalWords, headingCount, isComplete, readMins }
+}
 
 const accentMap: Record<string, { color: string; bg: string; border: string; glow: string; chip: string }> = {
   atom:       { color: 'text-blue-600 dark:text-blue-400',    bg: 'bg-blue-50 dark:bg-blue-950/40',    border: 'border-blue-200 dark:border-blue-800', glow: 'from-blue-500 to-cyan-500',    chip: 'bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300' },
@@ -42,6 +60,10 @@ export default async function ChapterDetailPage({
 
   const a = accentMap[subject.icon] ?? accentMap['book']
 
+  // Compute quality stats from all notes for this chapter (server-side)
+  const allChapterNotes = allNotes.filter(n => n.chapterId === chapterId)
+  const stats = computeChapterStats(allChapterNotes)
+
   let notes: Note[] = []
   let papers: PastPaper[] = []
   let tests: MockTest[] = []
@@ -65,7 +87,9 @@ export default async function ChapterDetailPage({
   const nextChapter = currentIdx < subjectChapters.length - 1 ? subjectChapters[currentIdx + 1] : null
 
   return (
-    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+    <>
+      <ReadingProgressBar />
+      <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto">
 
         {/* Breadcrumb */}
@@ -92,8 +116,22 @@ export default async function ChapterDetailPage({
                   </span>
                 )}
                 <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 flex items-center gap-1">
-                  <Clock className="h-3 w-3" /> {chapter.estimatedHours}h
+                  <Clock className="h-3 w-3" /> {chapter.estimatedHours}h estimated
                 </span>
+                {stats.totalWords > 0 && (
+                  <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 flex items-center gap-1">
+                    <BookOpen className="h-3 w-3" /> {stats.readMins} min read
+                  </span>
+                )}
+                {stats.isComplete ? (
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+                    <CheckCircle2 className="h-3 w-3" /> Complete Chapter
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
+                    <AlertCircle className="h-3 w-3" /> Needs Improvement
+                  </span>
+                )}
               </div>
               <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white leading-tight">{chapter.title}</h1>
               <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{chapter.description}</p>
@@ -160,5 +198,6 @@ export default async function ChapterDetailPage({
 
       </div>
     </div>
+    </>
   )
 }

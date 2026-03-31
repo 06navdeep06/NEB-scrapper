@@ -302,6 +302,62 @@ def extract_ts_array(content: str, var_name: str) -> list:
         return []
 
 
+def retry_failed_pages(min_length: int = 0):
+    """Re-scrape all URLs logged in _failed_pages.json."""
+    failed = get_failed_pages()
+    pages = failed.get("failed", [])
+    if not pages:
+        logger.info("No failed pages to retry.")
+        return
+
+    logger.info(f"Retrying {len(pages)} failed pages...")
+    scraped_urls = get_scraped_urls()
+
+    # Override quality threshold temporarily if min_length is set
+    import scraper.parsers as _parsers
+    original_min = _parsers.MIN_CONTENT_CHARS
+    if min_length > 0:
+        _parsers.MIN_CONTENT_CHARS = min_length
+
+    still_failed = []
+    for entry in pages:
+        url = entry["url"]
+        source = entry.get("source", "unknown")
+
+        logger.info(f"Retrying [{source}]: {url}")
+        if source == "nebplus2":
+            from .parsers import scrape_nebplus2_chapter
+            result = scrape_nebplus2_chapter(url)
+        elif source == "readers":
+            from .parsers import scrape_readers_chapter
+            result = scrape_readers_chapter(url)
+        else:
+            logger.warning(f"Unknown source '{source}' for URL: {url}")
+            still_failed.append(entry)
+            continue
+
+        polite_delay()
+
+        if result:
+            ok, reason = validate_content_quality(result.get("content", ""))
+            if ok:
+                scraped_urls.add(url)
+                logger.info(f"  ✓ Successfully scraped on retry: {url}")
+            else:
+                logger.warning(f"  ✗ Still low quality ({reason}): {url}")
+                still_failed.append(entry)
+        else:
+            logger.warning(f"  ✗ Still failed: {url}")
+            still_failed.append(entry)
+
+    _parsers.MIN_CONTENT_CHARS = original_min
+    save_scraped_urls(scraped_urls)
+
+    # Update failed pages log with only the still-failed ones
+    save_json({"failed": still_failed}, "_failed_pages.json")
+    logger.info(f"Retry complete. {len(pages) - len(still_failed)} recovered, {len(still_failed)} still failing.")
+
+
 def main():
     parser = argparse.ArgumentParser(description="NEB Notes Scraper")
     parser.add_argument(
@@ -320,10 +376,32 @@ def main():
         action="store_true",
         help="Clear scraped URL cache and re-scrape everything",
     )
+    parser.add_argument(
+        "--retry-failed",
+        action="store_true",
+        help="Re-scrape all URLs logged in data/_failed_pages.json",
+    )
+    parser.add_argument(
+        "--min-length",
+        type=int,
+        default=0,
+        metavar="CHARS",
+        help="Override minimum content character threshold (default: use parser default)",
+    )
+    parser.add_argument(
+        "--merge-sources",
+        action="store_true",
+        help="After scraping, run build_neb_data to merge content into neb_data.json",
+    )
     args = parser.parse_args()
 
+    # Apply custom min-length threshold before scraping
+    if args.min_length > 0:
+        import scraper.parsers as _parsers
+        _parsers.MIN_CONTENT_CHARS = args.min_length
+        logger.info(f"Minimum content length override: {args.min_length} chars")
+
     if args.force_rescrape:
-        import os
         cache_path = os.path.join(DATA_DIR, "_scraped_urls.json")
         if os.path.exists(cache_path):
             os.remove(cache_path)
@@ -331,6 +409,10 @@ def main():
 
     if args.convert_existing:
         convert_existing_data()
+        return
+
+    if args.retry_failed:
+        retry_failed_pages(min_length=args.min_length)
         return
 
     if args.source in ("nebplus2", "all"):
@@ -341,6 +423,11 @@ def main():
 
     logger.info("\nAll scraping complete!")
     logger.info(f"Data saved to: {DATA_DIR}")
+
+    if args.merge_sources:
+        logger.info("\nRunning --merge-sources: merging scraped content into neb_data.json...")
+        from scraper.build_neb_data import build
+        build(dry_run=False)
 
 
 if __name__ == "__main__":

@@ -23,8 +23,13 @@ export interface SearchResult {
   title: string;
   snippet: string;
   subjectId?: string;
-  chapterId?: string;
+  subjectSlug?: string;
+  chapterId?: string | null;
   score: number;
+  is_complete?: boolean;
+  quality_score?: number;
+  word_count?: number;
+  total_words?: number;
 }
 
 export interface SearchResponse {

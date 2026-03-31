@@ -9,6 +9,8 @@ Matching strategy:
   - Match scraped chapter titles to existing chapter titles via
     normalised string similarity (lower-case, strip punctuation)
   - If a match is found: replace/add a Note record with full HTML content
+  - If multiple sources match the same chapter: merge their content
+    (deduplication, heading normalization, paragraph merging)
   - If no match: log the unmatched chapter (data/_unmatched_chapters.json)
   - Never creates redirect links; source_url is stored but not surfaced
 
@@ -25,6 +27,90 @@ import sys
 from typing import Optional
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
+
+
+# ─── Content merging helpers ──────────────────────────────────────────
+
+_BLOCK_RE = re.compile(r"(<h[1-6][^>]*>.*?</h[1-6]>|<p[^>]*>.*?</p>|<ul[^>]*>.*?</ul>|<ol[^>]*>.*?</ol>|<blockquote[^>]*>.*?</blockquote>|<table[^>]*>.*?</table>)", re.IGNORECASE | re.DOTALL)
+_TAG_RE = re.compile(r"<[^>]+>")
+_HEADING_RE = re.compile(r"<(h[1-6])([^>]*)>", re.IGNORECASE)
+_WS_RE = re.compile(r"\s+")
+
+
+def _strip_tags(html: str) -> str:
+    return _WS_RE.sub(" ", _TAG_RE.sub(" ", html)).strip()
+
+
+def _fingerprint(block: str) -> str:
+    """Normalised fingerprint of a block for deduplication."""
+    text = _strip_tags(block).lower()
+    text = re.sub(r"[^a-z0-9 ]", " ", text)
+    return _WS_RE.sub(" ", text).strip()
+
+
+def _normalise_headings(html: str) -> str:
+    """Normalise all headings: h1→h2, keep h3+ as-is (prevents duplicate h1)."""
+    def _map(m: re.Match) -> str:
+        tag = m.group(1).lower()
+        attrs = m.group(2)
+        if tag == "h1":
+            return f"<h2{attrs}>"
+        return m.group(0)
+    return _HEADING_RE.sub(_map, html)
+
+
+def _extract_blocks(html: str) -> list[str]:
+    """Split HTML into top-level semantic blocks."""
+    blocks = _BLOCK_RE.findall(html)
+    if not blocks:
+        # Fallback: treat the whole thing as one block
+        return [html.strip()] if html.strip() else []
+    return [b.strip() for b in blocks if b.strip()]
+
+
+def merge_html_content(sources: list[dict]) -> tuple[str, str]:
+    """Merge HTML content from multiple scraped sources into one unified note.
+
+    Args:
+        sources: list of dicts with keys 'content' (HTML str) and 'source_url'
+
+    Returns:
+        (merged_html, merged_source_urls_csv)
+    """
+    if not sources:
+        return "", ""
+    if len(sources) == 1:
+        return sources[0]["content"], sources[0].get("source_url", "")
+
+    seen_fps: set[str] = set()
+    merged_blocks: list[str] = []
+    all_urls: list[str] = []
+
+    for src in sources:
+        raw = src.get("content", "").strip()
+        url = src.get("source_url", "")
+        if url:
+            all_urls.append(url)
+        if not raw:
+            continue
+
+        # Normalise headings so h1 from source doesn't clash with page h1
+        normalised = _normalise_headings(raw)
+        blocks = _extract_blocks(normalised)
+
+        for block in blocks:
+            fp = _fingerprint(block)
+            if not fp or fp in seen_fps:
+                continue
+            # Skip very short blocks (likely navigation remnants)
+            if len(fp.split()) < 4:
+                continue
+            seen_fps.add(fp)
+            merged_blocks.append(block)
+
+    merged_html = "\n".join(merged_blocks)
+    merged_urls = ", ".join(dict.fromkeys(all_urls))  # preserve order, dedupe
+    return merged_html, merged_urls
 
 
 # ─── Subject name → canonical subject ID ─────────────────────────────
@@ -108,17 +194,15 @@ def build(dry_run: bool = False):
         sid = ch.get("subjectId", "")
         subject_chapters.setdefault(sid, []).append(ch)
 
-    # Track existing scraped note IDs so we don't duplicate
-    existing_note_ids: set[str] = {n["id"] for n in notes}
-
-    unmatched: list[dict] = []
-    new_notes: list[dict] = []
-    updated_count = 0
-
     sources = [
         ("nebplus2_data.json", "nebplus2"),
         ("readers_data.json", "readers"),
     ]
+
+    # First pass: collect all scraped content per chapter_id across sources
+    # Structure: chapter_id → list of {content, source_url, title, source_key}
+    chapter_sources: dict[str, list[dict]] = {}
+    unmatched: list[dict] = []
 
     for filename, source_key in sources:
         scraped = _load(filename)
@@ -126,7 +210,7 @@ def build(dry_run: bool = False):
             print(f"  Skipping {filename} (not found)")
             continue
 
-        print(f"\nProcessing {filename}...")
+        print(f"\nCollecting from {filename}...")
         for subject_entry in scraped.get("subjects", []):
             subject_name = subject_entry.get("subject", "").lower()
             subject_id = SUBJECT_MAP.get(subject_name)
@@ -145,7 +229,6 @@ def build(dry_run: bool = False):
                 if not content or not content.strip():
                     continue
 
-                # Find the best matching chapter in neb_data
                 matched = _find_best_chapter_match(scraped_ch["title"], candidates)
                 if not matched:
                     unmatched.append({
@@ -157,48 +240,74 @@ def build(dry_run: bool = False):
                     continue
 
                 chapter_id = matched["id"]
-                note_id = _make_note_id(chapter_id, source_key)
-
-                # Build the note record (full HTML, no redirect link)
-                note = {
-                    "id": note_id,
-                    "chapterId": chapter_id,
-                    "type": "theory",
-                    "title": scraped_ch["title"],
+                chapter_sources.setdefault(chapter_id, []).append({
                     "content": content,
                     "source_url": scraped_ch.get("source_url", ""),
+                    "title": scraped_ch["title"],
+                    "source_key": source_key,
                     "content_quality": scraped_ch.get("content_quality", "full"),
-                }
+                })
+                print(f"  ✓ Matched [{source_key}]: '{scraped_ch['title']}' → {chapter_id}")
 
-                if note_id in existing_note_ids:
-                    # Update existing note content
-                    for i, n in enumerate(notes):
-                        if n["id"] == note_id:
-                            notes[i] = note
-                            updated_count += 1
-                            break
-                else:
-                    new_notes.append(note)
-                    existing_note_ids.add(note_id)
+    # Second pass: merge multi-source content and build/update note records
+    existing_note_ids: set[str] = {n["id"] for n in notes}
+    new_notes: list[dict] = []
+    updated_count = 0
 
-                print(f"  ✓ Matched: '{scraped_ch['title']}' → {chapter_id}")
+    for chapter_id, src_list in chapter_sources.items():
+        # Use a single merged note ID for this chapter (source-agnostic)
+        note_id = f"scraped-merged-{chapter_id}"
 
-    # Merge new notes in
+        if len(src_list) > 1:
+            print(f"  ↔ Merging {len(src_list)} sources for chapter {chapter_id}")
+            merged_html, merged_urls = merge_html_content(src_list)
+            best_title = max(src_list, key=lambda s: len(s["content"]))["title"]
+        else:
+            merged_html = src_list[0]["content"]
+            merged_urls = src_list[0].get("source_url", "")
+            best_title = src_list[0]["title"]
+
+        note = {
+            "id": note_id,
+            "chapterId": chapter_id,
+            "type": "theory",
+            "title": best_title,
+            "content": merged_html,
+            "source_url": merged_urls,
+            "content_quality": "full" if len(src_list) > 1 else src_list[0].get("content_quality", "full"),
+        }
+
+        if note_id in existing_note_ids:
+            for i, n in enumerate(notes):
+                if n["id"] == note_id:
+                    notes[i] = note
+                    updated_count += 1
+                    break
+        else:
+            # Also remove old per-source notes for this chapter (clean up legacy IDs)
+            old_ids = {f"scraped-{sk}-{chapter_id}" for sk in ("nebplus2", "readers")}
+            notes = [n for n in notes if n["id"] not in old_ids]
+            existing_note_ids -= old_ids
+
+            new_notes.append(note)
+            existing_note_ids.add(note_id)
+
     notes.extend(new_notes)
     neb["notes"] = notes
 
     print(f"\nSummary:")
-    print(f"  New notes added : {len(new_notes)}")
-    print(f"  Notes updated   : {updated_count}")
-    print(f"  Unmatched       : {len(unmatched)}")
+    print(f"  Chapters processed : {len(chapter_sources)}")
+    print(f"  New notes added    : {len(new_notes)}")
+    print(f"  Notes updated      : {updated_count}")
+    print(f"  Unmatched          : {len(unmatched)}")
 
     if unmatched:
         _save({"unmatched": unmatched}, "_unmatched_chapters.json")
-        print(f"  Unmatched log   : data/_unmatched_chapters.json")
+        print(f"  Unmatched log      : data/_unmatched_chapters.json")
 
     if not dry_run:
         _save(neb, "neb_data.json")
-        print("\nneb_data.json updated with full scraped content.")
+        print("\nneb_data.json updated with merged scraped content.")
     else:
         print("\nDry-run: no files written.")
 
