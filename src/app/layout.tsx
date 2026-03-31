@@ -17,8 +17,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} bg-slate-50 dark:bg-slate-950 min-h-screen flex flex-col`}>
+    <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
+      <body suppressHydrationWarning className={`${inter.className} bg-slate-50 dark:bg-slate-950 min-h-screen flex flex-col`}>
         <Navbar />
         <main className="flex-grow">
           {children}
