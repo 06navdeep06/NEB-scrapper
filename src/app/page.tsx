@@ -2,18 +2,9 @@ import Link from 'next/link'
 import { subjects } from '@/lib/data'
 import {
   ArrowRight, BookOpen, FileText, ClipboardList, Zap,
-  Atom, FlaskConical, Calculator, Monitor, Microscope, BookMarked,
-  CheckCircle2, Star, TrendingUp, Users, Award
+  CheckCircle2, Star, TrendingUp, Award
 } from 'lucide-react'
-
-const subjectMeta: Record<string, { icon: React.ReactNode; color: string; bg: string; border: string; glow: string }> = {
-  atom:       { icon: <Atom className="h-6 w-6" />,        color: 'text-blue-600 dark:text-blue-400',    bg: 'bg-blue-50 dark:bg-blue-950/40',    border: 'border-blue-200 dark:border-blue-900', glow: 'from-blue-500 to-cyan-500'    },
-  flask:      { icon: <FlaskConical className="h-6 w-6" />, color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-950/40', border: 'border-emerald-200 dark:border-emerald-900', glow: 'from-emerald-500 to-teal-500' },
-  calculator: { icon: <Calculator className="h-6 w-6" />,   color: 'text-violet-600 dark:text-violet-400', bg: 'bg-violet-50 dark:bg-violet-950/40',  border: 'border-violet-200 dark:border-violet-900', glow: 'from-violet-500 to-purple-500' },
-  monitor:    { icon: <Monitor className="h-6 w-6" />,      color: 'text-orange-600 dark:text-orange-400', bg: 'bg-orange-50 dark:bg-orange-950/40',  border: 'border-orange-200 dark:border-orange-900', glow: 'from-orange-500 to-amber-500'  },
-  microscope: { icon: <Microscope className="h-6 w-6" />,   color: 'text-pink-600 dark:text-pink-400',    bg: 'bg-pink-50 dark:bg-pink-950/40',     border: 'border-pink-200 dark:border-pink-900',  glow: 'from-pink-500 to-rose-500'    },
-  book:       { icon: <BookMarked className="h-6 w-6" />,   color: 'text-amber-600 dark:text-amber-400',  bg: 'bg-amber-50 dark:bg-amber-950/40',   border: 'border-amber-200 dark:border-amber-900', glow: 'from-amber-500 to-yellow-500' },
-}
+import SubjectBrowser from '@/components/SubjectBrowser'
 
 const features = [
   {
@@ -71,9 +62,6 @@ const highlights = [
 ]
 
 export default function Home() {
-  const coreSubjects = subjects.filter(s => ['physics', 'chemistry', 'mathematics', 'computer-science', 'biology'].includes(s.slug))
-  const langSubjects  = subjects.filter(s => ['english', 'nepali'].includes(s.slug))
-
   return (
     <div className="flex flex-col min-h-screen">
 
@@ -161,70 +149,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Science Subjects ── */}
-      <section className="py-16 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">Science Subjects</h2>
-              <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Click any subject to view chapter-wise notes and resources</p>
-            </div>
-            <Link href="/subjects" className="hidden sm:flex items-center gap-1 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:gap-2 transition-all">
-              All subjects <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-            {coreSubjects.map((subject) => {
-              const meta = subjectMeta[subject.icon] ?? subjectMeta['book']
-              return (
-                <Link href={`/subjects/${subject.slug}`} key={subject.id} className="group">
-                  <div className={`relative rounded-2xl border p-5 flex flex-col bg-white dark:bg-slate-900 transition-all duration-200 group-hover:-translate-y-1 group-hover:shadow-lg overflow-hidden ${meta.border}`}>
-                    <div className={`absolute -top-12 -right-12 w-32 h-32 bg-gradient-to-tr ${meta.glow} opacity-10 group-hover:opacity-20 blur-2xl transition-opacity`} />
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 ${meta.bg} ${meta.color}`}>
-                      {meta.icon}
-                    </div>
-                    <h3 className="font-bold text-slate-900 dark:text-white text-sm">{subject.name}</h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">{subject.description}</p>
-                    <div className="mt-3 flex items-center justify-between">
-                      <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${meta.bg} ${meta.color}`}>
-                        {subject.totalChapters} chapters
-                      </span>
-                      <ArrowRight className={`h-3.5 w-3.5 ${meta.color} group-hover:translate-x-1 transition-transform`} />
-                    </div>
-                  </div>
-                </Link>
-              )
-            })}
-          </div>
-
-          {/* Language subjects */}
-          <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {langSubjects.map((subject) => {
-              const meta = subjectMeta[subject.icon] ?? subjectMeta['book']
-              return (
-                <Link href={`/subjects/${subject.slug}`} key={subject.id} className="group">
-                  <div className={`relative rounded-2xl border p-5 flex items-center gap-4 bg-white dark:bg-slate-900 transition-all duration-200 group-hover:-translate-y-1 group-hover:shadow-md overflow-hidden ${meta.border}`}>
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${meta.bg} ${meta.color}`}>
-                      {meta.icon}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-slate-900 dark:text-white text-sm">{subject.name}</h3>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{subject.description}</p>
-                    </div>
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${meta.bg} ${meta.color}`}>
-                        {subject.totalChapters} ch
-                      </span>
-                      <ArrowRight className={`h-4 w-4 ${meta.color} group-hover:translate-x-1 transition-transform`} />
-                    </div>
-                  </div>
-                </Link>
-              )
-            })}
-          </div>
-        </div>
-      </section>
+      {/* ── Subject Browser (Class / Faculty selector) ── */}
+      <SubjectBrowser subjects={subjects} />
 
       {/* ── Why this platform ── */}
       <section className="py-16 px-4 bg-gradient-to-br from-indigo-600 to-violet-700">
