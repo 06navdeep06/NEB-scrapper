@@ -171,7 +171,7 @@ READERS_SUBJECTS = {
             "Physics": f"{READERS_BASE}/e-notes/neb-new-course-class-12/physics-1",
             "Chemistry": f"{READERS_BASE}/e-notes/neb-new-course-class-12/chemistry-1",
             "Biology": f"{READERS_BASE}/e-notes/neb-new-course-class-12/biology-1",
-            "Mathematics": f"{READERS_BASE}/e-notes/neb-new-course-class-12/mathematics-1",
+            "Mathematics": f"{READERS_BASE}/e-notes/neb-new-course-class-12/mathematics-1",  # if 404, try removing -1
             "Computer Science": f"{READERS_BASE}/e-notes/neb-new-course-class-12/computer-science-3",
         },
         "Management": {
@@ -181,7 +181,7 @@ READERS_SUBJECTS = {
     },
     11: {
         "Science": {
-            "Physics": f"{READERS_BASE}/e-notes/neb-new-course-class-11/physics",
+            "Physics": f"{READERS_BASE}/e-notes/neb-new-course-class-11/physics-1",
             "Chemistry": f"{READERS_BASE}/e-notes/neb-new-course-class-11/chemistry",
             "Biology": f"{READERS_BASE}/e-notes/neb-new-course-class-11/biology",
             "Computer Science": f"{READERS_BASE}/e-notes/neb-new-course-class-11/computer-science-2",
@@ -201,40 +201,45 @@ def scrape_readers_subject_page(url: str) -> list[dict]:
         logger.warning(f"Could not fetch subject page: {url}")
         return []
 
-    soup = remove_unwanted_elements(soup)
+    # Do NOT call remove_unwanted_elements here — it strips ALL <header> tags,
+    # which includes WordPress <header class="entry-header"> blocks that contain
+    # the chapter title <a> links on category/archive pages.
     chapters = []
 
-    # readersnepal.com uses .entry-content as the primary container on index pages;
-    # fall back to card layouts or main content area
-    search_root = (
-        soup.select_one(".entry-content")
-        or soup.select_one("main")
-        or soup.select_one(".content")
-        or soup
-    )
+    # On WordPress category pages the chapter links are inside <article> elements,
+    # NOT inside .entry-content (that container only exists on single-post pages).
+    # Search the full document so no links are missed regardless of page layout.
+    all_links = soup.find_all("a", href=True)
+    logger.info(f"Found {len(all_links)} total <a> tags on page.")
 
     seen_hrefs: set[str] = set()
-    for link in search_root.find_all("a", href=True):
+    for link in all_links:
         href = link["href"]
         title = clean_text(link.get_text())
 
-        if not title or len(title) < 3:
-            continue
-        if any(skip in href.lower() for skip in ["#", "javascript:", "facebook", "twitter"]):
+        # Normalise relative URLs before any filtering
+        if href.startswith("/"):
+            href = READERS_BASE + href
+
+        # Only chapter/note links contain /e-notes/ in their path
+        if "/e-notes/" not in href:
             continue
 
-        if READERS_BASE in href or href.startswith("/"):
-            if href.startswith("/"):
-                href = READERS_BASE + href
-            # Skip duplicate hrefs and parent subject-level URLs
-            if href == url or href in seen_hrefs:
-                continue
-            seen_hrefs.add(href)
-            chapters.append({
-                "title": title,
-                "url": href,
-            })
+        # Drop links with empty text
+        if not title:
+            continue
 
+        # Skip duplicate hrefs and the subject index URL itself
+        if href == url or href in seen_hrefs:
+            continue
+
+        seen_hrefs.add(href)
+        chapters.append({
+            "title": title,
+            "url": href,
+        })
+
+    logger.info(f"Kept {len(chapters)} chapter links after filtering.")
     return chapters
 
 

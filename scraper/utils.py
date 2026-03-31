@@ -67,7 +67,9 @@ def remove_unwanted_elements(soup: BeautifulSoup) -> BeautifulSoup:
     """Remove ads, nav, footer, scripts, and other clutter from HTML."""
     selectors_to_remove = [
         "script", "style", "noscript", "iframe",
-        "nav", "footer", "header",
+        "nav", "footer",
+        "header.site-header", "header#masthead", "#masthead",
+        ".site-header", ".page-header",
         ".advertisement", ".ad", ".ads", ".sidebar",
         ".nav", ".navbar", ".menu",
         ".footer", ".widget", ".social-share",
