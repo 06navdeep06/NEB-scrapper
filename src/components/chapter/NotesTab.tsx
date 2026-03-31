@@ -114,9 +114,7 @@ function NoteCard({ note }: { note: NoteWithQuality }) {
           <div className="flex items-start gap-3 p-3.5 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800">
             <Clock className="h-4 w-4 text-amber-500 mt-0.5 flex-shrink-0" />
             <p className="text-xs text-amber-700 dark:text-amber-400 leading-relaxed">
-              Full detailed notes for this section are being prepared. Re-run the scraper
-              (<code className="font-mono bg-amber-100 dark:bg-amber-900/40 px-1 rounded">python -m scraper.main --merge-sources</code>)
-              to populate complete content.
+              Full detailed notes for this section are being prepared. Check back soon for complete content.
             </p>
           </div>
         </div>
