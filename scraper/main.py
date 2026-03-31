@@ -26,6 +26,7 @@ from .parsers import (
     scrape_nebplus2_chapter,
     scrape_readers_subject_page,
     scrape_readers_chapter,
+    validate_content_quality,
 )
 
 
@@ -48,6 +49,22 @@ def get_scraped_urls() -> set:
 def save_scraped_urls(urls: set):
     """Save the set of already-scraped URLs."""
     save_json({"urls": sorted(urls)}, "_scraped_urls.json")
+
+
+def get_failed_pages() -> dict:
+    """Load the failed-pages log."""
+    return load_json("_failed_pages.json") or {"failed": []}
+
+
+def log_failed_page(url: str, reason: str, source: str):
+    """Append a failed page entry to the failed-pages log."""
+    data = get_failed_pages()
+    # Avoid duplicate entries
+    existing_urls = {e["url"] for e in data["failed"]}
+    if url not in existing_urls:
+        data["failed"].append({"url": url, "reason": reason, "source": source})
+        save_json(data, "_failed_pages.json")
+        logger.warning(f"Failed page logged: {url} — {reason}")
 
 
 def scrape_nebplus2():
@@ -97,12 +114,18 @@ def scrape_nebplus2():
                     polite_delay()
 
                     if chapter_data:
-                        chapter_data["id"] = generate_id(class_num, subject_name, chapter_data["title"])
-                        subject_entry["chapters"].append(chapter_data)
-                        scraped_urls.add(ch_url)
-                        logger.info(f"✓ Scraped: {chapter_data['title']}")
+                        ok, reason = validate_content_quality(chapter_data.get("content", ""))
+                        if not ok:
+                            logger.warning(f"✗ Low quality ({reason}): {ch_info['title']}")
+                            log_failed_page(ch_url, reason, "nebplus2")
+                        else:
+                            chapter_data["id"] = generate_id(class_num, subject_name, chapter_data["title"])
+                            subject_entry["chapters"].append(chapter_data)
+                            scraped_urls.add(ch_url)
+                            logger.info(f"✓ Scraped: {chapter_data['title']}")
                     else:
                         logger.warning(f"✗ Failed: {ch_info['title']}")
+                        log_failed_page(ch_url, "scrape returned None", "nebplus2")
 
                 scraped_urls.add(subject_url)
                 existing_subjects[subject_key] = subject_entry
@@ -159,12 +182,18 @@ def scrape_readers():
                     polite_delay()
 
                     if chapter_data:
-                        chapter_data["id"] = generate_id(class_num, subject_name, chapter_data["title"])
-                        subject_entry["chapters"].append(chapter_data)
-                        scraped_urls.add(ch_url)
-                        logger.info(f"✓ Scraped: {chapter_data['title']}")
+                        ok, reason = validate_content_quality(chapter_data.get("content", ""))
+                        if not ok:
+                            logger.warning(f"✗ Low quality ({reason}): {ch_info['title']}")
+                            log_failed_page(ch_url, reason, "readers")
+                        else:
+                            chapter_data["id"] = generate_id(class_num, subject_name, chapter_data["title"])
+                            subject_entry["chapters"].append(chapter_data)
+                            scraped_urls.add(ch_url)
+                            logger.info(f"✓ Scraped: {chapter_data['title']}")
                     else:
                         logger.warning(f"✗ Failed: {ch_info['title']}")
+                        log_failed_page(ch_url, "scrape returned None", "readers")
 
                 scraped_urls.add(subject_url)
                 existing_subjects[subject_key] = subject_entry
@@ -286,7 +315,19 @@ def main():
         action="store_true",
         help="Convert existing data.ts to JSON",
     )
+    parser.add_argument(
+        "--force-rescrape",
+        action="store_true",
+        help="Clear scraped URL cache and re-scrape everything",
+    )
     args = parser.parse_args()
+
+    if args.force_rescrape:
+        import os
+        cache_path = os.path.join(DATA_DIR, "_scraped_urls.json")
+        if os.path.exists(cache_path):
+            os.remove(cache_path)
+            logger.info("Cleared scraped URL cache — will re-scrape all pages.")
 
     if args.convert_existing:
         convert_existing_data()

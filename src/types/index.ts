@@ -35,6 +35,8 @@ export interface Note {
   type: 'theory' | 'formula' | 'derivation' | 'diagram';
   title: string;
   content: string;
+  source_url?: string;
+  content_quality?: 'full' | 'partial' | 'stub';
   formulas?: unknown;
   diagrams?: unknown;
 }

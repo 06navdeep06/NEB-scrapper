@@ -1,4 +1,4 @@
-import { FileText, Sigma, BookOpen, AlertCircle } from 'lucide-react'
+import { FileText, Sigma, BookOpen, FlaskConical, Clock } from 'lucide-react'
 import type { Note } from '@/types'
 
 interface Props {
@@ -27,10 +27,74 @@ const typeConfig = {
   },
   diagram: {
     label: 'Diagram',
-    icon: <AlertCircle className="h-3.5 w-3.5" />,
+    icon: <FlaskConical className="h-3.5 w-3.5" />,
     chip: 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300',
     border: 'border-l-emerald-400 dark:border-l-emerald-600',
   },
+}
+
+const STUB_THRESHOLD = 300
+
+function stripTags(html: string) {
+  return html.replace(/<[^>]+>/g, '').trim()
+}
+
+function isStubContent(content: string) {
+  return stripTags(content).length < STUB_THRESHOLD
+}
+
+function NoteCard({ note }: { note: Note }) {
+  const cfg = typeConfig[note.type] ?? typeConfig.theory
+  const stub = isStubContent(note.content)
+  const wordCount = stripTags(note.content).split(/\s+/).filter(Boolean).length
+
+  return (
+    <div
+      className={`rounded-xl border border-slate-200 dark:border-slate-700 border-l-4 ${cfg.border} bg-white dark:bg-slate-900 shadow-sm overflow-hidden`}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 py-3.5 bg-slate-50 dark:bg-slate-800/60 border-b border-slate-100 dark:border-slate-700">
+        <h3 className="font-bold text-slate-900 dark:text-white text-sm sm:text-base flex-1 min-w-0 mr-3">
+          {note.title}
+        </h3>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          {!stub && (
+            <span className="hidden sm:inline-flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500">
+              <Clock className="h-3 w-3" />
+              {wordCount} words
+            </span>
+          )}
+          <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full ${cfg.chip}`}>
+            {cfg.icon}
+            {cfg.label}
+          </span>
+        </div>
+      </div>
+
+      {stub ? (
+        /* Stub content — show what we have + an "expanding soon" notice */
+        <div className="px-5 py-5">
+          <div className="notes-content text-sm sm:text-base mb-4">
+            <div dangerouslySetInnerHTML={{ __html: note.content }} />
+          </div>
+          <div className="flex items-start gap-3 p-3.5 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800">
+            <Clock className="h-4 w-4 text-amber-500 mt-0.5 flex-shrink-0" />
+            <p className="text-xs text-amber-700 dark:text-amber-400 leading-relaxed">
+              Full detailed notes for this section are being prepared. Re-run the scraper
+              (<code className="font-mono bg-amber-100 dark:bg-amber-900/40 px-1 rounded">python -m scraper.main</code>)
+              then rebuild (<code className="font-mono bg-amber-100 dark:bg-amber-900/40 px-1 rounded">python -m scraper.build_neb_data</code>)
+              to populate complete content.
+            </p>
+          </div>
+        </div>
+      ) : (
+        /* Full content */
+        <div className="px-5 py-5 notes-content text-sm sm:text-base">
+          <div dangerouslySetInnerHTML={{ __html: note.content }} />
+        </div>
+      )}
+    </div>
+  )
 }
 
 export default function NotesTab({ notes, isFormulas }: Props) {
@@ -58,28 +122,9 @@ export default function NotesTab({ notes, isFormulas }: Props) {
 
   return (
     <div className="space-y-5">
-      {notes.map((note) => {
-        const cfg = typeConfig[note.type] ?? typeConfig.theory
-        return (
-          <div
-            key={note.id}
-            className={`rounded-xl border border-slate-200 dark:border-slate-700 border-l-4 ${cfg.border} bg-white dark:bg-slate-900 shadow-sm overflow-hidden`}
-          >
-            {/* Header */}
-            <div className="flex items-center justify-between px-5 py-3.5 bg-slate-50 dark:bg-slate-800/60 border-b border-slate-100 dark:border-slate-700">
-              <h3 className="font-bold text-slate-900 dark:text-white text-sm sm:text-base">{note.title}</h3>
-              <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full flex-shrink-0 ml-3 ${cfg.chip}`}>
-                {cfg.icon}
-                {cfg.label}
-              </span>
-            </div>
-            {/* Content */}
-            <div className="px-5 py-5 notes-content text-sm sm:text-base">
-              <div dangerouslySetInnerHTML={{ __html: note.content }} />
-            </div>
-          </div>
-        )
-      })}
+      {notes.map((note) => (
+        <NoteCard key={note.id} note={note} />
+      ))}
     </div>
   )
 }

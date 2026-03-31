@@ -3,7 +3,7 @@
 import re
 import logging
 from typing import Optional
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup, NavigableString, Tag
 
 from .utils import (
     fetch_page,
@@ -12,6 +12,23 @@ from .utils import (
     polite_delay,
     logger,
 )
+
+# ─── Quality thresholds ──────────────────────────────────────────────
+
+MIN_CONTENT_CHARS = 400
+MIN_TEXT_CHARS = 200
+
+# Domains whose links must be stripped from scraped content
+_STRIP_DOMAINS = [
+    "nebplus2notes.com",
+    "readersnepal.com",
+    "facebook.com",
+    "twitter.com",
+    "instagram.com",
+    "youtube.com",
+    "t.me",
+    "whatsapp.com",
+]
 
 # ─── nebplus2notes.com ───────────────────────────────────────────────
 
@@ -99,35 +116,48 @@ def scrape_nebplus2_subject_page(url: str) -> list[dict]:
 
 
 def scrape_nebplus2_chapter(url: str) -> Optional[dict]:
-    """Scrape a chapter's content from nebplus2notes.com."""
+    """Scrape a chapter's full content from nebplus2notes.com."""
     soup = fetch_page(url)
     if not soup:
         return None
 
     soup = remove_unwanted_elements(soup)
 
-    # Extract title
     title_el = soup.select_one("h1.entry-title") or soup.select_one("h1") or soup.find("title")
     title = clean_text(title_el.get_text()) if title_el else "Untitled"
 
-    # Extract main content
-    content_area = (
-        soup.select_one(".entry-content")
-        or soup.select_one("article")
-        or soup.select_one(".post-content")
-        or soup.select_one("main")
-    )
+    # Try content selectors in priority order; retry with each on quality failure
+    content_selectors = [
+        ".entry-content",
+        ".post-content",
+        "article .content",
+        "article",
+        ".article-content",
+        "main .content",
+        "main",
+    ]
 
-    if not content_area:
+    content = None
+    for selector in content_selectors:
+        area = soup.select_one(selector)
+        if not area:
+            continue
+        candidate = extract_html_content(area)
+        ok, reason = validate_content_quality(candidate)
+        if ok:
+            content = candidate
+            break
+        logger.debug(f"Selector '{selector}' gave low-quality content: {reason}")
+
+    if not content:
+        logger.warning(f"All selectors gave low-quality content for: {url}")
         return None
-
-    # Clean up the content - keep text and important HTML structure
-    content = extract_clean_content(content_area)
 
     return {
         "title": title,
         "content": content,
         "source_url": url,
+        "content_quality": "full",
     }
 
 
@@ -195,7 +225,7 @@ def scrape_readers_subject_page(url: str) -> list[dict]:
 
 
 def scrape_readers_chapter(url: str) -> Optional[dict]:
-    """Scrape a chapter's content from readersnepal.com."""
+    """Scrape a chapter's full content from readersnepal.com."""
     soup = fetch_page(url)
     if not soup:
         return None
@@ -205,65 +235,225 @@ def scrape_readers_chapter(url: str) -> Optional[dict]:
     title_el = soup.select_one("h1") or soup.find("title")
     title = clean_text(title_el.get_text()) if title_el else "Untitled"
 
-    content_area = (
-        soup.select_one(".note-content")
-        or soup.select_one(".entry-content")
-        or soup.select_one("article")
-        or soup.select_one("main .content")
-        or soup.select_one("main")
-    )
+    content_selectors = [
+        ".note-content",
+        ".entry-content",
+        ".post-body",
+        "article .content",
+        "article",
+        "main .content",
+        ".container .content",
+        "main",
+    ]
 
-    if not content_area:
+    content = None
+    for selector in content_selectors:
+        area = soup.select_one(selector)
+        if not area:
+            continue
+        candidate = extract_html_content(area)
+        ok, reason = validate_content_quality(candidate)
+        if ok:
+            content = candidate
+            break
+        logger.debug(f"Selector '{selector}' gave low-quality content: {reason}")
+
+    if not content:
+        logger.warning(f"All selectors gave low-quality content for: {url}")
         return None
-
-    content = extract_clean_content(content_area)
 
     return {
         "title": title,
         "content": content,
         "source_url": url,
+        "content_quality": "full",
     }
 
 
 # ─── Shared helpers ──────────────────────────────────────────────────
 
 
-def extract_clean_content(element: Tag) -> str:
-    """Extract clean text content preserving basic structure."""
-    # Remove remaining unwanted elements within content
-    for tag in element.find_all(["script", "style", "iframe", "ins", "noscript"]):
-        tag.decompose()
+def validate_content_quality(content: str) -> tuple[bool, str]:
+    """Check whether scraped content meets minimum quality standards."""
+    if not content or not content.strip():
+        return False, "empty content"
+    if len(content) < MIN_CONTENT_CHARS:
+        return False, f"too short ({len(content)} < {MIN_CONTENT_CHARS} chars)"
+    text_only = re.sub(r"<[^>]+>", "", content).strip()
+    if len(text_only) < MIN_TEXT_CHARS:
+        return False, f"insufficient text ({len(text_only)} < {MIN_TEXT_CHARS} chars)"
+    return True, "ok"
 
-    # Remove share buttons, ad containers
-    for tag in element.select('[class*="share"], [class*="social"], [class*="ad"]'):
-        tag.decompose()
 
-    # Build clean content preserving headings, paragraphs, lists
+def _strip_external_links(element: Tag) -> None:
+    """Remove <a> tags whose href points to external/social domains.
+    The link text is preserved as plain text so no content is lost."""
+    for a in element.find_all("a", href=True):
+        href = a.get("href", "")
+        if any(domain in href for domain in _STRIP_DOMAINS):
+            a.replace_with(NavigableString(a.get_text()))
+
+
+def _process_element(el: Tag) -> str:
+    """Recursively convert a BeautifulSoup element to clean HTML."""
+    name = el.name
+    if name is None:
+        return ""
+
+    if name in ("script", "style", "noscript", "iframe", "ins", "button"):
+        return ""
+
+    if name in ("h1", "h2", "h3", "h4", "h5", "h6"):
+        text = clean_text(el.get_text())
+        return f"<{name}>{text}</{name}>" if text else ""
+
+    if name == "p":
+        inner = _inner_html(el)
+        text = clean_text(el.get_text())
+        return f"<p>{inner}</p>" if text else ""
+
+    if name in ("ul", "ol"):
+        items = []
+        for li in el.find_all("li", recursive=False):
+            inner = _inner_html(li)
+            t = clean_text(li.get_text())
+            if t:
+                items.append(f"<li>{inner}</li>")
+        return f"<{name}>{''.join(items)}</{name}>" if items else ""
+
+    if name == "li":
+        inner = _inner_html(el)
+        text = clean_text(el.get_text())
+        return f"<li>{inner}</li>" if text else ""
+
+    if name == "blockquote":
+        text = clean_text(el.get_text())
+        return f"<blockquote><p>{text}</p></blockquote>" if text else ""
+
+    if name == "table":
+        # Keep tables with their inner structure but sanitised
+        return _sanitise_table(el)
+
+    if name in ("strong", "b"):
+        text = clean_text(el.get_text())
+        return f"<strong>{text}</strong>" if text else ""
+
+    if name in ("em", "i"):
+        text = clean_text(el.get_text())
+        return f"<em>{text}</em>" if text else ""
+
+    if name in ("sub", "sup"):
+        text = clean_text(el.get_text())
+        return f"<{name}>{text}</{name}>" if text else ""
+
+    if name in ("br",):
+        return "<br>"
+
+    if name in ("div", "section", "article", "main", "span"):
+        parts = []
+        for child in el.children:
+            if isinstance(child, Tag):
+                parts.append(_process_element(child))
+            elif isinstance(child, NavigableString):
+                t = child.strip()
+                if t:
+                    parts.append(str(t))
+        return " ".join(p for p in parts if p)
+
+    # Default: recurse into children
     parts = []
-    for child in element.descendants:
+    for child in el.children:
         if isinstance(child, Tag):
-            if child.name in ["h1", "h2", "h3", "h4", "h5", "h6"]:
-                text = clean_text(child.get_text())
-                if text:
-                    level = int(child.name[1])
-                    parts.append(f"\n{'#' * level} {text}\n")
-            elif child.name == "p":
-                text = clean_text(child.get_text())
-                if text:
-                    parts.append(f"\n{text}\n")
-            elif child.name == "li":
-                text = clean_text(child.get_text())
-                if text:
-                    parts.append(f"- {text}")
+            parts.append(_process_element(child))
+        elif isinstance(child, NavigableString):
+            t = child.strip()
+            if t:
+                parts.append(str(t))
+    return " ".join(p for p in parts if p)
+
+
+def _inner_html(el: Tag) -> str:
+    """Return the inner content of an element as clean HTML string."""
+    parts = []
+    for child in el.children:
+        if isinstance(child, Tag):
+            parts.append(_process_element(child))
+        elif isinstance(child, NavigableString):
+            t = child.strip()
+            if t:
+                parts.append(str(t))
+    return " ".join(p for p in parts if p)
+
+
+def _sanitise_table(table: Tag) -> str:
+    """Return a clean <table> HTML string."""
+    rows = []
+    for tr in table.find_all("tr"):
+        cells = []
+        for cell in tr.find_all(["th", "td"]):
+            tag = cell.name
+            text = clean_text(cell.get_text())
+            cells.append(f"<{tag}>{text}</{tag}>")
+        if cells:
+            rows.append(f"<tr>{''.join(cells)}</tr>")
+    return f"<table>{''.join(rows)}</table>" if rows else ""
+
+
+def extract_html_content(element: Tag) -> str:
+    """Extract full educational content as clean, renderable HTML.
+
+    - Strips ads, scripts, social widgets, navigation
+    - Removes links to external domains (no redirect leakage)
+    - Preserves headings, paragraphs, lists, tables, emphasis
+    - Deduplicates consecutive identical blocks
+    """
+    # Phase 1: remove clutter tags in-place
+    for tag in element.find_all(
+        ["script", "style", "iframe", "ins", "noscript", "button", "form"]
+    ):
+        tag.decompose()
+
+    clutter_selectors = [
+        '[class*="share"]', '[class*="social"]', '[class*="-ad"]',
+        '[class*="ad-"]',  '[class*="advertisement"]', '[id*="ad-"]',
+        '[class*="related"]', '[class*="recommended"]', '[class*="popup"]',
+        '[class*="subscribe"]', '[class*="newsletter"]', '[class*="cookie"]',
+        '[class*="comment"]', '[class*="sidebar"]', '[class*="widget"]',
+    ]
+    for sel in clutter_selectors:
+        for el in element.select(sel):
+            el.decompose()
+
+    # Phase 2: strip external redirect links (keep the link text)
+    _strip_external_links(element)
+
+    # Phase 3: build clean HTML from top-level block elements
+    BLOCK_TAGS = {
+        "h1", "h2", "h3", "h4", "h5", "h6",
+        "p", "ul", "ol", "blockquote", "table", "div", "section",
+    }
+    parts = []
+    for child in element.children:
+        if isinstance(child, Tag) and child.name in BLOCK_TAGS:
+            html = _process_element(child)
+            if html and html.strip():
+                parts.append(html.strip())
+        elif isinstance(child, NavigableString):
+            t = child.strip()
+            if t:
+                parts.append(f"<p>{t}</p>")
 
     if not parts:
-        # Fallback to plain text
-        return clean_text(element.get_text())
+        # Last-resort fallback: grab all text as paragraphs
+        raw = clean_text(element.get_text())
+        if raw:
+            return f"<p>{raw}</p>"
+        return ""
 
-    # Deduplicate consecutive identical lines
-    result = []
-    for line in "\n".join(parts).split("\n"):
-        if not result or line != result[-1]:
-            result.append(line)
+    # Deduplicate consecutive identical blocks
+    deduped = []
+    for block in parts:
+        if not deduped or block != deduped[-1]:
+            deduped.append(block)
 
-    return "\n".join(result).strip()
+    return "\n".join(deduped)
