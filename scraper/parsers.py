@@ -38,32 +38,32 @@ NEBPLUS2_BASE = "https://nebplus2notes.com"
 NEBPLUS2_SUBJECTS = {
     12: {
         "Science": {
-            "Physics": f"{NEBPLUS2_BASE}/physics-class-12/",
-            "Chemistry": f"{NEBPLUS2_BASE}/chemistry-class-12/",
-            "Mathematics": f"{NEBPLUS2_BASE}/mathematics-class-12/",
-            "Biology": f"{NEBPLUS2_BASE}/biology-class-12/",
-            "Computer Science": f"{NEBPLUS2_BASE}/computer-science-class-12/",
-            "English": f"{NEBPLUS2_BASE}/english-class-12/",
+            "Physics": f"{NEBPLUS2_BASE}/class-12/physics/",
+            "Chemistry": f"{NEBPLUS2_BASE}/class-12/chemistry/",
+            "Mathematics": f"{NEBPLUS2_BASE}/class-12/mathematics/",
+            "Biology": f"{NEBPLUS2_BASE}/class-12/biology/",
+            "Computer Science": f"{NEBPLUS2_BASE}/class-12/computer-science/",
+            "English": f"{NEBPLUS2_BASE}/class-12/english/",
         },
         "Management": {
-            "Accountancy": f"{NEBPLUS2_BASE}/accountancy-class-12/",
-            "Economics": f"{NEBPLUS2_BASE}/economics-class-12/",
-            "Business Studies": f"{NEBPLUS2_BASE}/business-studies-class-12/",
+            "Accountancy": f"{NEBPLUS2_BASE}/class-12/accountancy/",
+            "Economics": f"{NEBPLUS2_BASE}/class-12/economics/",
+            "Business Studies": f"{NEBPLUS2_BASE}/class-12/business-studies/",
         },
     },
     11: {
         "Science": {
-            "Physics": f"{NEBPLUS2_BASE}/physics-class-11/",
-            "Chemistry": f"{NEBPLUS2_BASE}/chemistry-class-11/",
-            "Mathematics": f"{NEBPLUS2_BASE}/mathematics-class-11/",
-            "Biology": f"{NEBPLUS2_BASE}/biology-class-11/",
-            "Computer Science": f"{NEBPLUS2_BASE}/computer-science-class-11/",
-            "English": f"{NEBPLUS2_BASE}/english-class-11/",
+            "Physics": f"{NEBPLUS2_BASE}/class-11/physics/",
+            "Chemistry": f"{NEBPLUS2_BASE}/class-11/chemistry/",
+            "Mathematics": f"{NEBPLUS2_BASE}/class-11/mathematics/",
+            "Biology": f"{NEBPLUS2_BASE}/class-11/biology/",
+            "Computer Science": f"{NEBPLUS2_BASE}/class-11/computer-science/",
+            "English": f"{NEBPLUS2_BASE}/class-11/english/",
         },
         "Management": {
-            "Accountancy": f"{NEBPLUS2_BASE}/accountancy-class-11/",
-            "Economics": f"{NEBPLUS2_BASE}/economics-class-11/",
-            "Business Studies": f"{NEBPLUS2_BASE}/business-studies-class-11/",
+            "Accountancy": f"{NEBPLUS2_BASE}/class-11/accountancy/",
+            "Economics": f"{NEBPLUS2_BASE}/class-11/economics/",
+            "Business Studies": f"{NEBPLUS2_BASE}/class-11/business-studies/",
         },
     },
 }
@@ -126,12 +126,12 @@ def scrape_nebplus2_chapter(url: str) -> Optional[dict]:
     title_el = soup.select_one("h1.entry-title") or soup.select_one("h1") or soup.find("title")
     title = clean_text(title_el.get_text()) if title_el else "Untitled"
 
-    # Try content selectors in priority order; retry with each on quality failure
+    # nebplus2notes uses article/.post-content as the primary content container
     content_selectors = [
-        ".entry-content",
-        ".post-content",
-        "article .content",
         "article",
+        ".post-content",
+        ".entry-content",
+        "article .content",
         ".article-content",
         "main .content",
         "main",
@@ -168,18 +168,27 @@ READERS_BASE = "https://readersnepal.com"
 READERS_SUBJECTS = {
     12: {
         "Science": {
-            "Computer Science": f"{READERS_BASE}/e-notes/class-12-computer-science",
-            "Physics": f"{READERS_BASE}/e-notes/class-12-physics",
-            "Chemistry": f"{READERS_BASE}/e-notes/class-12-chemistry",
-            "Biology": f"{READERS_BASE}/e-notes/class-12-biology",
-            "Mathematics": f"{READERS_BASE}/e-notes/class-12-mathematics",
+            "Physics": f"{READERS_BASE}/e-notes/neb-new-course-class-12/physics-1",
+            "Chemistry": f"{READERS_BASE}/e-notes/neb-new-course-class-12/chemistry-1",
+            "Biology": f"{READERS_BASE}/e-notes/neb-new-course-class-12/biology-1",
+            "Mathematics": f"{READERS_BASE}/e-notes/neb-new-course-class-12/mathematics-1",
+            "Computer Science": f"{READERS_BASE}/e-notes/neb-new-course-class-12/computer-science-3",
+        },
+        "Management": {
+            "Economics": f"{READERS_BASE}/e-notes/neb-new-course-class-12/economics-1",
+            "Business Studies": f"{READERS_BASE}/e-notes/neb-new-course-class-12/business-studies-1",
         },
     },
     11: {
         "Science": {
-            "Computer Science": f"{READERS_BASE}/e-notes/class-11-computer-science",
-            "Physics": f"{READERS_BASE}/e-notes/class-11-physics",
-            "Chemistry": f"{READERS_BASE}/e-notes/class-11-chemistry",
+            "Physics": f"{READERS_BASE}/e-notes/neb-new-course-class-11/physics",
+            "Chemistry": f"{READERS_BASE}/e-notes/neb-new-course-class-11/chemistry",
+            "Biology": f"{READERS_BASE}/e-notes/neb-new-course-class-11/biology",
+            "Computer Science": f"{READERS_BASE}/e-notes/neb-new-course-class-11/computer-science-2",
+        },
+        "Management": {
+            "Economics": f"{READERS_BASE}/e-notes/neb-new-course-class-11/economics",
+            "Business Studies": f"{READERS_BASE}/e-notes/neb-new-course-class-11/business-studies",
         },
     },
 }
@@ -195,31 +204,36 @@ def scrape_readers_subject_page(url: str) -> list[dict]:
     soup = remove_unwanted_elements(soup)
     chapters = []
 
-    # readersnepal uses card-based layouts
-    cards = soup.select(".card, .post-card, .note-card, article")
-    if not cards:
-        # Fallback: look for links in main content
-        main = soup.select_one("main, .content, .container")
-        if main:
-            cards = [main]
+    # readersnepal.com uses .entry-content as the primary container on index pages;
+    # fall back to card layouts or main content area
+    search_root = (
+        soup.select_one(".entry-content")
+        or soup.select_one("main")
+        or soup.select_one(".content")
+        or soup
+    )
 
-    for card in cards:
-        for link in card.find_all("a", href=True):
-            href = link["href"]
-            title = clean_text(link.get_text())
+    seen_hrefs: set[str] = set()
+    for link in search_root.find_all("a", href=True):
+        href = link["href"]
+        title = clean_text(link.get_text())
 
-            if not title or len(title) < 3:
+        if not title or len(title) < 3:
+            continue
+        if any(skip in href.lower() for skip in ["#", "javascript:", "facebook", "twitter"]):
+            continue
+
+        if READERS_BASE in href or href.startswith("/"):
+            if href.startswith("/"):
+                href = READERS_BASE + href
+            # Skip duplicate hrefs and parent subject-level URLs
+            if href == url or href in seen_hrefs:
                 continue
-            if any(skip in href.lower() for skip in ["#", "javascript:"]):
-                continue
-
-            if READERS_BASE in href or href.startswith("/"):
-                if href.startswith("/"):
-                    href = READERS_BASE + href
-                chapters.append({
-                    "title": title,
-                    "url": href,
-                })
+            seen_hrefs.add(href)
+            chapters.append({
+                "title": title,
+                "url": href,
+            })
 
     return chapters
 
@@ -235,9 +249,27 @@ def scrape_readers_chapter(url: str) -> Optional[dict]:
     title_el = soup.select_one("h1") or soup.find("title")
     title = clean_text(title_el.get_text()) if title_el else "Untitled"
 
+    # readersnepal.com: primary container is .entry-content; strip WordPress sharing
+    # and related-post widgets before extracting so they don't pollute the content.
+    entry = soup.select_one(".entry-content")
+    if entry:
+        for unwanted_sel in (
+            ".sharedaddy",
+            ".jp-relatedposts",
+            ".relatedposts",
+            "[class*='sharedaddy']",
+            "[class*='relatedposts']",
+            "[class*='jetpack']",
+            "nav",
+            "[class*='navigation']",
+            "[class*='nav-links']",
+        ):
+            for el in entry.select(unwanted_sel):
+                el.decompose()
+
     content_selectors = [
-        ".note-content",
         ".entry-content",
+        ".note-content",
         ".post-body",
         "article .content",
         "article",
@@ -419,6 +451,8 @@ def extract_html_content(element: Tag) -> str:
         '[class*="related"]', '[class*="recommended"]', '[class*="popup"]',
         '[class*="subscribe"]', '[class*="newsletter"]', '[class*="cookie"]',
         '[class*="comment"]', '[class*="sidebar"]', '[class*="widget"]',
+        '.sharedaddy', '.jp-relatedposts', '.relatedposts',
+        '[class*="jetpack"]', '[class*="nav-links"]',
     ]
     for sel in clutter_selectors:
         for el in element.select(sel):

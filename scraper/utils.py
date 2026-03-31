@@ -37,6 +37,10 @@ def fetch_page(url: str, retries: int = 3) -> Optional[BeautifulSoup]:
         try:
             logger.info(f"Fetching: {url} (attempt {attempt + 1})")
             resp = requests.get(url, headers=HEADERS, timeout=15)
+            # Client errors (bad URL / access denied) are permanent — skip immediately
+            if resp.status_code in (403, 404, 410):
+                logger.warning(f"HTTP {resp.status_code} — skipping without retry: {url}")
+                return None
             resp.raise_for_status()
             return BeautifulSoup(resp.text, "html.parser")
         except requests.RequestException as e:
